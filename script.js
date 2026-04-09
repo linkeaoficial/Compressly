@@ -1,0 +1,1156 @@
+// 👑 CONFIGURACIÓN GLOBAL DE USUARIO (El cerebro de la monetización)
+// Cambia a 'false' para activar todos los bloqueos Premium
+let isPremiumUser = false;
+
+lucide.createIcons();
+// ... resto de tus constantes
+
+lucide.createIcons();
+
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+
+const imageInput = document.getElementById('imageInput');
+const qualityRange = document.getElementById('qualityRange');
+const qualityVal = document.getElementById('qualityVal');
+const compressBtn = document.getElementById('compressBtn');
+
+const btnWebp = document.getElementById('btnWebp');
+const btnPng = document.getElementById('btnPng');
+const btnJpg = document.getElementById('btnJpg');
+const btnAuto = document.getElementById('btnAuto');
+
+const resizeSelect = document.getElementById('resizeSelect');
+const resizeVal = document.getElementById('resizeVal');
+
+const origPreview = document.getElementById('origPreview');
+const resPreview = document.getElementById('resPreview');
+const placeholderOrig = document.getElementById('placeholderOrig');
+
+// 🟢 Nuevas variables para los metadatos
+const origFormatBadge = document.getElementById('origFormat');
+const origDimBadge = document.getElementById('origDim');
+const resFormatBadge = document.getElementById('resFormat');
+const resDimBadge = document.getElementById('resDim');
+
+// 🟢 LÓGICA DEL MENÚ DESPLEGABLE PERSONALIZADO PREMIUM
+const customSelectContainer = document.getElementById('customSelectContainer');
+const customSelectTrigger = document.getElementById('customSelectTrigger');
+const customSelectDropdown = document.getElementById('customSelectDropdown');
+const customSelectArrow = document.getElementById('customSelectArrow');
+const customSelectLabel = document.getElementById('customSelectLabel');
+const customOptions = document.querySelectorAll('.custom-option');
+
+// Abrir/Cerrar menú con un clic
+customSelectTrigger.addEventListener('click', (e) => {
+    e.stopPropagation(); // Evitar que se cierre al instante
+    customSelectDropdown.classList.toggle('custom-select-dropdown-open');
+    customSelectArrow.classList.toggle('custom-select-arrow-open');
+    triggerVibration(20);
+});
+
+
+// 🟢 Cuando se hace clic en una de las hermosas opciones
+customOptions.forEach(option => {
+    option.addEventListener('click', () => {
+        const value = option.getAttribute('data-value');
+        const text = option.innerText;
+
+        // 🛑 MURO DE PAGO: Bloquear si intentan redimensionar
+        if (value !== "0") {
+            if (!isPremiumUser) {
+                openPremiumModal();
+                customSelectDropdown.classList.remove('custom-select-dropdown-open');
+                customSelectArrow.classList.remove('custom-select-arrow-open');
+                return;
+            }
+        }
+
+        // 🟢 NUEVO: Marcar visualmente la opción seleccionada
+        customOptions.forEach(opt => opt.classList.remove('selected'));
+        option.classList.add('selected');
+
+        // 1. Cambiar el texto que el usuario ve
+        customSelectLabel.innerText = text;
+
+        // 2. Insertar el valor en tu select original (el que Compressly usa para procesar)
+        resizeSelect.value = value;
+
+        // 3. Disparar tu evento 'change' original para que actualice la palabra azul en la cabecera
+        resizeSelect.dispatchEvent(new Event('change'));
+
+        // 4. Cerrar el menú flotante
+        customSelectDropdown.classList.remove('custom-select-dropdown-open');
+        customSelectArrow.classList.remove('custom-select-arrow-open');
+    });
+});
+
+// Cerrar el menú automáticamente si el usuario hace clic en otro lado de la página
+document.addEventListener('click', (e) => {
+    if (!customSelectContainer.contains(e.target)) {
+        customSelectDropdown.classList.remove('custom-select-dropdown-open');
+        customSelectArrow.classList.remove('custom-select-arrow-open');
+    }
+});
+
+const savePercent = document.getElementById('savePercent');
+const statsTitle = document.getElementById('statsTitle');
+const statsMsg = document.getElementById('statsMsg');
+const resSizeBadge = document.getElementById('resSize');
+const origSizeBadge = document.getElementById('origSize');
+const downloadBtn = document.getElementById('downloadBtn');
+
+let currentFile = null;
+let selectedFormat = 'image/jpeg'; // 🟢 JPG por defecto
+const exifToggle = document.getElementById('exifToggle'); // 🟢 Referencia al escudo
+
+function toggleMobileMenu() {
+    mobileMenu.classList.toggle('hidden');
+
+    // Alternar iconos de forma segura
+    const iconMenu = document.getElementById('iconMenu');
+    const iconClose = document.getElementById('iconClose');
+
+    if (mobileMenu.classList.contains('hidden')) {
+        iconMenu.classList.remove('hidden');
+        iconClose.classList.add('hidden');
+    } else {
+        iconMenu.classList.add('hidden');
+        iconClose.classList.remove('hidden');
+    }
+
+    if (navigator.vibrate) navigator.vibrate(50);
+}
+
+mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+
+// Cerrar el menú automáticamente cuando se hace clic en un enlace (móvil)
+document.querySelectorAll('.mobile-link').forEach(link => {
+    link.addEventListener('click', () => {
+        if (!mobileMenu.classList.contains('hidden')) {
+            toggleMobileMenu();
+        }
+    });
+});
+
+const triggerVibration = (pattern = 50) => {
+    if (navigator.vibrate) navigator.vibrate(pattern);
+};
+
+// Mapa maestro de formatos
+const formatButtons = [
+    { btn: btnWebp, format: 'image/webp' },
+    { btn: btnPng, format: 'image/png' },
+    { btn: btnJpg, format: 'image/jpeg' },
+    { btn: btnAuto, format: 'auto' }
+];
+
+// Función inteligente para actualizar la interfaz
+function updateFormatUI(activeBtn) {
+    formatButtons.forEach(item => {
+        // 1. Quitamos TODAS las clases de color (activas e inactivas) sin tocar el tamaño
+        item.btn.classList.remove(
+            'bg-primary-500', 'text-white', 'shadow-lg', 'dark:border-white/10',
+            'text-slate-500', 'dark:text-gray-400', 'hover:text-slate-900',
+            'dark:hover:text-white', 'hover:bg-slate-200', 'dark:hover:bg-white/5'
+        );
+
+        // 2. Aplicamos los colores correctos
+        if (item.btn === activeBtn) {
+            item.btn.classList.add('bg-primary-500', 'text-white', 'shadow-lg', 'dark:border-white/10');
+        } else {
+            item.btn.classList.add('text-slate-500', 'dark:text-gray-400', 'hover:text-slate-900', 'dark:hover:text-white', 'hover:bg-slate-200', 'dark:hover:bg-white/5');
+        }
+    });
+
+    // 🟢 Lógica de la alerta PNG
+    const pngWarning = document.getElementById('pngWarning');
+    if (selectedFormat === 'image/png') {
+        pngWarning.classList.remove('hidden');
+    } else {
+        pngWarning.classList.add('hidden');
+    }
+}
+
+// Asignación automática de eventos
+formatButtons.forEach(item => {
+    item.btn.addEventListener('click', () => {
+        selectedFormat = item.format;
+        updateFormatUI(item.btn);
+        triggerVibration();
+    });
+});
+
+// 🚀 LÓGICA DE CARPETAS EN ZIP
+let useZipFolders = false;
+const folderOrgBtn = document.getElementById('folderOrgBtn');
+if (folderOrgBtn) {
+    folderOrgBtn.addEventListener('click', () => {
+        if (!isPremiumUser) { openPremiumModal(); return; }
+
+        useZipFolders = !useZipFolders;
+        triggerVibration(20);
+
+        if (useZipFolders) {
+            // 🚀 NUEVO: Quitamos el gris y forzamos el morado
+            folderOrgBtn.classList.remove('bg-slate-100', 'dark:bg-black/40', 'border-slate-200', 'dark:border-white/5');
+            folderOrgBtn.classList.add('border-primary-500', 'bg-primary-500/10', 'dark:bg-primary-500/20');
+
+            document.getElementById('folderIcon').classList.remove('text-slate-400');
+            document.getElementById('folderIcon').classList.add('text-primary-500');
+            Notify.show('Carpetas Activadas', 'Tu archivo ZIP se organizará automáticamente.', 'info');
+        } else {
+            // 🚀 NUEVO: Devolvemos el color gris original
+            folderOrgBtn.classList.add('bg-slate-100', 'dark:bg-black/40', 'border-slate-200', 'dark:border-white/5');
+            folderOrgBtn.classList.remove('border-primary-500', 'bg-primary-500/10', 'dark:bg-primary-500/20');
+
+            document.getElementById('folderIcon').classList.add('text-slate-400');
+            document.getElementById('folderIcon').classList.remove('text-primary-500');
+        }
+    });
+}
+
+// 🚀 LÓGICA DE MARCA DE AGUA (Bloqueo de campo)
+const watermarkInput = document.getElementById('watermarkInput');
+if (watermarkInput) {
+    watermarkInput.addEventListener('focus', (e) => {
+        if (!isPremiumUser) {
+            e.preventDefault();
+            watermarkInput.blur();
+            openPremiumModal();
+        }
+    });
+}
+
+// 🎨 MOTOR DE PINTURA (Dibuja la marca de agua en la imagen)
+function drawWatermark(context, canvas) {
+    if (!watermarkInput) return;
+    const text = watermarkInput.value.trim();
+    if (text !== "") {
+        context.fillStyle = 'rgba(255, 255, 255, 0.8)'; // Blanco translúcido
+        context.font = `normal ${Math.max(20, canvas.width / 40)}px "Plus Jakarta Sans", Arial, sans-serif`;
+        context.textAlign = 'right';
+        context.textBaseline = 'bottom';
+        // Sombra elegante para que se lea sobre fondos blancos
+        context.shadowColor = 'rgba(0, 0, 0, 0.8)';
+        context.shadowBlur = 6;
+        context.shadowOffsetX = 2;
+        context.shadowOffsetY = 2;
+        // Dibujamos el texto en la esquina inferior derecha
+        context.fillText(text, canvas.width - 30, canvas.height - 30);
+    }
+}
+
+qualityRange.addEventListener('input', (e) => {
+    qualityVal.innerText = `${e.target.value}%`;
+});
+qualityRange.addEventListener('change', () => triggerVibration(30));
+
+// 🟢 Muro de Pago para el Escudo Anti-Rastreo
+exifToggle.addEventListener('change', (e) => {
+    triggerVibration([30, 50]);
+
+    if (exifToggle.checked) {
+        if (!isPremiumUser) {
+            e.preventDefault();
+            exifToggle.checked = false;
+            openPremiumModal();
+        } else {
+            Notify.show('Escudo Activado', 'Los metadatos serán eliminados.', 'info');
+        }
+    }
+});
+
+resizeSelect.addEventListener('change', (e) => {
+    const val = e.target.value;
+    if (val === "0") {
+        resizeVal.innerText = "Original";
+    } else {
+        resizeVal.innerText = val + "px";
+    }
+    triggerVibration(20);
+});
+
+const dropzone = imageInput.closest('.bento-card');
+
+dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.classList.add('border-primary-400', 'bg-primary-500/10');
+});
+
+dropzone.addEventListener('dragleave', () => {
+    dropzone.classList.remove('border-primary-400', 'bg-primary-500/10');
+});
+
+dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('border-primary-400', 'bg-primary-500/10');
+
+    if (e.dataTransfer.files.length > 0) {
+        // 🚀 Convertimos los archivos en una lista y los procesamos TODOS
+        handleMultipleFiles(Array.from(e.dataTransfer.files));
+    }
+});
+
+imageInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+        // 🚀 Convertimos los archivos en una lista y los procesamos TODOS
+        handleMultipleFiles(Array.from(e.target.files));
+    }
+});
+
+// 🚀 VARIABLES GLOBALES PARA LOTES
+let batchFiles = [];
+const batchDashboard = document.getElementById('batchDashboard');
+const batchGrid = document.getElementById('batchGrid');
+const batchCount = document.getElementById('batchCount');
+
+// Referencias a las 3 tarjetas individuales (para ocultarlas/mostrarlas)
+const singleCardOrig = document.getElementById('origSize').closest('.bento-card');
+const singleCardRes = document.getElementById('resSize').closest('.bento-card');
+const singleCardStats = document.getElementById('statsTitle').closest('.bento-card');
+
+// 🚀 FUNCIÓN MAESTRA VISUAL PARA LOTES
+function handleMultipleFiles(filesArray) {
+    if (filesArray.length === 0) return;
+
+    triggerVibration([30, 50, 30]);
+
+    // 🛑 EL MURO DE PAGO: Limitar a 3 imágenes en versión gratuita
+    if (filesArray.length > 3) {
+        if (!isPremiumUser) {
+            openPremiumModal();
+            return;
+        }
+    }
+
+    if (filesArray.length === 1) {
+        // --- MODO SOLITARIO (1 Foto) ---
+        batchFiles = []; // 🚀 NUEVO: Vaciamos la memoria del lote fantasma
+        batchDashboard.classList.add('hidden');
+        singleCardOrig.classList.remove('hidden');
+        singleCardRes.classList.remove('hidden');
+        singleCardStats.classList.remove('hidden');
+
+        handleFileSelection(filesArray[0]);
+    } else {
+        // --- MODO LOTE PREMIUM (Múltiples Fotos) ---
+        currentFile = null; // 🚀 NUEVO: Vaciamos la memoria de la foto individual fantasma
+        batchFiles = filesArray;
+        Notify.show('Modo Lote Activado', `Has cargado ${filesArray.length} imágenes.`, 'info');
+
+        // 1. Ocultar las tarjetas de "1 sola foto"
+        singleCardOrig.classList.add('hidden');
+        singleCardRes.classList.add('hidden');
+        singleCardStats.classList.add('hidden');
+
+        // 2. Mostrar el Dashboard de Lotes
+        batchDashboard.classList.remove('hidden');
+        batchCount.innerText = filesArray.length;
+
+        // 🚀 Resetear la barra horizontal nueva
+        document.getElementById('batchSavePercent').innerText = '0%';
+        document.getElementById('batchStatsMsg').innerHTML = '<i data-lucide="clock" class="w-4 h-4"></i> Esperando orden...';
+        document.getElementById('batchStatsMsg').className = 'text-sm text-yellow-600 dark:text-yellow-400 font-bold flex items-center gap-1.5';
+        document.getElementById('downloadBatchBtn').classList.add('hidden');
+        // 🚀 (Línea del botón fantasma eliminada)
+
+        // 3. Limpiar el grid y dibujar las tarjetitas con MINIATURAS REALES 🖼️
+        batchGrid.innerHTML = '';
+        filesArray.forEach((file, index) => {
+            const sizeKB = (file.size / 1024).toFixed(1);
+
+            // 🚀 MAGIA: Creamos una URL temporal ultrarrápida para la miniatura
+            const previewUrl = URL.createObjectURL(file);
+
+            const card = document.createElement('div');
+            card.className = "bg-slate-100 dark:bg-black/40 border border-slate-200 dark:border-white/5 rounded-2xl p-4 flex items-center gap-4 relative transition-colors group";
+            card.innerHTML = `
+                <div class="w-12 h-12 rounded-lg overflow-hidden shrink-0 border border-slate-300 dark:border-white/10 shadow-sm relative">
+                    <img src="${previewUrl}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="preview">
+                    <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-bold text-slate-900 dark:text-white truncate" title="${file.name}">${file.name}</p>
+                    <p class="text-xs text-slate-500 dark:text-gray-400 mt-1 flex items-center gap-1">
+                        ${sizeKB} KB <span class="text-gray-300 dark:text-gray-600 mx-1">•</span> 
+                        <span id="status-${index}" class="text-yellow-600 dark:text-yellow-400 font-bold flex items-center gap-1">
+                            <i data-lucide="clock" class="w-3 h-3"></i> En cola
+                        </span>
+                    </p>
+                </div>
+            `;
+            batchGrid.appendChild(card);
+        });
+
+        lucide.createIcons();
+
+        // 4. Cambiar textos de la Nube principal
+        document.getElementById('dropMainText').innerText = '¡Lote Cargado!';
+        document.getElementById('dropSubText').innerText = `${filesArray.length} archivos listos`;
+        document.getElementById('dropIconCloud').classList.add('hidden');
+        document.getElementById('dropIconImage').classList.remove('hidden');
+
+        document.getElementById('clearBtn').classList.remove('hidden'); // Mostrar papelera general
+
+
+        // 📱💻 Control de Scroll Inteligente (Al cargar el Lote)
+        setTimeout(() => {
+            const element = document.getElementById('qualityRange');
+
+            // Detectamos si es PC o Móvil
+            const isDesktop = window.innerWidth >= 768;
+
+            // 🟢 Reducimos a 100 para que en PC suba mucho más y se vean las miniaturas
+            const offset = isDesktop ? 100 : 250;
+
+            const bodyRect = document.body.getBoundingClientRect().top;
+            const elementRect = element.getBoundingClientRect().top;
+            const elementPosition = elementRect - bodyRect;
+            const offsetPosition = elementPosition - offset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }, 300);
+    }
+}
+
+// Mantenemos tu función vieja intacta justo debajo
+function handleFileSelection(file) {
+    if (!file) return;
+
+    const maxSizeInBytes = 10 * 1024 * 1024;
+
+    // 🛑 ESTRATEGIA: Si la imagen pesa más de 10MB, activamos el Muro de Pago
+    if (file.size > maxSizeInBytes) {
+        if (!isPremiumUser) {
+            triggerVibration([100, 50, 100]);
+            openPremiumModal();
+            Notify.show('Límite Superado', 'Las imágenes de >10MB requieren la versión PRO.', 'info');
+            imageInput.value = '';
+            return;
+        }
+    }
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+        triggerVibration([100, 50, 100]);
+        Notify.show('Formato Inválido', 'Solo admitimos imágenes profesionales: JPG, PNG o WEBP.', 'error');
+        imageInput.value = '';
+        return;
+    }
+
+    currentFile = file;
+    triggerVibration(50);
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        origPreview.src = event.target.result;
+
+        // 🟢 Extraer dimensiones reales de la imagen Original
+        origPreview.onload = () => {
+            origDimBadge.innerText = `${origPreview.naturalWidth} x ${origPreview.naturalHeight}`;
+            origDimBadge.classList.remove('hidden');
+        };
+
+        // 🟢 Extraer formato original
+        const fileExt = file.name.split('.').pop().toUpperCase();
+        origFormatBadge.innerText = fileExt;
+        origFormatBadge.classList.remove('hidden');
+
+        origPreview.classList.remove('hidden');
+        placeholderOrig.classList.add('hidden');
+
+        origSizeBadge.innerText = (file.size / 1024).toFixed(1) + ' KB';
+
+        // Resetear visuales de resultado
+        resPreview.classList.add('hidden');
+        downloadBtn.classList.add('hidden');
+        savePercent.innerText = '0%';
+        savePercent.className = "text-5xl font-black text-slate-800 dark:text-white transition-colors duration-300 drop-shadow-md dark:drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]";
+        resSizeBadge.innerText = '0 KB';
+        resSizeBadge.className = "text-xs font-bold px-3 py-1.5 bg-white/5 text-gray-500 border border-white/10 rounded-lg";
+        statsTitle.innerText = "Ahorro de Peso";
+        statsTitle.className = "text-xs font-extrabold uppercase text-slate-500 dark:text-gray-400 tracking-widest mb-6 transition-colors duration-300";
+        statsMsg.innerHTML = '<i data-lucide="activity" class="w-4 h-4 text-primary-400 inline-block mr-1"></i> Presiona comprimir';
+
+        // 🟢 Mostrar el botón de la papelera
+        document.getElementById('clearBtn').classList.remove('hidden');
+
+        // 🟢 NUEVO: Actualizar la zona principal (Dropzone)
+        document.getElementById('dropMainText').innerText = '¡Imagen Cargada!';
+        document.getElementById('dropSubText').innerText = file.name;
+        document.getElementById('dropIconCloud').classList.add('hidden');
+        document.getElementById('dropIconImage').classList.remove('hidden');
+
+        // 🚀 NUEVA NOTIFICACIÓN:
+        Notify.show('Imagen Lista', 'Tu archivo ha sido cargado y está listo para comprimir.', 'info');
+
+        // 📱💻 Control de Scroll Inteligente (Al subir 1 foto)
+        setTimeout(() => {
+            const element = document.getElementById('qualityRange');
+
+            // Detectamos si es PC o Móvil
+            const isDesktop = window.innerWidth >= 768;
+
+            // 🟢 Bajamos el margen a 100 para centrar la vista en el área de trabajo en PC
+            const offset = isDesktop ? 100 : 250;
+
+            const bodyRect = document.body.getBoundingClientRect().top;
+            const elementRect = element.getBoundingClientRect().top;
+            const elementPosition = elementRect - bodyRect;
+            const offsetPosition = elementPosition - offset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }, 150);
+    };
+    reader.readAsDataURL(file);
+}
+
+// --- 🟢 Lógica de la Papelera (Eliminar Imagen de la interfaz) ---
+document.getElementById('clearBtn').addEventListener('click', () => {
+    triggerVibration([20, 20]);
+    currentFile = null;
+    batchFiles = []; // 🚀 NUEVO: Destruir la memoria del lote
+    imageInput.value = ''; // Limpia el input real
+
+    // Resetear visuales de Original
+    origPreview.src = '';
+    origPreview.classList.add('hidden');
+    placeholderOrig.classList.remove('hidden');
+    origSizeBadge.innerText = '0 KB';
+
+    // 🟢 Ocultar Metadatos
+    origFormatBadge.classList.add('hidden');
+    origDimBadge.classList.add('hidden');
+    resFormatBadge.classList.add('hidden');
+    resDimBadge.classList.add('hidden');
+
+    document.getElementById('clearBtn').classList.add('hidden'); // Ocultar papelera
+
+    // 🚀 NUEVO: Ocultar y limpiar el Dashboard de Lotes
+    batchDashboard.classList.add('hidden');
+    batchGrid.innerHTML = '';
+
+    // 🟢 Limpiar el campo de renombrado personalizado
+    const batchRenameInput = document.getElementById('batchRenameInput');
+    if (batchRenameInput) batchRenameInput.value = '';
+
+    // 🟢 NUEVO: Restaurar textos de la zona principal (Dropzone)
+    document.getElementById('dropMainText').innerText = 'Arrastra tu imagen aquí';
+    document.getElementById('dropSubText').innerText = 'o haz clic para explorar tus archivos';
+    document.getElementById('dropIconCloud').classList.remove('hidden');
+    document.getElementById('dropIconImage').classList.add('hidden');
+
+    // Resetear visuales de Resultado
+    resPreview.src = '';
+    resPreview.classList.add('hidden');
+    document.getElementById('placeholderRes').classList.remove('hidden'); // 🟢 Restaurar el texto de espera
+    downloadBtn.classList.add('hidden');
+
+    savePercent.innerText = '0%';
+    savePercent.className = "text-5xl font-black text-slate-800 dark:text-white transition-colors duration-300 drop-shadow-md dark:drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]";
+    resSizeBadge.innerText = '0 KB';
+    resSizeBadge.className = "text-xs font-bold px-3 py-1.5 bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-gray-500 border border-slate-200 dark:border-white/10 rounded-lg transition-colors";
+    statsTitle.innerText = "Ahorro de Peso";
+    statsTitle.className = "text-xs font-extrabold uppercase text-slate-500 dark:text-gray-400 tracking-widest mb-6 transition-colors duration-300";
+    statsMsg.innerHTML = '<i data-lucide="activity" class="w-4 h-4 text-primary-400 inline-block mr-1"></i> Esperando imagen...';
+
+    // Restaurar botón de compresión por si había error
+    compressBtn.innerHTML = '<i data-lucide="zap" class="w-5 h-5"></i> Comprimir';
+    compressBtn.classList.remove('opacity-75', 'pointer-events-none');
+
+    lucide.createIcons();
+
+    // 🚀 NUEVA NOTIFICACIÓN 
+    Notify.show('Lienzo Limpio', 'Se han eliminado las imágenes y reseteado los ajustes.', 'info');
+});
+
+// 🚀 VINCULACIÓN: El botón del Lote ahora activa la misma limpieza general
+document.getElementById('clearBatchBtn')?.addEventListener('click', () => document.getElementById('clearBtn').click());
+
+compressBtn.addEventListener('click', () => {
+    // 1. Verificamos si no hay ni 1 foto ni un lote
+    if (!currentFile && batchFiles.length === 0) {
+        triggerVibration([100, 50, 100]);
+
+        // 🐛 CORREGIDO: Cambiamos 'warning' por 'error' para que el sistema no colapse
+        Notify.show('Falta la imagen', 'Por favor, sube al menos una imagen antes de intentar comprimir.', 'error');
+
+        // 🚀 ANIMACIÓN MODERNA DE ATENCIÓN (Parpadeo Morado Intenso)
+        // 🚀 1. SCROLL HACIA ARRIBA (Iniciamos rápido para guiar al usuario)
+        setTimeout(() => {
+            const element = document.getElementById('imageInput').parentElement;
+            const offset = 100;
+            const bodyRect = document.body.getBoundingClientRect().top;
+            const elementRect = element.getBoundingClientRect().top;
+            window.scrollTo({ top: elementRect - bodyRect - offset, behavior: 'smooth' });
+        }, 100);
+
+        // 🚀 2. PARPADEO CON RETRASO (Ocurre justo cuando la vista llega arriba)
+        setTimeout(() => {
+            if (dropzone) {
+                dropzone.classList.remove('animate-attention');
+                void dropzone.offsetWidth; // Forzar reinicio de animación
+
+                // Agregamos animación y un borde morado brillante temporal
+                dropzone.classList.add('animate-attention', 'border-primary-500');
+
+                // Limpiamos los efectos después de 0.6s
+                setTimeout(() => {
+                    dropzone.classList.remove('animate-attention', 'border-primary-500');
+                }, 650);
+            }
+        }, 450); // 👈 Este retraso es la clave para que se vea espectacular
+        return;
+    }
+
+    // 🚀 2. SI HAY UN LOTE, DISPARAMOS EL MOTOR SECUENCIAL Y DETENEMOS ESTA FUNCIÓN
+    if (batchFiles.length > 0) {
+        processBatchEngine();
+        return;
+    }
+
+    // --- 3. LÓGICA ORIGINAL PARA 1 SOLA IMAGEN (Se queda intacta) ---
+    triggerVibration(50);
+
+    compressBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Procesando...';
+    compressBtn.classList.add('opacity-75', 'pointer-events-none');
+    lucide.createIcons();
+
+    const maxDimension = parseInt(resizeSelect.value) || 0;
+
+    new Compressor(currentFile, {
+        quality: qualityRange.value / 100,
+        mimeType: selectedFormat === 'auto' ? currentFile.type : selectedFormat,
+        maxWidth: maxDimension === 0 ? Infinity : maxDimension,
+        maxHeight: maxDimension === 0 ? Infinity : maxDimension,
+        checkOrientation: exifToggle.checked,
+
+        // 🚀 APLICAMOS EL MOTOR DE MARCA DE AGUA
+        drew(context, canvas) { drawWatermark(context, canvas); },
+
+        success(result) {
+            const resUrl = URL.createObjectURL(result);
+            resPreview.src = resUrl;
+
+            // 🟢 Extraer dimensiones de la imagen Resultado (Útil si se usó Redimensionar)
+            resPreview.onload = () => {
+                resDimBadge.innerText = `${resPreview.naturalWidth} x ${resPreview.naturalHeight}`;
+                resDimBadge.classList.remove('hidden');
+            };
+
+            resPreview.classList.remove('hidden');
+            document.getElementById('placeholderRes').classList.add('hidden'); // 🟢 Ocultar el texto de espera
+
+            const resSizeKB = (result.size / 1024).toFixed(1);
+            resSizeBadge.innerText = resSizeKB + ' KB';
+
+            const savingPercent = ((1 - (result.size / currentFile.size)) * 100).toFixed(0);
+
+            if (savingPercent <= 0) {
+                savePercent.innerText = '0%';
+                statsTitle.innerText = 'Sin cambios';
+                statsTitle.className = "text-xs font-extrabold uppercase text-yellow-400 tracking-widest mb-6";
+                savePercent.className = "text-5xl font-black text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]";
+                statsMsg.innerHTML = '<i data-lucide="shield" class="w-4 h-4 text-yellow-400 inline-block mr-1"></i> Previamente optimizada';
+                resSizeBadge.className = "text-xs font-bold px-3 py-1.5 bg-yellow-400/10 text-yellow-400 border border-yellow-400/20 rounded-lg";
+            } else {
+                savePercent.innerText = `-${savingPercent}%`;
+                statsTitle.innerText = 'Optimización';
+                statsTitle.className = "text-xs font-extrabold uppercase text-primary-400 tracking-widest mb-6";
+                savePercent.className = "text-5xl font-black text-slate-900 dark:text-white drop-shadow-md dark:drop-shadow-[0_0_20px_rgba(139,92,246,0.8)]";
+                statsMsg.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4 text-primary-400 inline-block mr-1"></i> Calidad retenida con éxito';
+                resSizeBadge.className = "text-xs font-bold px-3 py-1.5 bg-primary-500/20 text-primary-400 border border-primary-500/30 rounded-lg";
+            }
+            lucide.createIcons();
+
+            triggerConfetti(); // 🚀 BUM! Confeti libre y sin restricciones matemáticas
+
+            // 🏆 GAMIFICACIÓN: Sumar el ahorro al Impacto Global
+            const savedBytes = currentFile.size - result.size;
+            if (savedBytes > 0) {
+                updateGlobalImpact(savedBytes);
+            }
+
+            // 🚀 NUEVA NOTIFICACIÓN DE ÉXITO
+            Notify.show('¡Misión Cumplida!', savingPercent > 0 ? `Ahorraste un ${savingPercent}% de peso.` : 'Calidad optimizada al máximo.', 'success');
+
+            // 🟢 SOLUCIÓN: Detectar la extensión correcta basándonos en el botón seleccionado
+            // Determinar extensión correcta
+            const extension = selectedFormat === 'image/webp' ? 'webp' :
+                (selectedFormat === 'image/png' ? 'png' :
+                    (selectedFormat === 'image/jpeg' ? 'jpg' : currentFile.name.split('.').pop()));
+
+            // 🟢 Mostrar el formato final en la tarjetita visual
+            resFormatBadge.innerText = extension.toUpperCase();
+            resFormatBadge.classList.remove('hidden');
+
+            setupDownload(resUrl, `compressly_${Date.now()}.${extension}`);
+
+            compressBtn.innerHTML = '<i data-lucide="zap" class="w-5 h-5"></i> Comprimir';
+            compressBtn.classList.remove('opacity-75', 'pointer-events-none');
+            lucide.createIcons();
+
+            triggerVibration([30, 50, 30]);
+
+            // 📱💻 Control de Scroll Inteligente (Móvil vs PC)
+            setTimeout(() => {
+                const element = document.getElementById('resSize');
+
+                // Detectamos si es una pantalla de PC (mayor a 768px de ancho)
+                const isDesktop = window.innerWidth >= 768;
+
+                // Si es PC usamos un número pequeño para que baje MÁS. Si es móvil, usamos el 520.
+                const offset = isDesktop ? 230 : 520; // 👈 AJUSTA ESTOS NÚMEROS A TU GUSTO
+
+                const bodyRect = document.body.getBoundingClientRect().top;
+                const elementRect = element.getBoundingClientRect().top;
+                const elementPosition = elementRect - bodyRect;
+                const offsetPosition = elementPosition - offset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }, 300);
+        },
+        error(err) {
+            console.error(err.message);
+            // 🚀 Usamos la notificación premium en vez del alert viejo
+            Notify.show('Error de Compresión', 'Ocurrió un problema procesando la imagen. Intenta nuevamente.', 'error');
+            compressBtn.innerHTML = '<i data-lucide="zap" class="w-5 h-5"></i> Comprimir';
+            compressBtn.classList.remove('opacity-75', 'pointer-events-none');
+            lucide.createIcons();
+        },
+    });
+});
+
+function setupDownload(url, filename) {
+    downloadBtn.href = url;
+    downloadBtn.download = filename;
+    downloadBtn.classList.remove('hidden');
+}
+
+function triggerConfetti() {
+    confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#8B5CF6', '#A78BFA', '#ffffff']
+    });
+}
+
+// --- Lógica del Modal Legal (Términos y Privacidad) ---
+const legalModal = document.getElementById('legalModal');
+const modalOverlay = document.getElementById('modalOverlay');
+const modalContent = document.getElementById('modalContent');
+const closeModalBtn = document.getElementById('closeModalBtn');
+const modalTitle = document.getElementById('modalTitle');
+const modalBody = document.getElementById('modalBody');
+
+// Botones
+const btnTerminos = document.getElementById('btnTerminos');
+const btnPrivacidad = document.getElementById('btnPrivacidad');
+const btnPrivacidadCard = document.getElementById('btnPrivacidadCard'); // Botón nuevo en la tarjeta
+
+// Textos legales redactados con espaciado premium (space-y-6)
+const textoPrivacidad = `
+    <div class="space-y-6">
+        <div>
+            <h3 class="text-white font-bold text-lg mb-2">1. Privacidad Local y Cero Servidores</h3>
+            <p class="leading-relaxed">En Compressly, garantizamos que tus imágenes nunca abandonan tu dispositivo. Todo el procesamiento y la compresión se realizan localmente en tu navegador web utilizando la memoria y el procesador de tu equipo.</p>
+        </div>
+        <div>
+            <h3 class="text-white font-bold text-lg mb-2">2. Recopilación de Datos</h3>
+            <p class="leading-relaxed">No recopilamos, almacenamos, copiamos ni transferimos tus imágenes, fotografías o archivos. Al no existir un servidor de subida en nuestra arquitectura, es técnicamente imposible para nosotros o para terceros acceder a tu contenido.</p>
+        </div>
+        <div>
+            <h3 class="text-white font-bold text-lg mb-2">3. Uso de Cookies Analíticas</h3>
+            <p class="leading-relaxed">Utilizamos cookies esenciales únicamente para el funcionamiento básico de la interfaz y para medir el tráfico general de la plataforma (estadísticas anónimas), sin rastrear ni almacenar información de identidad personal.</p>
+        </div>
+    </div>
+`;
+
+const textoTerminos = `
+    <div class="space-y-6">
+        <div>
+            <h3 class="text-white font-bold text-lg mb-2">1. Uso de la Herramienta</h3>
+            <p class="leading-relaxed">Compressly se proporciona "tal cual". Al usar nuestra plataforma, aceptas utilizarla bajo tu propia responsabilidad. Es la herramienta ideal para la optimización de catálogos e-commerce, diseño web y fotografía profesional.</p>
+        </div>
+        <div>
+            <h3 class="text-white font-bold text-lg mb-2">2. Límites de Uso General</h3>
+            <p class="leading-relaxed">El uso de la herramienta está optimizado para procesar archivos de hasta 10MB de peso por imagen en los formatos oficialmente permitidos (JPG, PNG, WEBP).</p>
+        </div>
+        <div>
+            <h3 class="text-white font-bold text-lg mb-2">3. Propiedad Intelectual y Marca</h3>
+            <p class="leading-relaxed">El código fuente, los algoritmos de interfaz, el diseño visual y la marca "Compressly" son propiedad exclusiva de Compressly Inc. No está permitida la copia, clonación o reproducción del diseño de esta interfaz sin autorización explícita.</p>
+        </div>
+    </div>
+`;
+
+function openModal(title, content) {
+    modalTitle.innerHTML = `<i data-lucide="shield" class="w-6 h-6 text-primary-400"></i> ${title}`;
+    modalBody.innerHTML = content;
+
+    // Mostrar modal
+    legalModal.classList.remove('hidden');
+    legalModal.classList.add('flex');
+
+    // Animación fluida de entrada
+    setTimeout(() => {
+        modalContent.classList.remove('scale-95', 'opacity-0');
+        modalContent.classList.add('scale-100', 'opacity-100');
+    }, 10);
+
+    lucide.createIcons();
+    triggerVibration(30);
+}
+
+function closeModal() {
+    // Animación fluida de salida
+    modalContent.classList.remove('scale-100', 'opacity-100');
+    modalContent.classList.add('scale-95', 'opacity-0');
+
+    setTimeout(() => {
+        legalModal.classList.add('hidden');
+        legalModal.classList.remove('flex');
+    }, 200);
+    triggerVibration(20);
+}
+
+// Eventos de click
+btnPrivacidad.addEventListener('click', (e) => {
+    e.preventDefault();
+    openModal('Política de Privacidad', textoPrivacidad);
+});
+
+btnTerminos.addEventListener('click', (e) => {
+    e.preventDefault();
+    openModal('Términos y Condiciones', textoTerminos);
+});
+
+// Evento click del nuevo botón en la tarjeta de Características
+btnPrivacidadCard.addEventListener('click', (e) => {
+    e.preventDefault();
+    openModal('Política de Privacidad', textoPrivacidad);
+});
+
+// Cerrar con la X o haciendo clic fuera de la caja
+closeModalBtn.addEventListener('click', closeModal);
+modalOverlay.addEventListener('click', closeModal);
+
+// --- 🟢 Lógica del Modo Claro / Oscuro ---
+const themeToggle = document.getElementById('themeToggle');
+const themeToggleMobile = document.getElementById('themeToggleMobile');
+const htmlElement = document.documentElement;
+
+function toggleTheme() {
+    if (htmlElement.classList.contains('dark')) {
+        htmlElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+    } else {
+        htmlElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+    }
+    // 🟢 Eliminamos lucide.createIcons() porque Tailwind se encarga de alternar el Sol y la Luna.
+    triggerVibration(20);
+}
+
+themeToggle.addEventListener('click', toggleTheme);
+themeToggleMobile.addEventListener('click', toggleTheme);
+
+// 🚀 ==========================================
+// MOTOR SECUENCIAL DE COMPRESIÓN POR LOTES
+// ==========================================
+
+// Convertimos el compresor en Promesa para poder procesarlas en fila india (async/await)
+function compressFileAsync(file, quality, format, maxDimension, stripMetadata) {
+    return new Promise((resolve, reject) => {
+        new Compressor(file, {
+            quality: quality / 100,
+            mimeType: format === 'auto' ? file.type : format,
+            maxWidth: maxDimension === 0 ? Infinity : maxDimension,
+            maxHeight: maxDimension === 0 ? Infinity : maxDimension,
+            checkOrientation: stripMetadata,
+
+            // 🚀 APLICAMOS EL MOTOR DE MARCA DE AGUA AL LOTE
+            drew(context, canvas) { drawWatermark(context, canvas); },
+
+            success(result) { resolve(result); },
+            error(err) { reject(err); }
+        });
+    });
+}
+
+async function processBatchEngine() {
+    triggerVibration(50);
+
+    // Cambiar estado del botón principal
+    compressBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Procesando Lote...';
+    compressBtn.classList.add('opacity-75', 'pointer-events-none');
+    lucide.createIcons();
+
+    // Crear el archivo ZIP virtual en la RAM
+    const zip = new JSZip();
+    const zipFolder = zip.folder("Compressly_Lote");
+
+    let totalOriginalSize = 0;
+    let totalCompressedSize = 0;
+    const quality = qualityRange.value;
+    const maxDimension = parseInt(resizeSelect.value) || 0;
+
+    // 🔄 Bucle Secuencial (Una por una para no trabar el navegador del celular)
+    for (let i = 0; i < batchFiles.length; i++) {
+        const file = batchFiles[i];
+        totalOriginalSize += file.size;
+
+        // Actualizar tarjetita visual a "Comprimiendo..."
+        const statusSpan = document.getElementById(`status-${i}`);
+        statusSpan.className = "text-primary-500 font-bold flex items-center gap-1";
+        statusSpan.innerHTML = '<i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i> Procesando...';
+        lucide.createIcons();
+
+        try {
+            // Comprimir la imagen mágicamente
+            // 🟢 NUEVO: Se añade exifToggle.checked para que el lote también respete el escudo
+            const compressedBlob = await compressFileAsync(file, quality, selectedFormat, maxDimension, exifToggle.checked);
+            totalCompressedSize += compressedBlob.size;
+
+            // Determinar extensión correcta
+            const extension = selectedFormat === 'image/webp' ? 'webp' : (selectedFormat === 'image/png' ? 'png' : (selectedFormat === 'image/jpeg' ? 'jpg' : file.name.split('.').pop()));
+
+            // 🟢 NUEVO: Lógica Inteligente de Renombrado
+            const customPrefix = document.getElementById('batchRenameInput').value.trim();
+            let newFileName = '';
+
+            if (customPrefix) {
+                // Si el usuario escribió "Boda", genera "Boda_01.jpg", "Boda_02.jpg"...
+                // El padStart(2, '0') asegura que sea 01, 02 en vez de 1, 2.
+                const padIndex = (i + 1).toString().padStart(2, '0');
+                newFileName = `${customPrefix}_${padIndex}.${extension}`;
+            } else {
+                // Lógica original: mantiene el nombre base y le agrega _compressly
+                const baseName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+                newFileName = `${baseName}_compressly.${extension}`;
+            }
+
+            // 🚀 MOTOR DE CARPETAS INTELIGENTES
+            if (useZipFolders) {
+                // Crea una carpeta con el nombre de la extensión (ej: "JPG" o "WEBP")
+                const folder = zipFolder.folder(extension.toUpperCase());
+                folder.file(newFileName, compressedBlob);
+            } else {
+                zipFolder.file(newFileName, compressedBlob);
+            }
+
+            // Actualizar tarjetita visual a "Listo"
+            statusSpan.className = "text-green-500 font-bold flex items-center gap-1";
+            statusSpan.innerHTML = '<i data-lucide="check-circle" class="w-3 h-3"></i> Listo';
+            lucide.createIcons();
+
+            // Actualizar porcentaje general en vivo
+            const currentSaving = ((1 - (totalCompressedSize / totalOriginalSize)) * 100).toFixed(0);
+            document.getElementById('batchSavePercent').innerText = currentSaving > 0 ? `-${currentSaving}%` : '0%';
+
+        } catch (err) {
+            console.error("Error comprimiendo", file.name, err);
+            statusSpan.className = "text-red-500 font-bold flex items-center gap-1";
+            statusSpan.innerHTML = '<i data-lucide="x-circle" class="w-3 h-3"></i> Error';
+            lucide.createIcons();
+        }
+    }
+
+    // Generar el archivo .zip final
+    document.getElementById('batchStatsMsg').innerHTML = '<i data-lucide="folder-output" class="w-4 h-4 text-primary-500"></i> Empaquetando ZIP...';
+    lucide.createIcons();
+
+    const zipBlob = await zip.generateAsync({ type: "blob" });
+    const zipUrl = URL.createObjectURL(zipBlob);
+
+    // Actualizar UI Final
+    const finalSaving = ((1 - (totalCompressedSize / totalOriginalSize)) * 100).toFixed(0);
+
+    // 🏆 GAMIFICACIÓN: Sumar el ahorro total del lote al Impacto Global
+    const batchSavedBytes = totalOriginalSize - totalCompressedSize;
+    if (batchSavedBytes > 0) {
+        updateGlobalImpact(batchSavedBytes);
+    }
+
+    document.getElementById('batchSavePercent').className = "text-xl font-black text-primary-500 drop-shadow-md";
+    document.getElementById('batchStatsMsg').className = "text-sm text-green-500 font-bold flex items-center gap-1.5";
+    document.getElementById('batchStatsMsg').innerHTML = '<i data-lucide="check-circle" class="w-4 h-4"></i> ¡Lote completado!';
+
+    // Configurar y mostrar el botón de Descarga ZIP
+    const downloadBatchBtn = document.getElementById('downloadBatchBtn');
+    downloadBatchBtn.href = zipUrl;
+    downloadBatchBtn.download = `Compressly_Lote_${Date.now()}.zip`;
+    downloadBatchBtn.classList.remove('hidden');
+
+    // Restaurar botón principal
+    compressBtn.innerHTML = '<i data-lucide="zap" class="w-5 h-5"></i> Comprimir';
+    compressBtn.classList.remove('opacity-75', 'pointer-events-none');
+    lucide.createIcons();
+
+    triggerConfetti(); // 🚀 BUM! Confeti libre para los lotes también
+    Notify.show('¡Lote Terminado!', `Tus ${batchFiles.length} imágenes están empaquetadas en un ZIP listas para descargar.`, 'success');
+
+    triggerVibration([30, 50, 30]);
+
+    // 📱💻 Control de Scroll Inteligente para Lotes (Al terminar el proceso)
+    setTimeout(() => {
+        const element = document.getElementById('batchSummary');
+
+        // Detectamos si es una pantalla de PC
+        const isDesktop = window.innerWidth >= 768;
+
+        // En PC dejamos un respiro de 150px, en móvil 350px para que el botón ZIP quede centrado
+        const offset = isDesktop ? 430 : 400;
+
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const elementRect = element.getBoundingClientRect().top;
+        const elementPosition = elementRect - bodyRect;
+        const offsetPosition = elementPosition - offset;
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+        });
+    }, 400); // Un pequeño retraso para que el botón ZIP ya esté visible
+}
+
+// 🚀 ==========================================
+// LÓGICA DEL MURO DE PAGO (PREMIUM MODAL)
+// ==========================================
+
+const premiumModal = document.getElementById('premiumModal');
+const premiumOverlay = document.getElementById('premiumOverlay');
+const premiumContent = document.getElementById('premiumContent');
+const closePremiumBtn = document.getElementById('closePremiumBtn');
+
+// Hacer global la función para que funcione desde cualquier lado
+window.openPremiumModal = function (force = false) {
+    // Si el usuario ya es Premium y no está haciendo clic manual en Go Pro, no abrimos nada
+    if (isPremiumUser && !force) return;
+
+    premiumModal.classList.remove('hidden');
+    premiumModal.classList.add('flex');
+
+    setTimeout(() => {
+        premiumContent.classList.remove('scale-95', 'opacity-0');
+        premiumContent.classList.add('scale-100', 'opacity-100');
+    }, 10);
+
+    lucide.createIcons();
+    triggerVibration([50, 50]);
+};
+
+window.closePremiumModal = function () {
+    premiumContent.classList.remove('scale-100', 'opacity-100');
+    premiumContent.classList.add('scale-95', 'opacity-0');
+
+    setTimeout(() => {
+        premiumModal.classList.add('hidden');
+        premiumModal.classList.remove('flex');
+    }, 200);
+    triggerVibration(20);
+};
+
+// Eventos para cerrar
+closePremiumBtn.addEventListener('click', closePremiumModal);
+premiumOverlay.addEventListener('click', closePremiumModal);
+
+// Conectar botones Go Pro del menú (Enviamos "true" para forzar que se abra)
+document.getElementById('btnGoPro')?.addEventListener('click', () => openPremiumModal(true));
+document.getElementById('btnGoProMobile')?.addEventListener('click', () => {
+    toggleMobileMenu(); // Cierra el menú en celular
+    openPremiumModal(true); // Abre el muro de pago
+});
+
+// 🛑 MURO DE PAGO: Botón Formato AVIF
+const btnAvifLock = document.getElementById('btnAvifLock');
+if (btnAvifLock) {
+    btnAvifLock.addEventListener('click', (e) => {
+        e.preventDefault();
+        openPremiumModal();
+    });
+}
+
+// 🛑 MURO DE PAGO: Marca de Agua (Watermark)
+const watermarkLock = document.getElementById('watermarkLock');
+if (watermarkLock) {
+    watermarkLock.addEventListener('click', (e) => {
+        e.preventDefault();
+        openPremiumModal();
+    });
+}
+
+// 🛑 MURO DE PAGO: Organización por Carpetas en ZIP
+const folderOrgLock = document.getElementById('folderOrgLock');
+if (folderOrgLock) {
+    folderOrgLock.addEventListener('click', (e) => {
+        e.preventDefault();
+        openPremiumModal();
+    });
+}
+
+
+// 🚀 ==========================================
+// 🏆 SISTEMA DE GAMIFICACIÓN (IMPACTO GLOBAL)
+// ==========================================
+let totalSavedBytes = parseInt(localStorage.getItem('compressly_total_saved')) || 0;
+
+function formatBytesGamification(bytes) {
+    if (bytes === 0) return '0 MB';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function updateGlobalImpact(newSavedBytes = 0) {
+    if (newSavedBytes > 0) {
+        totalSavedBytes += newSavedBytes;
+        localStorage.setItem('compressly_total_saved', totalSavedBytes);
+    }
+
+    const formatted = formatBytesGamification(totalSavedBytes);
+    const desktopBadge = document.getElementById('globalImpactDesktop');
+    const mobileBadge = document.getElementById('globalImpactMobile');
+    const desktopText = document.getElementById('totalSavedDesktop');
+    const mobileText = document.getElementById('totalSavedMobile');
+
+    if (totalSavedBytes > 0) {
+        // Mostrar las insignias si estaban ocultas
+        if (desktopBadge) {
+            desktopBadge.classList.remove('hidden');
+            desktopBadge.classList.add('flex');
+        }
+        if (mobileBadge) {
+            mobileBadge.classList.remove('hidden');
+            mobileBadge.classList.add('flex');
+        }
+
+        // Actualizar textos
+        if (desktopText) desktopText.innerText = formatted;
+        if (mobileText) mobileText.innerText = formatted;
+
+        // Animación de celebración (Pulso Verde) solo si sumamos algo nuevo
+        if (newSavedBytes > 0) {
+            if (desktopBadge) {
+                desktopBadge.classList.add('scale-110', 'bg-green-500/30', 'border-green-400', 'shadow-[0_0_15px_rgba(34,197,94,0.4)]');
+                setTimeout(() => {
+                    desktopBadge.classList.remove('scale-110', 'bg-green-500/30', 'border-green-400', 'shadow-[0_0_15px_rgba(34,197,94,0.4)]');
+                }, 400);
+            }
+        }
+    }
+}
+
+// Inicializar al abrir la página para cargar datos pasados
+updateGlobalImpact(0);
