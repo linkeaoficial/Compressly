@@ -60,6 +60,11 @@
     <link rel="stylesheet" href="styles.css">
 
     <script>
+        // 🟢 Al cargar, si el usuario no tiene preferencias guardadas, forzamos el modo oscuro por defecto en su memoria local.
+        if (!localStorage.getItem('theme')) {
+            localStorage.setItem('theme', 'dark');
+        }
+
         if (localStorage.getItem('theme') === 'light') {
             document.documentElement.classList.remove('dark');
         } else {

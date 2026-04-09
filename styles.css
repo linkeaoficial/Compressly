@@ -10,7 +10,7 @@
     --color-primary-500: #8B5CF6;
     --color-primary-600: #7C3AED;
 
-    /* 🟢 MODO CLARO (Por defecto) */
+    /* 🟢 VARIABLES BASE (Actúan como Modo Claro cuando Tailwind desactiva el oscuro) */
     --color-bg-base: #f8fafc;
     --color-surface-900: rgba(255, 255, 255, 0.8);
     --color-surface-800: rgba(243, 244, 246, 0.8);
