@@ -350,7 +350,8 @@ function handleMultipleFiles(filesArray) {
 
         // 🚀 Resetear la barra horizontal nueva
         document.getElementById('batchSavePercent').innerText = '0%';
-        document.getElementById('batchStatsMsg').innerHTML = '<i data-lucide="clock" class="w-4 h-4"></i> Esperando orden...';
+        // 🌍 Usamos el diccionario inteligente
+        document.getElementById('batchStatsMsg').innerHTML = `<i data-lucide="clock" class="w-4 h-4"></i> ${translations[currentLanguage].batch_waiting}`;
         document.getElementById('batchStatsMsg').className = 'text-sm text-yellow-600 dark:text-yellow-400 font-bold flex items-center gap-1.5';
         document.getElementById('downloadBatchBtn').classList.add('hidden');
         // 🚀 (Línea del botón fantasma eliminada)
@@ -375,7 +376,7 @@ function handleMultipleFiles(filesArray) {
                     <p class="text-xs text-slate-500 dark:text-gray-400 mt-1 flex items-center gap-1">
                         ${sizeKB} KB <span class="text-gray-300 dark:text-gray-600 mx-1">•</span> 
                         <span id="status-${index}" class="text-yellow-600 dark:text-yellow-400 font-bold flex items-center gap-1">
-                            <i data-lucide="clock" class="w-3 h-3"></i> En cola
+                            <i data-lucide="clock" class="w-3 h-3"></i> ${translations[currentLanguage].batch_queue}
                         </span>
                     </p>
                 </div>
@@ -746,105 +747,6 @@ function triggerConfetti() {
     });
 }
 
-// --- Lógica del Modal Legal (Términos y Privacidad) ---
-const legalModal = document.getElementById('legalModal');
-const modalOverlay = document.getElementById('modalOverlay');
-const modalContent = document.getElementById('modalContent');
-const closeModalBtn = document.getElementById('closeModalBtn');
-const modalTitle = document.getElementById('modalTitle');
-const modalBody = document.getElementById('modalBody');
-
-// Botones
-const btnTerminos = document.getElementById('btnTerminos');
-const btnPrivacidad = document.getElementById('btnPrivacidad');
-const btnPrivacidadCard = document.getElementById('btnPrivacidadCard'); // Botón nuevo en la tarjeta
-
-// Textos legales redactados con espaciado premium (space-y-6)
-const textoPrivacidad = `
-    <div class="space-y-6">
-        <div>
-            <h3 class="text-white font-bold text-lg mb-2">1. Privacidad Local y Cero Servidores</h3>
-            <p class="leading-relaxed">En Compressly, garantizamos que tus imágenes nunca abandonan tu dispositivo. Todo el procesamiento y la compresión se realizan localmente en tu navegador web utilizando la memoria y el procesador de tu equipo.</p>
-        </div>
-        <div>
-            <h3 class="text-white font-bold text-lg mb-2">2. Recopilación de Datos</h3>
-            <p class="leading-relaxed">No recopilamos, almacenamos, copiamos ni transferimos tus imágenes, fotografías o archivos. Al no existir un servidor de subida en nuestra arquitectura, es técnicamente imposible para nosotros o para terceros acceder a tu contenido.</p>
-        </div>
-        <div>
-            <h3 class="text-white font-bold text-lg mb-2">3. Uso de Cookies Analíticas</h3>
-            <p class="leading-relaxed">Utilizamos cookies esenciales únicamente para el funcionamiento básico de la interfaz y para medir el tráfico general de la plataforma (estadísticas anónimas), sin rastrear ni almacenar información de identidad personal.</p>
-        </div>
-    </div>
-`;
-
-const textoTerminos = `
-    <div class="space-y-6">
-        <div>
-            <h3 class="text-white font-bold text-lg mb-2">1. Uso de la Herramienta</h3>
-            <p class="leading-relaxed">Compressly se proporciona "tal cual". Al usar nuestra plataforma, aceptas utilizarla bajo tu propia responsabilidad. Es la herramienta ideal para la optimización de catálogos e-commerce, diseño web y fotografía profesional.</p>
-        </div>
-        <div>
-            <h3 class="text-white font-bold text-lg mb-2">2. Límites de Uso General</h3>
-            <p class="leading-relaxed">El uso de la herramienta está optimizado para procesar archivos de hasta 10MB de peso por imagen en los formatos oficialmente permitidos (JPG, PNG, WEBP).</p>
-        </div>
-        <div>
-            <h3 class="text-white font-bold text-lg mb-2">3. Propiedad Intelectual y Marca</h3>
-            <p class="leading-relaxed">El código fuente, los algoritmos de interfaz, el diseño visual y la marca "Compressly" son propiedad exclusiva de Compressly Inc. No está permitida la copia, clonación o reproducción del diseño de esta interfaz sin autorización explícita.</p>
-        </div>
-    </div>
-`;
-
-function openModal(title, content) {
-    modalTitle.innerHTML = `<i data-lucide="shield" class="w-6 h-6 text-primary-400"></i> ${title}`;
-    modalBody.innerHTML = content;
-
-    // Mostrar modal
-    legalModal.classList.remove('hidden');
-    legalModal.classList.add('flex');
-
-    // Animación fluida de entrada
-    setTimeout(() => {
-        modalContent.classList.remove('scale-95', 'opacity-0');
-        modalContent.classList.add('scale-100', 'opacity-100');
-    }, 10);
-
-    lucide.createIcons();
-    triggerVibration(30);
-}
-
-function closeModal() {
-    // Animación fluida de salida
-    modalContent.classList.remove('scale-100', 'opacity-100');
-    modalContent.classList.add('scale-95', 'opacity-0');
-
-    setTimeout(() => {
-        legalModal.classList.add('hidden');
-        legalModal.classList.remove('flex');
-    }, 200);
-    triggerVibration(20);
-}
-
-// Eventos de click
-btnPrivacidad.addEventListener('click', (e) => {
-    e.preventDefault();
-    openModal('Política de Privacidad', textoPrivacidad);
-});
-
-btnTerminos.addEventListener('click', (e) => {
-    e.preventDefault();
-    openModal('Términos y Condiciones', textoTerminos);
-});
-
-// Evento click del nuevo botón en la tarjeta de Características
-btnPrivacidadCard.addEventListener('click', (e) => {
-    e.preventDefault();
-    openModal('Política de Privacidad', textoPrivacidad);
-});
-
-// Cerrar con la X o haciendo clic fuera de la caja
-closeModalBtn.addEventListener('click', closeModal);
-modalOverlay.addEventListener('click', closeModal);
-
 // --- 🟢 Lógica del Modo Claro / Oscuro ---
 const themeToggle = document.getElementById('themeToggle');
 const themeToggleMobile = document.getElementById('themeToggleMobile');
@@ -1023,134 +925,3 @@ async function processBatchEngine() {
         });
     }, 400); // Un pequeño retraso para que el botón ZIP ya esté visible
 }
-
-// 🚀 ==========================================
-// LÓGICA DEL MURO DE PAGO (PREMIUM MODAL)
-// ==========================================
-
-const premiumModal = document.getElementById('premiumModal');
-const premiumOverlay = document.getElementById('premiumOverlay');
-const premiumContent = document.getElementById('premiumContent');
-const closePremiumBtn = document.getElementById('closePremiumBtn');
-
-// Hacer global la función para que funcione desde cualquier lado
-window.openPremiumModal = function (force = false) {
-    // Si el usuario ya es Premium y no está haciendo clic manual en Go Pro, no abrimos nada
-    if (isPremiumUser && !force) return;
-
-    premiumModal.classList.remove('hidden');
-    premiumModal.classList.add('flex');
-
-    setTimeout(() => {
-        premiumContent.classList.remove('scale-95', 'opacity-0');
-        premiumContent.classList.add('scale-100', 'opacity-100');
-    }, 10);
-
-    lucide.createIcons();
-    triggerVibration([50, 50]);
-};
-
-window.closePremiumModal = function () {
-    premiumContent.classList.remove('scale-100', 'opacity-100');
-    premiumContent.classList.add('scale-95', 'opacity-0');
-
-    setTimeout(() => {
-        premiumModal.classList.add('hidden');
-        premiumModal.classList.remove('flex');
-    }, 200);
-    triggerVibration(20);
-};
-
-// Eventos para cerrar
-closePremiumBtn.addEventListener('click', closePremiumModal);
-premiumOverlay.addEventListener('click', closePremiumModal);
-
-// Conectar botones Go Pro del menú (Enviamos "true" para forzar que se abra)
-document.getElementById('btnGoPro')?.addEventListener('click', () => openPremiumModal(true));
-document.getElementById('btnGoProMobile')?.addEventListener('click', () => {
-    toggleMobileMenu(); // Cierra el menú en celular
-    openPremiumModal(true); // Abre el muro de pago
-});
-
-// 🛑 MURO DE PAGO: Botón Formato AVIF
-const btnAvifLock = document.getElementById('btnAvifLock');
-if (btnAvifLock) {
-    btnAvifLock.addEventListener('click', (e) => {
-        e.preventDefault();
-        openPremiumModal();
-    });
-}
-
-// 🛑 MURO DE PAGO: Marca de Agua (Watermark)
-const watermarkLock = document.getElementById('watermarkLock');
-if (watermarkLock) {
-    watermarkLock.addEventListener('click', (e) => {
-        e.preventDefault();
-        openPremiumModal();
-    });
-}
-
-// 🛑 MURO DE PAGO: Organización por Carpetas en ZIP
-const folderOrgLock = document.getElementById('folderOrgLock');
-if (folderOrgLock) {
-    folderOrgLock.addEventListener('click', (e) => {
-        e.preventDefault();
-        openPremiumModal();
-    });
-}
-
-
-// 🚀 ==========================================
-// 🏆 SISTEMA DE GAMIFICACIÓN (IMPACTO GLOBAL)
-// ==========================================
-let totalSavedBytes = parseInt(localStorage.getItem('compressly_total_saved')) || 0;
-
-function formatBytesGamification(bytes) {
-    if (bytes === 0) return '0 MB';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
-
-function updateGlobalImpact(newSavedBytes = 0) {
-    if (newSavedBytes > 0) {
-        totalSavedBytes += newSavedBytes;
-        localStorage.setItem('compressly_total_saved', totalSavedBytes);
-    }
-
-    const formatted = formatBytesGamification(totalSavedBytes);
-    const desktopBadge = document.getElementById('globalImpactDesktop');
-    const mobileBadge = document.getElementById('globalImpactMobile');
-    const desktopText = document.getElementById('totalSavedDesktop');
-    const mobileText = document.getElementById('totalSavedMobile');
-
-    if (totalSavedBytes > 0) {
-        // Mostrar las insignias si estaban ocultas
-        if (desktopBadge) {
-            desktopBadge.classList.remove('hidden');
-            desktopBadge.classList.add('flex');
-        }
-        if (mobileBadge) {
-            mobileBadge.classList.remove('hidden');
-            mobileBadge.classList.add('flex');
-        }
-
-        // Actualizar textos
-        if (desktopText) desktopText.innerText = formatted;
-        if (mobileText) mobileText.innerText = formatted;
-
-        // Animación de celebración (Pulso Verde) solo si sumamos algo nuevo
-        if (newSavedBytes > 0) {
-            if (desktopBadge) {
-                desktopBadge.classList.add('scale-110', 'bg-green-500/30', 'border-green-400', 'shadow-[0_0_15px_rgba(34,197,94,0.4)]');
-                setTimeout(() => {
-                    desktopBadge.classList.remove('scale-110', 'bg-green-500/30', 'border-green-400', 'shadow-[0_0_15px_rgba(34,197,94,0.4)]');
-                }, 400);
-            }
-        }
-    }
-}
-
-// Inicializar al abrir la página para cargar datos pasados
-updateGlobalImpact(0);

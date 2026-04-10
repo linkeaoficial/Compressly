@@ -108,19 +108,19 @@
                 <div class="hidden md:flex items-center gap-8">
                     <a href="#caracteristicas"
                         class="relative text-slate-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-white transition-colors text-sm font-bold group py-1">
-                        Características
+                        <span data-i18n="nav_features">Características</span>
                         <span
                             class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-300 group-hover:w-full rounded-full"></span>
                     </a>
                     <a href="#como-funciona"
                         class="relative text-slate-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-white transition-colors text-sm font-bold group py-1">
-                        Cómo Funciona
+                        <span data-i18n="nav_how">Cómo Funciona</span>
                         <span
                             class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-300 group-hover:w-full rounded-full"></span>
                     </a>
                     <a href="#privacidad"
                         class="relative text-slate-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-white transition-colors text-sm font-bold group py-1">
-                        Privacidad
+                        <span data-i18n="nav_privacy">Privacidad</span>
                         <span
                             class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-300 group-hover:w-full rounded-full"></span>
                     </a>
@@ -129,9 +129,16 @@
                         class="hidden items-center gap-2 px-3 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full cursor-default transition-all duration-300"
                         title="Espacio total que le has ahorrado al mundo usando Compressly">
                         <i data-lucide="leaf" class="w-4 h-4 text-green-500"></i>
-                        <span class="text-xs font-bold text-green-600 dark:text-green-400">Impacto: <span
-                                id="totalSavedDesktop">0 MB</span></span>
+                        <span class="text-xs font-bold text-green-600 dark:text-green-400">
+                            <span data-i18n="nav_impact">Impacto:</span>
+                            <span id="totalSavedDesktop">0 MB</span>
+                        </span>
                     </div>
+
+                    <button id="langToggle"
+                        class="text-gray-400 hover:text-primary-400 focus:outline-none p-2 rounded-lg transition-colors flex items-center gap-1 font-bold text-sm">
+                        <i data-lucide="globe" class="w-5 h-5"></i> <span id="currentLang">ES</span>
+                    </button>
 
                     <button id="themeToggle"
                         class="text-gray-400 hover:text-primary-400 focus:outline-none p-2 rounded-lg transition-colors">
@@ -143,9 +150,22 @@
                         class="bg-white/10 hover:bg-white/20 text-white px-6 py-2.5 rounded-full text-sm font-bold backdrop-blur-md transition-all border border-white/10 hover:border-white/30 flex items-center gap-2 hover:scale-105">
                         <i data-lucide="crown" class="w-4 h-4 text-yellow-400"></i> Go Pro
                     </button>
+
+                    <button id="btnProfileDesktop"
+                        class="bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-white p-2.5 rounded-full transition-all border border-slate-200 dark:border-white/10 hover:scale-105"
+                        title="Mi Perfil">
+                        <i data-lucide="user" class="w-5 h-5"></i>
+                    </button>
                 </div>
 
                 <div class="md:hidden flex items-center gap-2">
+                    <button id="langToggleMobile"
+                        class="relative text-gray-400 hover:text-primary-400 focus:outline-none p-2 rounded-lg transition-colors flex items-center justify-center">
+                        <span id="currentLangMobile"
+                            class="absolute -top-0.5 -right-0.5 text-[9px] font-black bg-primary-500 text-white px-1 rounded-sm leading-tight tracking-tighter shadow-sm z-10">ES</span>
+                        <i data-lucide="globe" class="w-6 h-6"></i>
+                    </button>
+
                     <button id="themeToggleMobile"
                         class="text-gray-400 hover:text-primary-400 focus:outline-none p-2 rounded-lg transition-colors">
                         <i data-lucide="sun" class="w-6 h-6 hidden dark:block text-yellow-400"></i>
@@ -175,13 +195,20 @@
                 <div id="globalImpactMobile"
                     class="hidden items-center justify-center gap-2 px-4 py-3 mt-2 mb-2 bg-green-500/10 border border-green-500/20 rounded-xl transition-all duration-300">
                     <i data-lucide="leaf" class="w-5 h-5 text-green-500"></i>
-                    <span class="text-sm font-bold text-green-600 dark:text-green-400">Impacto total: <span
-                            id="totalSavedMobile">0 MB</span></span>
+                    <span class="text-sm font-bold text-green-600 dark:text-green-400">
+                        <span data-i18n="nav_impact_total">Impacto total:</span>
+                        <span id="totalSavedMobile">0 MB</span>
+                    </span>
                 </div>
 
                 <button id="btnGoProMobile"
                     class="w-full mt-2 bg-primary-500 hover:bg-primary-400 text-white px-5 py-3.5 rounded-xl text-base font-bold transition-all shadow-lg shadow-primary-500/20 flex items-center justify-center gap-2 active:scale-95">
                     <i data-lucide="crown" class="w-5 h-5 text-yellow-300"></i> Go Pro
+                </button>
+
+                <button id="btnProfileMobile"
+                    class="w-full mt-2 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-white px-5 py-3.5 rounded-xl text-base font-bold transition-all flex items-center justify-center gap-2 active:scale-95 border border-slate-200 dark:border-white/10">
+                    <i data-lucide="user" class="w-5 h-5"></i> Mi Perfil
                 </button>
             </div>
         </div>
@@ -192,12 +219,13 @@
         <div class="text-center mb-16 relative z-20 px-4">
             <h1
                 class="text-5xl md:text-7xl font-extrabold text-black dark:text-white mb-6 tracking-tighter leading-tight drop-shadow-lg transition-colors duration-300">
-                Compresión inteligente.<br class="block">
-                <span
+                <span data-i18n="hero_title_1">Compresión inteligente.</span><br class="block">
+                <span data-i18n="hero_title_2"
                     class="text-4xl md:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] leading-none">Calidad
                     intacta.</span>
             </h1>
-            <p class="text-gray-400 max-w-2xl mx-auto text-lg md:text-xl font-medium px-2">Optimización premium que
+            <p data-i18n="hero_subtitle" class="text-gray-400 max-w-2xl mx-auto text-lg md:text-xl font-medium px-2">
+                Optimización premium que
                 ocurre directamente en tu dispositivo. Más velocidad, máxima privacidad y sin límites.</p>
         </div>
 
@@ -215,12 +243,13 @@
                         <i id="dropIconImage" data-lucide="image-plus"
                             class="w-12 h-12 group-hover:animate-pulse hidden"></i>
                     </div>
-                    <span id="dropMainText"
+                    <span id="dropMainText" data-i18n="drop_main"
                         class="font-extrabold text-2xl md:text-3xl text-white mb-3 group-hover:text-primary-400 transition-colors">Arrastra
                         tus imágenes aquí</span>
-                    <span id="dropSubText" class="text-gray-400 font-medium text-sm md:text-base truncate max-w-[90%]">o
+                    <span id="dropSubText" data-i18n="drop_sub"
+                        class="text-gray-400 font-medium text-sm md:text-base truncate max-w-[90%]">o
                         haz clic para explorar tus archivos</span>
-                    <div
+                    <div data-i18n="drop_limit"
                         class="mt-8 flex items-center gap-2 text-xs font-bold text-primary-300 bg-primary-500/10 px-4 py-2 rounded-full border border-primary-500/20">
                         <i data-lucide="shield-check" class="w-4 h-4"></i>
                         Límite 10MB (JPG, PNG, WEBP)
@@ -233,14 +262,15 @@
                     <div class="flex items-center gap-3 mb-8 border-b border-white/5 pb-5">
                         <div class="bg-white/10 p-2.5 rounded-xl"><i data-lucide="sliders"
                                 class="w-5 h-5 text-primary-400"></i></div>
-                        <h2 class="font-extrabold text-white text-xl">Ajustes Básicos</h2>
+                        <h2 data-i18n="settings_title" class="font-extrabold text-white text-xl">Ajustes Básicos</h2>
                     </div>
 
                     <div class="space-y-8">
                         <div>
                             <label
                                 class="flex justify-between text-sm font-bold text-slate-600 dark:text-gray-300 mb-4">
-                                Calidad <span id="qualityVal"
+                                <span data-i18n="settings_quality">Calidad</span>
+                                <span id="qualityVal"
                                     class="text-primary-500 dark:text-primary-400 font-black">80%</span>
                             </label>
                             <input type="range" id="qualityRange" min="1" max="100" value="80"
@@ -248,7 +278,8 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-bold text-gray-300 mb-4 text-center md:text-left">Formato
+                            <label data-i18n="settings_format"
+                                class="block text-sm font-bold text-gray-300 mb-4 text-center md:text-left">Formato
                                 de salida</label>
                             <div
                                 class="bg-slate-100 dark:bg-black/50 p-1.5 rounded-xl grid grid-cols-2 gap-2 border border-slate-200 dark:border-white/5 transition-colors">
@@ -258,7 +289,7 @@
                                     class="py-2.5 rounded-lg text-xs font-bold text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/5 transition-all border border-transparent">PNG</button>
                                 <button id="btnWebp"
                                     class="py-2.5 rounded-lg text-xs font-bold text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/5 transition-all border border-transparent">WebP</button>
-                                <button id="btnAuto"
+                                <button id="btnAuto" data-i18n="format_original"
                                     class="py-2.5 rounded-lg text-xs font-bold text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/5 transition-all border border-transparent">ORIGINAL</button>
                             </div>
                             <p id="pngWarning"
@@ -278,9 +309,9 @@
                         <div class="bg-yellow-500/10 p-2.5 rounded-xl text-yellow-500">
                             <i data-lucide="crown" class="w-5 h-5"></i>
                         </div>
-                        Herramientas PRO
+                        <span data-i18n="pro_title">Herramientas PRO</span>
                     </h2>
-                    <span
+                    <span data-i18n="pro_badge"
                         class="text-xs font-bold text-yellow-600 dark:text-yellow-400 bg-yellow-500/10 px-3 py-1.5 rounded-lg border border-yellow-500/20">
                         Funciones Premium
                     </span>
@@ -290,25 +321,26 @@
 
                     <div>
                         <label class="flex justify-between text-sm font-bold text-slate-600 dark:text-gray-300 mb-3">
-                            Redimensionar <span id="resizeVal"
+                            <span data-i18n="resize_label">Redimensionar</span>
+                            <span id="resizeVal"
                                 class="text-primary-500 dark:text-primary-400 font-black">Original</span>
                         </label>
                         <div id="customSelectContainer"
                             class="bg-slate-100 dark:bg-black/50 p-2 rounded-xl border border-slate-200 dark:border-white/5 transition-all duration-300 relative group cursor-pointer h-[46px] flex items-center">
                             <select id="resizeSelect" class="hidden">
-                                <option value="0">Mantener Original</option>
-                                <option value="3840">4K (Max 3840px)</option>
-                                <option value="1920">Full HD (Max 1920px)</option>
-                                <option value="1080">Web / RRSS (Max 1080px)</option>
-                                <option value="720">Mini / Rápido (Max 720px)</option>
-                                <option value="480">Móvil / Correo (Max 480px)</option>
-                                <option value="360">Icono / Perfil (Max 360px)</option>
+                                <option value="0" data-i18n="resize_0">Mantener Original</option>
+                                <option value="3840" data-i18n="resize_4k">4K (Max 3840px)</option>
+                                <option value="1920" data-i18n="resize_fhd">Full HD (Max 1920px)</option>
+                                <option value="1080" data-i18n="resize_web">Web / RRSS (Max 1080px)</option>
+                                <option value="720" data-i18n="resize_mini">Mini / Rápido (Max 720px)</option>
+                                <option value="480" data-i18n="resize_mobile">Móvil / Correo (Max 480px)</option>
+                                <option value="360" data-i18n="resize_icon">Icono / Perfil (Max 360px)</option>
                             </select>
                             <div id="customSelectTrigger" class="flex items-center justify-between px-2 w-full">
                                 <div class="flex items-center gap-2">
                                     <i data-lucide="scaling"
                                         class="w-4 h-4 text-slate-400 group-hover:text-primary-500 transition-colors"></i>
-                                    <span id="customSelectLabel"
+                                    <span id="customSelectLabel" data-i18n="resize_0"
                                         class="text-sm font-bold text-slate-700 dark:text-gray-300">Mantener
                                         Original</span>
                                 </div>
@@ -318,20 +350,27 @@
                             <div id="customSelectDropdown"
                                 class="absolute left-0 top-full mt-2 w-full bg-white/95 dark:bg-[#18181b]/95 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] dark:shadow-[0_15px_40px_rgba(0,0,0,0.6)] z-[60] opacity-0 invisible translate-y-[-10px] transition-all duration-300 overflow-hidden">
                                 <div class="flex flex-col p-1.5 gap-1" id="customSelectOptions">
-                                    <div class="custom-option selected" data-value="0">Mantener Original</div>
-                                    <div class="custom-option" data-value="3840">4K (Max 3840px)</div>
-                                    <div class="custom-option" data-value="1920">Full HD (Max 1920px)</div>
-                                    <div class="custom-option" data-value="1080">Web / RRSS (Max 1080px)</div>
-                                    <div class="custom-option" data-value="720">Mini / Rápido (Max 720px)</div>
-                                    <div class="custom-option" data-value="480">Móvil / Correo (Max 480px)</div>
-                                    <div class="custom-option" data-value="360">Icono / Perfil (Max 360px)</div>
+                                    <div class="custom-option selected" data-value="0" data-i18n="resize_0">Mantener
+                                        Original</div>
+                                    <div class="custom-option" data-value="3840" data-i18n="resize_4k">4K (Max 3840px)
+                                    </div>
+                                    <div class="custom-option" data-value="1920" data-i18n="resize_fhd">Full HD (Max
+                                        1920px)</div>
+                                    <div class="custom-option" data-value="1080" data-i18n="resize_web">Web / RRSS (Max
+                                        1080px)</div>
+                                    <div class="custom-option" data-value="720" data-i18n="resize_mini">Mini / Rápido
+                                        (Max 720px)</div>
+                                    <div class="custom-option" data-value="480" data-i18n="resize_mobile">Móvil / Correo
+                                        (Max 480px)</div>
+                                    <div class="custom-option" data-value="360" data-i18n="resize_icon">Icono / Perfil
+                                        (Max 360px)</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div>
-                        <label
+                        <label data-i18n="watermark_label"
                             class="flex justify-between items-center text-sm font-bold text-slate-600 dark:text-gray-300 mb-3">
                             Marca de Agua
                         </label>
@@ -342,7 +381,8 @@
                                     <i data-lucide="copyright"
                                         class="w-5 h-5 text-slate-400 group-hover:text-primary-500 transition-colors"></i>
                                 </div>
-                                <input type="text" id="watermarkInput" placeholder="@TuMarca o Texto..."
+                                <input type="text" id="watermarkInput" data-i18n="watermark_placeholder"
+                                    placeholder="@TuMarca o Texto..."
                                     class="bg-transparent border-none text-sm font-bold text-slate-700 dark:text-white focus:outline-none w-full placeholder-gray-400">
                                 <div class="w-[1px] h-6 bg-slate-300 dark:bg-white/10 mx-1"></div>
                                 <button
@@ -361,9 +401,9 @@
                                 <i data-lucide="shield-check"
                                     class="w-5 h-5 text-slate-400 group-hover:text-primary-500 transition-colors"></i>
                                 <div class="flex flex-col">
-                                    <span
+                                    <span data-i18n="anti_track_label"
                                         class="text-sm font-bold text-slate-700 dark:text-gray-300 group-hover:text-primary-500 transition-colors leading-none">Anti-Rastreo</span>
-                                    <span
+                                    <span data-i18n="anti_track_sub"
                                         class="text-[9px] text-gray-500 font-bold mt-1 leading-none uppercase tracking-wider">Limpia
                                         GPS / EXIF</span>
                                 </div>
@@ -386,7 +426,7 @@
                         class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out">
                     </div>
                     <i data-lucide="zap" class="w-6 h-6 relative z-10"></i>
-                    <span class="relative z-10 tracking-wide">Comprimir Imágenes</span>
+                    <span class="relative z-10 tracking-wide" data-i18n="btn_compress">Comprimir Imágenes</span>
                 </button>
             </div>
 
@@ -395,7 +435,8 @@
                     <div class="flex items-center justify-between">
                         <h3
                             class="text-sm font-extrabold text-gray-400 flex items-center gap-2 uppercase tracking-wide">
-                            <i data-lucide="image" class="w-4 h-4"></i> Original
+                            <i data-lucide="image" class="w-4 h-4"></i> <span
+                                data-i18n="preview_original">Original</span>
                         </h3>
                         <button id="clearBtn"
                             class="hidden text-slate-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors p-1.5 rounded-lg hover:bg-red-500/10"
@@ -421,7 +462,7 @@
                     <p id="placeholderOrig"
                         class="text-gray-500 text-sm font-semibold absolute z-0 flex flex-col items-center gap-2">
                         <i data-lucide="image-off" class="w-8 h-8 opacity-50"></i>
-                        Esperando imagen
+                        <span data-i18n="waiting_image">Esperando imagen</span>
                     </p>
                     <img id="origPreview" class="w-full h-full object-contain relative z-10 hidden p-2">
                 </div>
@@ -430,7 +471,8 @@
             <div class="md:col-span-4 bento-card flex flex-col p-6 min-h-[340px]">
                 <div class="flex flex-col gap-3 mb-4">
                     <h3 class="text-sm font-extrabold text-gray-400 flex items-center gap-2 uppercase tracking-wide"><i
-                            data-lucide="sparkles" class="w-4 h-4 text-primary-400"></i> Resultado</h3>
+                            data-lucide="sparkles" class="w-4 h-4 text-primary-400"></i> <span
+                            data-i18n="preview_result">Resultado</span></h3>
 
                     <div class="flex flex-wrap items-center gap-2">
                         <span id="resFormat"
@@ -449,7 +491,7 @@
                     <p id="placeholderRes"
                         class="text-gray-500 text-sm font-semibold absolute z-0 flex flex-col items-center gap-2">
                         <i data-lucide="wand-2" class="w-8 h-8 opacity-50"></i>
-                        Esperando magia...
+                        <span data-i18n="waiting_magic">Esperando magia...</span>
                     </p>
 
                     <img id="resPreview" class="w-full h-full object-contain relative z-10 hidden p-2">
@@ -463,7 +505,7 @@
                 </div>
 
                 <div class="relative z-10 flex flex-col h-full justify-center items-center">
-                    <h3 id="statsTitle"
+                    <h3 id="statsTitle" data-i18n="stats_title"
                         class="text-xs font-extrabold uppercase text-slate-500 dark:text-gray-400 tracking-widest mb-6 transition-colors duration-300">
                         Ahorro de Peso</h3>
 
@@ -476,13 +518,14 @@
 
                     <p id="statsMsg"
                         class="text-gray-400 text-sm font-medium transition-colors duration-300 mb-6 min-h-[20px] flex items-center justify-center gap-2">
-                        <i data-lucide="activity" class="w-4 h-4 text-primary-400"></i> Esperando imagen...
+                        <i data-lucide="activity" class="w-4 h-4 text-primary-400"></i> <span
+                            data-i18n="stats_waiting">Esperando imagen...</span>
                     </p>
 
                     <a id="downloadBtn" href="#" download="comprimida"
                         class="hidden w-full bg-gradient-to-r from-primary-500 to-purple-600 text-white font-extrabold py-4 rounded-2xl flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-[0_0_20px_rgba(139,92,246,0.4)] active:scale-95">
                         <i data-lucide="download-cloud" class="w-5 h-5"></i>
-                        Descargar Imagen
+                        <span data-i18n="btn_download">Descargar Imagen</span>
                     </a>
                 </div>
             </div>
@@ -496,7 +539,8 @@
                             <div class="bg-primary-500/20 p-2 rounded-xl text-primary-500">
                                 <i data-lucide="layers" class="w-6 h-6"></i>
                             </div>
-                            Lote de Imágenes (<span id="batchCount" class="text-primary-500 font-black">0</span>)
+                            <span data-i18n="batch_title">Lote de Imágenes</span> (<span id="batchCount"
+                                class="text-primary-500 font-black">0</span>)
                         </h3>
                         <button id="clearBatchBtn"
                             class="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-xl hover:bg-red-500/10"
@@ -510,19 +554,18 @@
                             class="relative group cursor-pointer flex items-center gap-2 bg-slate-100 dark:bg-black/40 p-2 px-3 rounded-xl border border-slate-200 dark:border-white/5 transition-all hover:border-primary-500/50">
                             <i id="folderIcon" data-lucide="folder-tree"
                                 class="w-4 h-4 text-slate-400 transition-colors"></i>
-                            <span
+                            <span data-i18n="batch_folders"
                                 class="text-xs font-bold text-slate-500 dark:text-gray-400 hidden sm:block">Carpetas</span>
                             <i data-lucide="crown" class="w-3 h-3 text-yellow-500"></i>
                         </div>
 
-
                         <div
                             class="flex flex-1 items-center gap-2 bg-slate-100 dark:bg-black/40 p-1.5 rounded-xl border border-slate-200 dark:border-white/5">
                             <i data-lucide="pencil-line" class="w-4 h-4 text-slate-400 ml-2"></i>
-                            <input type="text" id="batchRenameInput" placeholder="Prefijo (Opcional)"
+                            <input type="text" id="batchRenameInput" data-i18n="batch_prefix"
+                                placeholder="Prefijo (Opcional)"
                                 class="bg-transparent border-none text-sm font-bold text-slate-700 dark:text-white focus:outline-none focus:ring-0 w-full sm:w-36 placeholder-gray-400">
                         </div>
-
                     </div>
                 </div>
 
@@ -539,19 +582,21 @@
                                 class="text-xl font-black text-slate-800 dark:text-white">0%</span>
                         </div>
                         <div>
-                            <h4
+                            <h4 data-i18n="batch_saving"
                                 class="text-xs font-extrabold text-slate-500 dark:text-gray-400 uppercase tracking-widest mb-1.5">
                                 Ahorro del Lote</h4>
                             <p id="batchStatsMsg"
                                 class="text-sm text-yellow-600 dark:text-yellow-400 font-bold flex items-center gap-1.5">
-                                <i data-lucide="clock" class="w-4 h-4"></i> Esperando orden...
+                                <i data-lucide="clock" class="w-4 h-4"></i> <span data-i18n="batch_waiting">Esperando
+                                    orden...</span>
                             </p>
                         </div>
                     </div>
 
                     <a id="downloadBatchBtn" href="#"
                         class="hidden w-full sm:w-auto bg-gradient-to-r from-primary-500 to-purple-600 text-white font-extrabold py-3 px-8 rounded-xl shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2">
-                        <i data-lucide="folder-down" class="w-5 h-5"></i> Descargar ZIP
+                        <i data-lucide="folder-down" class="w-5 h-5"></i> <span data-i18n="batch_btn_download">Descargar
+                            ZIP</span>
                     </a>
                 </div>
             </div>
@@ -560,10 +605,12 @@
 
         <div id="caracteristicas" class="mt-24 pt-12 border-t border-white/5 scroll-mt-24">
             <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-4">Tecnología de <span
+                <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-4"><span
+                        data-i18n="tech_title_1">Tecnología de</span> <span data-i18n="tech_title_2"
                         class="text-transparent bg-clip-text bg-gradient-to-r from-[#A78BFA] to-[#7C3AED]">Vanguardia</span>
                 </h2>
-                <p class="text-gray-400 font-medium">Por qué Compressly es la herramienta definitiva para profesionales.
+                <p data-i18n="tech_subtitle" class="text-gray-400 font-medium">Por qué Compressly es la herramienta
+                    definitiva para profesionales.
                 </p>
             </div>
 
@@ -573,8 +620,9 @@
                         class="bg-primary-500/10 p-4 rounded-2xl mb-6 text-primary-400 group-hover:scale-110 group-hover:bg-primary-500 transition-all duration-300">
                         <i data-lucide="cpu" class="w-8 h-8 group-hover:text-white"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-3">Compresión Local</h3>
-                    <p class="text-gray-400 text-sm font-medium">Usamos el procesador de tu dispositivo. Sin colas de
+                    <h3 data-i18n="tech_local_title" class="text-xl font-bold text-white mb-3">Compresión Local</h3>
+                    <p data-i18n="tech_local_desc" class="text-gray-400 text-sm font-medium">Usamos el procesador de tu
+                        dispositivo. Sin colas de
                         espera, sin servidores caídos, velocidad instantánea.</p>
                 </div>
 
@@ -583,8 +631,9 @@
                         class="bg-primary-500/10 p-4 rounded-2xl mb-6 text-primary-400 group-hover:scale-110 group-hover:bg-primary-500 transition-all duration-300">
                         <i data-lucide="file-badge-2" class="w-8 h-8 group-hover:text-white"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-3">Múltiples Formatos</h3>
-                    <p class="text-gray-400 text-sm font-medium">Soporte total para JPG, PNG, y conversión
+                    <h3 data-i18n="tech_formats_title" class="text-xl font-bold text-white mb-3">Múltiples Formatos</h3>
+                    <p data-i18n="tech_formats_desc" class="text-gray-400 text-sm font-medium">Soporte total para JPG,
+                        PNG, y conversión
                         automática a WebP para sitios web de última generación.</p>
                 </div>
 
@@ -594,11 +643,12 @@
                         class="bg-primary-500/10 p-4 rounded-2xl mb-6 text-primary-400 group-hover:scale-110 group-hover:bg-primary-500 transition-all duration-300">
                         <i data-lucide="shield-check" class="w-8 h-8 group-hover:text-white"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-3">Privacidad Militar</h3>
-                    <p class="text-gray-400 text-sm font-medium mb-5">Tus imágenes nunca viajan por internet. Se
+                    <h3 data-i18n="tech_privacy_title" class="text-xl font-bold text-white mb-3">Privacidad Militar</h3>
+                    <p data-i18n="tech_privacy_desc" class="text-gray-400 text-sm font-medium mb-5">Tus imágenes nunca
+                        viajan por internet. Se
                         procesan y
                         se quedan en tu memoria RAM. 100% libre de hackeos.</p>
-                    <button id="btnPrivacidadCard"
+                    <button id="btnPrivacidadCard" data-i18n="tech_privacy_link"
                         class="mt-auto text-xs font-bold text-primary-400 hover:text-primary-300 flex items-center gap-1 transition-colors">
                         Leer política legal <i data-lucide="arrow-right" class="w-3 h-3"></i>
                     </button>
@@ -612,10 +662,12 @@
             </div>
 
             <div class="text-center mb-20 relative z-10">
-                <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-4">¿Cómo ocurre la <span
+                <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-4"><span data-i18n="magic_title_1">¿Cómo
+                        ocurre la</span> <span data-i18n="magic_title_2"
                         class="text-transparent bg-clip-text bg-gradient-to-r from-[#A78BFA] to-[#7C3AED]">Magia?</span>
                 </h2>
-                <p class="text-gray-400 font-medium text-lg">Un flujo de optimización que nunca abandona tu pantalla.
+                <p data-i18n="magic_subtitle" class="text-gray-400 font-medium text-lg">Un flujo de optimización que
+                    nunca abandona tu pantalla.
                 </p>
             </div>
 
@@ -636,8 +688,10 @@
                         <i data-lucide="image-plus"
                             class="w-10 h-10 text-slate-400 dark:text-gray-500 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors duration-500"></i>
                     </div>
-                    <h3 class="text-xl font-extrabold text-slate-900 dark:text-white mb-3">1. Selección</h3>
-                    <p class="text-slate-500 dark:text-gray-400 text-sm leading-relaxed px-2">Arrastras tu imagen de
+                    <h3 data-i18n="magic_step1_title"
+                        class="text-xl font-extrabold text-slate-900 dark:text-white mb-3">1. Selección</h3>
+                    <p data-i18n="magic_step1_desc"
+                        class="text-slate-500 dark:text-gray-400 text-sm leading-relaxed px-2">Arrastras tu imagen de
                         hasta 10MB. El archivo es leído únicamente por el navegador de tu dispositivo.</p>
                 </div>
 
@@ -652,8 +706,11 @@
                         <i data-lucide="cpu"
                             class="w-10 h-10 text-slate-400 dark:text-gray-500 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors duration-500"></i>
                     </div>
-                    <h3 class="text-xl font-extrabold text-slate-900 dark:text-white mb-3">2. Motor Local</h3>
-                    <p class="text-slate-500 dark:text-gray-400 text-sm leading-relaxed px-2">El procesador de tu equipo
+                    <h3 data-i18n="magic_step2_title"
+                        class="text-xl font-extrabold text-slate-900 dark:text-white mb-3">2. Motor Local</h3>
+                    <p data-i18n="magic_step2_desc"
+                        class="text-slate-500 dark:text-gray-400 text-sm leading-relaxed px-2">El procesador de tu
+                        equipo
                         comprime los
                         píxeles utilizando tecnología avanzada sin usar internet.</p>
                 </div>
@@ -669,12 +726,251 @@
                         <i data-lucide="download-cloud"
                             class="w-10 h-10 text-slate-400 dark:text-gray-500 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors duration-500"></i>
                     </div>
-                    <h3 class="text-xl font-extrabold text-slate-900 dark:text-white mb-3">3. Exportación</h3>
-                    <p class="text-slate-500 dark:text-gray-400 text-sm leading-relaxed px-2">Obtienes la imagen
+                    <h3 data-i18n="magic_step3_title"
+                        class="text-xl font-extrabold text-slate-900 dark:text-white mb-3">3. Exportación</h3>
+                    <p data-i18n="magic_step3_desc"
+                        class="text-slate-500 dark:text-gray-400 text-sm leading-relaxed px-2">Obtienes la imagen
                         optimizada al instante.
                         Cero tiempos de carga o de bajada desde servidores.</p>
                 </div>
 
+            </div>
+        </div>
+
+        <div class="mt-32 pt-16 border-t border-white/5">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-4"><span
+                        data-i18n="test_title_1">Amado por</span> <span data-i18n="test_title_2"
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-[#A78BFA] to-[#7C3AED]">Profesionales</span>
+                </h2>
+                <p data-i18n="test_sub" class="text-gray-500 dark:text-gray-400 font-medium">Miles de gigabytes
+                    ahorrados alrededor del
+                    mundo.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bento-card p-8 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-1 text-yellow-400 mb-4">
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star"
+                                class="w-4 h-4 fill-current"></i><i data-lucide="star"
+                                class="w-4 h-4 fill-current"></i><i data-lucide="star"
+                                class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        </div>
+                        <p data-i18n="test1_text" class="text-slate-700 dark:text-gray-300 font-medium mb-6 italic">
+                            "Gestión de tiendas e-commerce es mi día a día. Antes perdía horas subiendo fotos a otros
+                            compresores. Con Compressly, proceso lotes enteros en segundos y sin salir de mi pantalla."
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-10 h-10 bg-gradient-to-br from-blue-400 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold">
+                            M</div>
+                        <div>
+                            <h4 class="text-sm font-extrabold text-slate-900 dark:text-white">María Gómez</h4>
+                            <p data-i18n="test1_role" class="text-xs text-gray-500">Diseñadora Web</p>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="bento-card p-8 flex flex-col justify-between relative overflow-hidden border-primary-500/30">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-primary-500/10 rounded-bl-[100px] -z-10"></div>
+                    <div>
+                        <div class="flex items-center gap-1 text-yellow-400 mb-4">
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star"
+                                class="w-4 h-4 fill-current"></i><i data-lucide="star"
+                                class="w-4 h-4 fill-current"></i><i data-lucide="star"
+                                class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        </div>
+                        <p data-i18n="test2_text" class="text-slate-700 dark:text-gray-300 font-medium mb-6 italic">
+                            "Como fotógrafo, mi peor pesadilla es que roben mi material original. Saber que la
+                            compresión es 100% local en mi RAM me da una tranquilidad impagable."</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-full flex items-center justify-center text-white font-bold">
+                            C</div>
+                        <div>
+                            <h4 class="text-sm font-extrabold text-slate-900 dark:text-white">Carlos R.</h4>
+                            <p data-i18n="test2_role" class="text-xs text-gray-500">Fotógrafo Profesional</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bento-card p-8 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-1 text-yellow-400 mb-4">
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star"
+                                class="w-4 h-4 fill-current"></i><i data-lucide="star"
+                                class="w-4 h-4 fill-current"></i><i data-lucide="star"
+                                class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        </div>
+                        <p data-i18n="test3_text" class="text-slate-700 dark:text-gray-300 font-medium mb-6 italic">"La
+                            herramienta de renombrado en lote y organización por carpetas ZIP me ahorró pagarle a un
+                            asistente. Es una locura que esto funcione directo en el navegador."</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-10 h-10 bg-gradient-to-br from-orange-400 to-red-600 rounded-full flex items-center justify-center text-white font-bold">
+                            D</div>
+                        <div>
+                            <h4 class="text-sm font-extrabold text-slate-900 dark:text-white">David L.</h4>
+                            <p data-i18n="test3_role" class="text-xs text-gray-500">Agencia de Marketing</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="precios" class="mt-32 pt-16 border-t border-white/5 scroll-mt-24">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-4"><span
+                        data-i18n="price_title_1">Planes Simples,</span>
+                    <span data-i18n="price_title_2"
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-[#A78BFA] to-[#7C3AED]">Poder
+                        Absoluto</span>
+                </h2>
+                <p data-i18n="price_sub" class="text-gray-500 dark:text-gray-400 font-medium">Elige el plan que se
+                    adapte a tu flujo de
+                    trabajo.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div
+                    class="bento-card p-8 flex flex-col transition-all hover:border-slate-300 dark:hover:border-white/20">
+                    <h3 data-i18n="plan_free_title" class="text-xl font-extrabold text-slate-900 dark:text-white mb-2">
+                        Esencial</h3>
+                    <p data-i18n="plan_free_sub" class="text-sm text-gray-500 mb-6">Perfecto para uso ocasional y
+                        personal.</p>
+                    <div class="mb-8">
+                        <span data-i18n="plan_free_price"
+                            class="text-4xl font-black text-slate-900 dark:text-white">$0</span>
+                        <span data-i18n="plan_free_time" class="text-gray-500 font-bold">/ de por vida</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 flex-grow">
+                        <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                            <i data-lucide="check" class="w-5 h-5 text-green-500 shrink-0"></i> <span
+                                data-i18n="plan_free_f1">Compresión Local (Sin internet)</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                            <i data-lucide="check" class="w-5 h-5 text-green-500 shrink-0"></i> <span
+                                data-i18n="plan_free_f2">Hasta 3 imágenes a la vez</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                            <i data-lucide="check" class="w-5 h-5 text-green-500 shrink-0"></i> <span
+                                data-i18n="plan_free_f3">Máximo 10MB por archivo</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm font-bold text-gray-400 line-through">
+                            <i data-lucide="x" class="w-5 h-5 text-gray-300 dark:text-gray-600 shrink-0"></i> <span
+                                data-i18n="plan_free_f4">Redimensionar y Marca de Agua</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm font-bold text-gray-400 line-through">
+                            <i data-lucide="x" class="w-5 h-5 text-gray-300 dark:text-gray-600 shrink-0"></i> <span
+                                data-i18n="plan_free_f5">Carpetas ZIP y Escudo GPS</span>
+                        </li>
+                    </ul>
+                    <button data-i18n="plan_free_btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+                        class="w-full bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 text-slate-800 dark:text-white font-extrabold py-4 rounded-xl transition-colors">Comenzar
+                        Gratis</button>
+                </div>
+
+                <div
+                    class="bento-card p-8 flex flex-col relative border-primary-500/50 shadow-[0_0_40px_rgba(139,92,246,0.15)] transform md:-translate-y-4">
+                    <div class="absolute top-0 right-8 transform -translate-y-1/2">
+                        <span data-i18n="plan_pro_badge"
+                            class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">Más
+                            Popular</span>
+                    </div>
+                    <h3
+                        class="text-xl font-extrabold text-primary-600 dark:text-primary-400 mb-2 flex items-center gap-2">
+                        <i data-lucide="crown" class="w-5 h-5"></i> PRO
+                    </h3>
+                    <p data-i18n="plan_pro_sub" class="text-sm text-gray-500 mb-6">Para agencias, fotógrafos y
+                        e-commerce.</p>
+                    <div class="mb-8">
+                        <span class="text-4xl font-black text-slate-900 dark:text-white">$5</span>
+                        <span data-i18n="plan_pro_time" class="text-gray-500 font-bold">/ mes</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 flex-grow">
+                        <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                            <i data-lucide="check" class="w-5 h-5 text-primary-500 shrink-0"></i> <span
+                                data-i18n="plan_pro_f1">Lotes ILIMITADOS de imágenes</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                            <i data-lucide="check" class="w-5 h-5 text-primary-500 shrink-0"></i> <span
+                                data-i18n="plan_pro_f2">Archivos gigantes (+10MB)</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                            <i data-lucide="check" class="w-5 h-5 text-primary-500 shrink-0"></i> <span
+                                data-i18n="plan_pro_f3">Marca de Agua y Redimensionado Inteligente</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                            <i data-lucide="check" class="w-5 h-5 text-primary-500 shrink-0"></i> <span
+                                data-i18n="plan_pro_f4">Escudo Anti-Rastreo (GPS)</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                            <i data-lucide="check" class="w-5 h-5 text-primary-500 shrink-0"></i> <span
+                                data-i18n="plan_pro_f5">Organización automática en ZIP</span>
+                        </li>
+                    </ul>
+                    <button data-i18n="plan_pro_btn" onclick="openProfileModal()"
+                        class="w-full bg-primary-500 hover:bg-primary-600 active:scale-95 text-white font-extrabold py-4 rounded-xl transition-all shadow-lg hover:shadow-primary-500/30">Obtener
+                        Acceso PRO</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-32 pt-16 border-t border-white/5 mb-8">
+            <div class="text-center mb-12">
+                <h2 data-i18n="faq_title" class="text-3xl font-extrabold text-slate-900 dark:text-white mb-4">Preguntas
+                    Frecuentes</h2>
+            </div>
+
+            <div class="max-w-3xl mx-auto space-y-4">
+                <details
+                    class="group bg-slate-100 dark:bg-black/30 border border-slate-200 dark:border-white/5 rounded-2xl p-6 transition-all hover:border-primary-500/30 cursor-pointer">
+                    <summary
+                        class="flex justify-between items-center font-bold text-slate-800 dark:text-white outline-none">
+                        <span data-i18n="faq1_q">¿De verdad mis fotos no se suben a internet?</span>
+                        <i data-lucide="chevron-down"
+                            class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <p data-i18n="faq1_a"
+                        class="text-slate-500 dark:text-gray-400 text-sm font-medium mt-4 leading-relaxed">
+                        Absolutamente. Compressly utiliza una tecnología llamada WebAssembly. Todo el motor de
+                        compresión se descarga en tu navegador la primera vez que entras. Cuando arrastras una foto, es
+                        el procesador de tu computadora el que hace el trabajo pesado, no nuestros servidores. Por eso
+                        es tan rápido y 100% privado.</p>
+                </details>
+
+                <details
+                    class="group bg-slate-100 dark:bg-black/30 border border-slate-200 dark:border-white/5 rounded-2xl p-6 transition-all hover:border-primary-500/30 cursor-pointer">
+                    <summary
+                        class="flex justify-between items-center font-bold text-slate-800 dark:text-white outline-none">
+                        <span data-i18n="faq2_q">¿Puedo usar Compressly en mi celular?</span>
+                        <i data-lucide="chevron-down"
+                            class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <p data-i18n="faq2_a"
+                        class="text-slate-500 dark:text-gray-400 text-sm font-medium mt-4 leading-relaxed">Sí, nuestra
+                        interfaz está optimizada para dispositivos móviles. Puedes tomar una foto con tu cámara y
+                        comprimirla instantáneamente desde tu navegador Safari o Chrome en iOS y Android.</p>
+                </details>
+
+                <details
+                    class="group bg-slate-100 dark:bg-black/30 border border-slate-200 dark:border-white/5 rounded-2xl p-6 transition-all hover:border-primary-500/30 cursor-pointer">
+                    <summary
+                        class="flex justify-between items-center font-bold text-slate-800 dark:text-white outline-none">
+                        <span data-i18n="faq3_q">¿Qué significa el Escudo Anti-Rastreo (GPS)?</span>
+                        <i data-lucide="chevron-down"
+                            class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <p data-i18n="faq3_a"
+                        class="text-slate-500 dark:text-gray-400 text-sm font-medium mt-4 leading-relaxed">Las cámaras
+                        modernas (y los celulares) guardan datos invisibles dentro de la foto, llamados EXIF. Estos
+                        datos incluyen las coordenadas GPS exactas de dónde tomaste la foto, el tipo de cámara, y la
+                        fecha. El Escudo Anti-Rastreo (Función PRO) borra todos esos datos para que puedas subir tu
+                        imagen a internet sin revelar tu ubicación.</p>
+                </details>
             </div>
         </div>
     </main>
@@ -683,33 +979,29 @@
         class="w-full relative z-50 border-t border-gray-200 dark:border-white/10 bg-white dark:bg-[#09090B] mt-12 shadow-[0_-10px_30px_rgba(0,0,0,0.5)] transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-
                 <div class="flex items-center gap-2 opacity-70">
                     <i data-lucide="zap" class="w-5 h-5 text-[#A78BFA]"></i>
                     <span class="font-extrabold text-white tracking-tight">Compressly</span>
                 </div>
-
                 <div class="flex flex-col items-center gap-3 text-center order-last md:order-none">
-                    <p class="text-gray-500 text-sm font-semibold px-6">© 2026 Compressly Inc. Todos los derechos
-                        reservados.</p>
+                    <p data-i18n="footer_rights" class="text-gray-500 text-sm font-semibold px-6">© 2026 Compressly Inc.
+                        Todos los derechos reservados.</p>
                     <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs font-bold text-gray-500">
-                        <button id="btnTerminos"
+                        <button id="btnTerminos" data-i18n="footer_terms"
                             class="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer">Términos
                             y Condiciones</button>
                         <span class="hidden md:inline">|</span>
-                        <button id="btnPrivacidad"
+                        <button id="btnPrivacidad" data-i18n="footer_privacy"
                             class="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer">Política
                             de Privacidad</button>
                     </div>
                 </div>
-
                 <div class="flex gap-4">
                     <a href="#" class="text-gray-500 hover:text-white hover:scale-110 transition-all"><i
                             data-lucide="twitter" class="w-5 h-5"></i></a>
                     <a href="#" class="text-gray-500 hover:text-white hover:scale-110 transition-all"><i
                             data-lucide="github" class="w-5 h-5"></i></a>
                 </div>
-
             </div>
         </div>
     </footer>
@@ -748,31 +1040,130 @@
                 <i data-lucide="crown" class="w-8 h-8 text-white"></i>
             </div>
 
-            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white mb-3">Función Exclusiva PRO</h2>
-            <p class="text-slate-500 dark:text-gray-400 font-medium text-sm mb-8 leading-relaxed">
+            <h2 data-i18n="premium_title" class="text-2xl font-extrabold text-slate-900 dark:text-white mb-3">Función
+                Exclusiva PRO</h2>
+            <p data-i18n="premium_desc"
+                class="text-slate-500 dark:text-gray-400 font-medium text-sm mb-8 leading-relaxed">
                 Estás intentando usar el poder total de Compressly. Únete a la lista VIP para ser de los primeros en
                 obtener una cuenta Premium.
             </p>
 
             <form class="flex flex-col gap-3"
-                onsubmit="event.preventDefault(); Notify.show('¡Súper!', 'Te hemos anotado en la lista VIP. Te avisaremos pronto.', 'success'); closePremiumModal();">
-                <input type="email" required placeholder="Tu mejor correo electrónico"
+                onsubmit="event.preventDefault(); Notify.show('Procesando...', 'Conectando con la base de datos...', 'info'); closePremiumModal();">
+                <input type="email" required data-i18n="premium_email_ph" placeholder="Tu mejor correo electrónico"
                     class="w-full bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:border-primary-500 transition-colors placeholder-gray-500 font-bold">
                 <button type="submit"
                     class="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 hover:scale-[1.02] active:scale-95 text-white font-extrabold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(250,204,21,0.3)] flex items-center justify-center gap-2">
-                    <i data-lucide="rocket" class="w-5 h-5"></i> Quiero ser PRO
+                    <i data-lucide="rocket" class="w-5 h-5"></i> <span data-i18n="premium_btn">Quiero ser PRO</span>
                 </button>
             </form>
 
-            <button id="closePremiumBtn"
+            <button id="closePremiumBtn" data-i18n="premium_cancel"
                 class="mt-6 text-sm font-bold text-gray-400 hover:text-slate-700 dark:hover:text-white transition-colors">
                 Quizás más tarde
             </button>
         </div>
     </div>
 
+    <div id="profileModal" class="fixed inset-0 z-[120] hidden items-center justify-center px-4">
+        <div id="profileOverlay"
+            class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity cursor-pointer"></div>
+        <div class="bento-card relative z-10 w-full max-w-md flex flex-col shadow-2xl border-primary-500/30 transform transition-all scale-95 opacity-0 p-8"
+            id="profileContent">
+
+            <div class="flex justify-between items-start border-b border-white/10 pb-5 mb-6">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="w-14 h-14 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <i data-lucide="user" class="w-7 h-7 text-white"></i>
+                    </div>
+                    <div>
+                        <h2 data-i18n="profile_greeting" class="text-xl font-extrabold text-slate-900 dark:text-white">
+                            Hola, Creador 👋</h2>
+                        <p data-i18n="profile_status" class="text-sm font-medium text-slate-500 dark:text-gray-400">
+                            Perfil Local Activo</p>
+                    </div>
+                </div>
+                <button id="closeProfileBtn"
+                    class="text-gray-400 hover:text-white hover:bg-white/10 p-2 rounded-lg transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div
+                class="bg-green-500/10 border border-green-500/20 rounded-2xl p-5 mb-8 flex flex-col items-center text-center">
+                <i data-lucide="leaf" class="w-8 h-8 text-green-500 mb-2"></i>
+                <h3 data-i18n="profile_impact_title" class="text-slate-900 dark:text-white font-extrabold text-lg">
+                    Impacto Global</h3>
+                <p data-i18n="profile_impact_sub" class="text-sm text-slate-500 dark:text-gray-400 font-medium mb-1">Has
+                    ahorrado al planeta:</p>
+                <span id="profileTotalSaved" class="text-3xl font-black text-green-500 drop-shadow-md">0 MB</span>
+            </div>
+
+            <div class="text-center">
+                <h3 data-i18n="profile_sync_title" class="text-lg font-extrabold text-slate-900 dark:text-white mb-2">☁️
+                    Sincronizar Nube</h3>
+                <p data-i18n="profile_sync_sub" class="text-sm text-slate-500 dark:text-gray-400 font-medium mb-5 px-2">
+                    Crea tu cuenta gratis para guardar tu impacto y configuraciones en la nube.
+                </p>
+
+                <button
+                    onclick="event.preventDefault(); Notify.show('¡Cuenta Vinculada!', 'Has sido añadido a la lista prioritaria para la sincronización en la nube.', 'success'); closeProfileModal();"
+                    class="w-full bg-white dark:bg-[#18181b] hover:bg-gray-50 dark:hover:bg-black text-slate-700 dark:text-white border border-slate-200 dark:border-white/10 px-5 py-3.5 rounded-xl text-sm font-bold transition-all shadow-sm flex items-center justify-center gap-3 active:scale-95 mb-4">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                            fill="#4285F4" />
+                        <path
+                            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                            fill="#34A853" />
+                        <path
+                            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                            fill="#FBBC05" />
+                        <path
+                            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                            fill="#EA4335" />
+                    </svg>
+                    <span data-i18n="profile_btn_google">Continuar con Google</span>
+                </button>
+
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="h-[1px] flex-1 bg-slate-200 dark:bg-white/10"></div>
+                    <span data-i18n="profile_divider" class="text-[10px] font-bold text-slate-400 tracking-widest">O CON
+                        CORREO</span>
+                    <div class="h-[1px] flex-1 bg-slate-200 dark:bg-white/10"></div>
+                </div>
+
+                <form class="flex flex-col gap-3"
+                    onsubmit="event.preventDefault(); Notify.show('Procesando...', 'Conectando con la base de datos...', 'info');">
+                    <input type="email" id="authEmail" required data-i18n="profile_email_ph"
+                        placeholder="Tu correo electrónico"
+                        class="w-full bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:border-primary-500 transition-colors placeholder-gray-500 font-bold text-sm">
+
+                    <div class="relative">
+                        <input type="password" id="authPassword" required data-i18n="profile_pass_ph"
+                            placeholder="Crea una contraseña" minlength="6"
+                            class="w-full bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:border-primary-500 transition-colors placeholder-gray-500 font-bold text-sm">
+                        <button type="button" id="togglePasswordBtn"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-500 transition-colors">
+                            <i id="togglePasswordIcon" data-lucide="eye" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full bg-primary-500 hover:bg-primary-600 active:scale-95 text-white font-extrabold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(139,92,246,0.3)] flex items-center justify-center gap-2 text-sm mt-1">
+                        <i data-lucide="log-in" class="w-4 h-4"></i> <span data-i18n="profile_btn_submit">Crear Cuenta /
+                            Entrar</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="notificaciones.js"></script>
+    <script src="idioma.js"></script>
     <script src="script.js"></script>
+    <script src="modales.js"></script>
 
     <script>
         if ('serviceWorker' in navigator) {
