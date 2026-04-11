@@ -887,8 +887,9 @@
                     <p data-i18n="plan_pro_sub" class="text-sm text-gray-500 mb-6">Para agencias, fotógrafos y
                         e-commerce.</p>
                     <div class="mb-8">
-                        <span class="text-4xl font-black text-slate-900 dark:text-white">$5</span>
-                        <span data-i18n="plan_pro_time" class="text-gray-500 font-bold">/ mes</span>
+                        <span data-i18n="plan_pro_price"
+                            class="text-4xl font-black text-slate-900 dark:text-white">$19.99</span>
+                        <span data-i18n="plan_pro_time" class="text-gray-500 font-bold">/ de por vida</span>
                     </div>
                     <ul class="space-y-4 mb-8 flex-grow">
                         <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
@@ -1048,13 +1049,17 @@
                 obtener una cuenta Premium.
             </p>
 
-            <form class="flex flex-col gap-3"
-                onsubmit="event.preventDefault(); Notify.show('Procesando...', 'Conectando con la base de datos...', 'info'); closePremiumModal();">
-                <input type="email" required data-i18n="premium_email_ph" placeholder="Tu mejor correo electrónico"
+            <form class="flex flex-col gap-3" onsubmit="event.preventDefault(); 
+                const email = this.querySelector('input[type=email]').value;
+                const msg = encodeURIComponent(`¡Hola! Quiero activar mi cuenta Compressly PRO por $19.99. Mi correo es: ${email}`);
+                window.open(`https://wa.me/580000000000?text=${msg}`, '_blank');
+                closePremiumModal();">
+
+                <input type="email" required data-i18n="premium_email_ph" placeholder="Tu correo electrónico"
                     class="w-full bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:border-primary-500 transition-colors placeholder-gray-500 font-bold">
                 <button type="submit"
                     class="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 hover:scale-[1.02] active:scale-95 text-white font-extrabold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(250,204,21,0.3)] flex items-center justify-center gap-2">
-                    <i data-lucide="rocket" class="w-5 h-5"></i> <span data-i18n="premium_btn">Quiero ser PRO</span>
+                    <i data-lucide="rocket" class="w-5 h-5"></i> <span data-i18n="premium_btn">Activar por $19.99</span>
                 </button>
             </form>
 
@@ -1146,7 +1151,7 @@
                             class="w-full bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:border-primary-500 transition-colors placeholder-gray-500 font-bold text-sm">
                         <button type="button" id="togglePasswordBtn"
                             class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-500 transition-colors">
-                            <i id="togglePasswordIcon" data-lucide="eye" class="w-4 h-4"></i>
+                            <i id="togglePasswordIcon" data-lucide="eye-off" class="w-4 h-4"></i>
                         </button>
                     </div>
 
@@ -1160,10 +1165,14 @@
         </div>
     </div>
 
+
     <script src="notificaciones.js"></script>
     <script src="idioma.js"></script>
-    <script src="script.js"></script>
     <script src="modales.js"></script>
+    <script src="interfaz.js"></script>
+    <script src="motor-lotes.js"></script>
+    <script src="chatbot-Compressly.js"></script>
+    <script src="script.js"></script>
 
     <script>
         if ('serviceWorker' in navigator) {

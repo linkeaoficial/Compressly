@@ -1,13 +1,16 @@
 // 🚀 Aumentamos la versión del caché a v4
-const CACHE_NAME = 'compressly-v4';
+const CACHE_NAME = 'compressly-v6';
 
 const urlsToCache = [
     '/',
     '/index.html',
     '/styles.css',
     '/idioma.js',
+    '/interfaz.js',
     '/script.js',
     '/modales.js', // 🚀 ¡Nuestro nuevo módulo entra al caché!
+    '/motor-lotes.js',
+    '/chatbot-Compressly.js',
     '/notificaciones.js',
     'https://cdn.tailwindcss.com',
     'https://cdnjs.cloudflare.com/ajax/libs/compressorjs/1.2.1/compressor.min.js',

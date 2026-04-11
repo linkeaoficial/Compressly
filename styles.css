@@ -252,3 +252,24 @@ html.dark .custom-option {
     animation: modernAttentionPulse 0.6s ease-out;
     will-change: transform, box-shadow, background-color;
 }
+
+
+/* 📱 AJUSTES DE MODALES PARA MÓVILES PEQUEÑOS */
+@media (max-width: 480px) {
+
+    #profileContent,
+    #premiumContent,
+    #modalContent {
+        padding: 1.25rem !important;
+        /* Menos padding interno */
+        max-height: 98vh !important;
+        /* Deja ver un poco del fondo */
+        overflow-y: auto !important;
+        /* Permite scroll si la pantalla es muy pequeña */
+    }
+
+    #profileContent .bg-green-500\/10 {
+        padding: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+}

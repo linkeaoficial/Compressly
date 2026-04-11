@@ -96,7 +96,8 @@ const translations = {
         plan_free_btn: "Comenzar Gratis",
         plan_pro_badge: "Más Popular",
         plan_pro_sub: "Para agencias, fotógrafos y e-commerce.",
-        plan_pro_time: "/ mes",
+        plan_pro_price: "$19.99",
+        plan_pro_time: "/ de por vida",
         plan_pro_f1: "Lotes ILIMITADOS de imágenes",
         plan_pro_f2: "Archivos gigantes (+10MB)",
         plan_pro_f3: "Marca de Agua y Redimensionado Inteligente",
@@ -130,10 +131,14 @@ const translations = {
         profile_btn_submit: "Crear Cuenta / Entrar",
         // 🚀 NUEVOS: Muro de Pago Premium
         premium_title: "Función Exclusiva PRO",
-        premium_desc: "Estás intentando usar el poder total de Compressly. Únete a la lista VIP para ser de los primeros en obtener una cuenta Premium.",
+        premium_desc: "Estás intentando usar el poder total. Únete a nuestra lista VIP y obtén acceso de por vida por solo <span class='inline-block bg-green-500/20 text-green-600 dark:text-green-400 font-black px-2.5 py-0.5 rounded-md border border-green-500/30 shadow-[0_0_10px_rgba(34,197,94,0.2)]'>$19.99</span>. ¡Hablemos por WhatsApp para activarlo ahora!",
         premium_email_ph: "Tu mejor correo electrónico",
         premium_btn: "Quiero ser PRO",
-        premium_cancel: "Quizás más tarde"
+        premium_cancel: "Quizás más tarde",
+        // Chatbot
+        bot_title: "Asistente Virtual",
+        bot_status: "En línea ahora",
+        bot_welcome: "¡Hola! 👋 Soy tu asistente virtual. ¿En qué puedo ayudarte a optimizar tu flujo de trabajo hoy?"
     },
     en: {
         nav_features: "Features",
@@ -223,7 +228,8 @@ const translations = {
         plan_free_btn: "Start for Free",
         plan_pro_badge: "Most Popular",
         plan_pro_sub: "For agencies, photographers, and e-commerce.",
-        plan_pro_time: "/ month",
+        plan_pro_price: "$19.99",
+        plan_pro_time: "/ lifetime",
         plan_pro_f1: "UNLIMITED image batches",
         plan_pro_f2: "Giant files (+10MB)",
         plan_pro_f3: "Watermark and Smart Resizing",
@@ -257,10 +263,14 @@ const translations = {
         profile_btn_submit: "Create Account / Login",
         // 🚀 NUEVOS: Muro de Pago Premium
         premium_title: "Exclusive PRO Feature",
-        premium_desc: "You are trying to use the full power of Compressly. Join the VIP list to be among the first to get a Premium account.",
+        premium_desc: "You are trying to use the full power. Join our VIP list and get lifetime access for only <span class='inline-block bg-green-500/20 text-green-600 dark:text-green-400 font-black px-2.5 py-0.5 rounded-md border border-green-500/30 shadow-[0_0_10px_rgba(34,197,94,0.2)]'>$19.99</span>. Let's chat on WhatsApp to activate it now!",
         premium_email_ph: "Your best email address",
         premium_btn: "I want to be PRO",
-        premium_cancel: "Maybe later"
+        premium_cancel: "Maybe later",
+        // Chatbot
+        bot_title: "Virtual Assistant",
+        bot_status: "Online now",
+        bot_welcome: "Hello! 👋 I'm your virtual assistant. How can I help you optimize your workflow today?"
     }
 };
 

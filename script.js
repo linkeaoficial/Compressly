@@ -3,13 +3,8 @@
 let isPremiumUser = false;
 
 lucide.createIcons();
-// ... resto de tus constantes
 
-lucide.createIcons();
-
-const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-const mobileMenu = document.getElementById('mobileMenu');
-
+// 🔌 CONEXIONES VITALES DEL DOM (Cables restaurados)
 const imageInput = document.getElementById('imageInput');
 const qualityRange = document.getElementById('qualityRange');
 const qualityVal = document.getElementById('qualityVal');
@@ -27,71 +22,10 @@ const origPreview = document.getElementById('origPreview');
 const resPreview = document.getElementById('resPreview');
 const placeholderOrig = document.getElementById('placeholderOrig');
 
-// 🟢 Nuevas variables para los metadatos
 const origFormatBadge = document.getElementById('origFormat');
 const origDimBadge = document.getElementById('origDim');
 const resFormatBadge = document.getElementById('resFormat');
 const resDimBadge = document.getElementById('resDim');
-
-// 🟢 LÓGICA DEL MENÚ DESPLEGABLE PERSONALIZADO PREMIUM
-const customSelectContainer = document.getElementById('customSelectContainer');
-const customSelectTrigger = document.getElementById('customSelectTrigger');
-const customSelectDropdown = document.getElementById('customSelectDropdown');
-const customSelectArrow = document.getElementById('customSelectArrow');
-const customSelectLabel = document.getElementById('customSelectLabel');
-const customOptions = document.querySelectorAll('.custom-option');
-
-// Abrir/Cerrar menú con un clic
-customSelectTrigger.addEventListener('click', (e) => {
-    e.stopPropagation(); // Evitar que se cierre al instante
-    customSelectDropdown.classList.toggle('custom-select-dropdown-open');
-    customSelectArrow.classList.toggle('custom-select-arrow-open');
-    triggerVibration(20);
-});
-
-
-// 🟢 Cuando se hace clic en una de las hermosas opciones
-customOptions.forEach(option => {
-    option.addEventListener('click', () => {
-        const value = option.getAttribute('data-value');
-        const text = option.innerText;
-
-        // 🛑 MURO DE PAGO: Bloquear si intentan redimensionar
-        if (value !== "0") {
-            if (!isPremiumUser) {
-                openPremiumModal();
-                customSelectDropdown.classList.remove('custom-select-dropdown-open');
-                customSelectArrow.classList.remove('custom-select-arrow-open');
-                return;
-            }
-        }
-
-        // 🟢 NUEVO: Marcar visualmente la opción seleccionada
-        customOptions.forEach(opt => opt.classList.remove('selected'));
-        option.classList.add('selected');
-
-        // 1. Cambiar el texto que el usuario ve
-        customSelectLabel.innerText = text;
-
-        // 2. Insertar el valor en tu select original (el que Compressly usa para procesar)
-        resizeSelect.value = value;
-
-        // 3. Disparar tu evento 'change' original para que actualice la palabra azul en la cabecera
-        resizeSelect.dispatchEvent(new Event('change'));
-
-        // 4. Cerrar el menú flotante
-        customSelectDropdown.classList.remove('custom-select-dropdown-open');
-        customSelectArrow.classList.remove('custom-select-arrow-open');
-    });
-});
-
-// Cerrar el menú automáticamente si el usuario hace clic en otro lado de la página
-document.addEventListener('click', (e) => {
-    if (!customSelectContainer.contains(e.target)) {
-        customSelectDropdown.classList.remove('custom-select-dropdown-open');
-        customSelectArrow.classList.remove('custom-select-arrow-open');
-    }
-});
 
 const savePercent = document.getElementById('savePercent');
 const statsTitle = document.getElementById('statsTitle');
@@ -103,39 +37,6 @@ const downloadBtn = document.getElementById('downloadBtn');
 let currentFile = null;
 let selectedFormat = 'image/jpeg'; // 🟢 JPG por defecto
 const exifToggle = document.getElementById('exifToggle'); // 🟢 Referencia al escudo
-
-function toggleMobileMenu() {
-    mobileMenu.classList.toggle('hidden');
-
-    // Alternar iconos de forma segura
-    const iconMenu = document.getElementById('iconMenu');
-    const iconClose = document.getElementById('iconClose');
-
-    if (mobileMenu.classList.contains('hidden')) {
-        iconMenu.classList.remove('hidden');
-        iconClose.classList.add('hidden');
-    } else {
-        iconMenu.classList.add('hidden');
-        iconClose.classList.remove('hidden');
-    }
-
-    if (navigator.vibrate) navigator.vibrate(50);
-}
-
-mobileMenuBtn.addEventListener('click', toggleMobileMenu);
-
-// Cerrar el menú automáticamente cuando se hace clic en un enlace (móvil)
-document.querySelectorAll('.mobile-link').forEach(link => {
-    link.addEventListener('click', () => {
-        if (!mobileMenu.classList.contains('hidden')) {
-            toggleMobileMenu();
-        }
-    });
-});
-
-const triggerVibration = (pattern = 50) => {
-    if (navigator.vibrate) navigator.vibrate(pattern);
-};
 
 // Mapa maestro de formatos
 const formatButtons = [
@@ -736,192 +637,4 @@ function setupDownload(url, filename) {
     downloadBtn.href = url;
     downloadBtn.download = filename;
     downloadBtn.classList.remove('hidden');
-}
-
-function triggerConfetti() {
-    confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#8B5CF6', '#A78BFA', '#ffffff']
-    });
-}
-
-// --- 🟢 Lógica del Modo Claro / Oscuro ---
-const themeToggle = document.getElementById('themeToggle');
-const themeToggleMobile = document.getElementById('themeToggleMobile');
-const htmlElement = document.documentElement;
-
-function toggleTheme() {
-    if (htmlElement.classList.contains('dark')) {
-        htmlElement.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-    } else {
-        htmlElement.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-    }
-    // 🟢 Eliminamos lucide.createIcons() porque Tailwind se encarga de alternar el Sol y la Luna.
-    triggerVibration(20);
-}
-
-themeToggle.addEventListener('click', toggleTheme);
-themeToggleMobile.addEventListener('click', toggleTheme);
-
-// 🚀 ==========================================
-// MOTOR SECUENCIAL DE COMPRESIÓN POR LOTES
-// ==========================================
-
-// Convertimos el compresor en Promesa para poder procesarlas en fila india (async/await)
-function compressFileAsync(file, quality, format, maxDimension, stripMetadata) {
-    return new Promise((resolve, reject) => {
-        new Compressor(file, {
-            quality: quality / 100,
-            mimeType: format === 'auto' ? file.type : format,
-            maxWidth: maxDimension === 0 ? Infinity : maxDimension,
-            maxHeight: maxDimension === 0 ? Infinity : maxDimension,
-            checkOrientation: stripMetadata,
-
-            // 🚀 APLICAMOS EL MOTOR DE MARCA DE AGUA AL LOTE
-            drew(context, canvas) { drawWatermark(context, canvas); },
-
-            success(result) { resolve(result); },
-            error(err) { reject(err); }
-        });
-    });
-}
-
-async function processBatchEngine() {
-    triggerVibration(50);
-
-    // Cambiar estado del botón principal
-    compressBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Procesando Lote...';
-    compressBtn.classList.add('opacity-75', 'pointer-events-none');
-    lucide.createIcons();
-
-    // Crear el archivo ZIP virtual en la RAM
-    const zip = new JSZip();
-    const zipFolder = zip.folder("Compressly_Lote");
-
-    let totalOriginalSize = 0;
-    let totalCompressedSize = 0;
-    const quality = qualityRange.value;
-    const maxDimension = parseInt(resizeSelect.value) || 0;
-
-    // 🔄 Bucle Secuencial (Una por una para no trabar el navegador del celular)
-    for (let i = 0; i < batchFiles.length; i++) {
-        const file = batchFiles[i];
-        totalOriginalSize += file.size;
-
-        // Actualizar tarjetita visual a "Comprimiendo..."
-        const statusSpan = document.getElementById(`status-${i}`);
-        statusSpan.className = "text-primary-500 font-bold flex items-center gap-1";
-        statusSpan.innerHTML = '<i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i> Procesando...';
-        lucide.createIcons();
-
-        try {
-            // Comprimir la imagen mágicamente
-            // 🟢 NUEVO: Se añade exifToggle.checked para que el lote también respete el escudo
-            const compressedBlob = await compressFileAsync(file, quality, selectedFormat, maxDimension, exifToggle.checked);
-            totalCompressedSize += compressedBlob.size;
-
-            // Determinar extensión correcta
-            const extension = selectedFormat === 'image/webp' ? 'webp' : (selectedFormat === 'image/png' ? 'png' : (selectedFormat === 'image/jpeg' ? 'jpg' : file.name.split('.').pop()));
-
-            // 🟢 NUEVO: Lógica Inteligente de Renombrado
-            const customPrefix = document.getElementById('batchRenameInput').value.trim();
-            let newFileName = '';
-
-            if (customPrefix) {
-                // Si el usuario escribió "Boda", genera "Boda_01.jpg", "Boda_02.jpg"...
-                // El padStart(2, '0') asegura que sea 01, 02 en vez de 1, 2.
-                const padIndex = (i + 1).toString().padStart(2, '0');
-                newFileName = `${customPrefix}_${padIndex}.${extension}`;
-            } else {
-                // Lógica original: mantiene el nombre base y le agrega _compressly
-                const baseName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
-                newFileName = `${baseName}_compressly.${extension}`;
-            }
-
-            // 🚀 MOTOR DE CARPETAS INTELIGENTES
-            if (useZipFolders) {
-                // Crea una carpeta con el nombre de la extensión (ej: "JPG" o "WEBP")
-                const folder = zipFolder.folder(extension.toUpperCase());
-                folder.file(newFileName, compressedBlob);
-            } else {
-                zipFolder.file(newFileName, compressedBlob);
-            }
-
-            // Actualizar tarjetita visual a "Listo"
-            statusSpan.className = "text-green-500 font-bold flex items-center gap-1";
-            statusSpan.innerHTML = '<i data-lucide="check-circle" class="w-3 h-3"></i> Listo';
-            lucide.createIcons();
-
-            // Actualizar porcentaje general en vivo
-            const currentSaving = ((1 - (totalCompressedSize / totalOriginalSize)) * 100).toFixed(0);
-            document.getElementById('batchSavePercent').innerText = currentSaving > 0 ? `-${currentSaving}%` : '0%';
-
-        } catch (err) {
-            console.error("Error comprimiendo", file.name, err);
-            statusSpan.className = "text-red-500 font-bold flex items-center gap-1";
-            statusSpan.innerHTML = '<i data-lucide="x-circle" class="w-3 h-3"></i> Error';
-            lucide.createIcons();
-        }
-    }
-
-    // Generar el archivo .zip final
-    document.getElementById('batchStatsMsg').innerHTML = '<i data-lucide="folder-output" class="w-4 h-4 text-primary-500"></i> Empaquetando ZIP...';
-    lucide.createIcons();
-
-    const zipBlob = await zip.generateAsync({ type: "blob" });
-    const zipUrl = URL.createObjectURL(zipBlob);
-
-    // Actualizar UI Final
-    const finalSaving = ((1 - (totalCompressedSize / totalOriginalSize)) * 100).toFixed(0);
-
-    // 🏆 GAMIFICACIÓN: Sumar el ahorro total del lote al Impacto Global
-    const batchSavedBytes = totalOriginalSize - totalCompressedSize;
-    if (batchSavedBytes > 0) {
-        updateGlobalImpact(batchSavedBytes);
-    }
-
-    document.getElementById('batchSavePercent').className = "text-xl font-black text-primary-500 drop-shadow-md";
-    document.getElementById('batchStatsMsg').className = "text-sm text-green-500 font-bold flex items-center gap-1.5";
-    document.getElementById('batchStatsMsg').innerHTML = '<i data-lucide="check-circle" class="w-4 h-4"></i> ¡Lote completado!';
-
-    // Configurar y mostrar el botón de Descarga ZIP
-    const downloadBatchBtn = document.getElementById('downloadBatchBtn');
-    downloadBatchBtn.href = zipUrl;
-    downloadBatchBtn.download = `Compressly_Lote_${Date.now()}.zip`;
-    downloadBatchBtn.classList.remove('hidden');
-
-    // Restaurar botón principal
-    compressBtn.innerHTML = '<i data-lucide="zap" class="w-5 h-5"></i> Comprimir';
-    compressBtn.classList.remove('opacity-75', 'pointer-events-none');
-    lucide.createIcons();
-
-    triggerConfetti(); // 🚀 BUM! Confeti libre para los lotes también
-    Notify.show('¡Lote Terminado!', `Tus ${batchFiles.length} imágenes están empaquetadas en un ZIP listas para descargar.`, 'success');
-
-    triggerVibration([30, 50, 30]);
-
-    // 📱💻 Control de Scroll Inteligente para Lotes (Al terminar el proceso)
-    setTimeout(() => {
-        const element = document.getElementById('batchSummary');
-
-        // Detectamos si es una pantalla de PC
-        const isDesktop = window.innerWidth >= 768;
-
-        // En PC dejamos un respiro de 150px, en móvil 350px para que el botón ZIP quede centrado
-        const offset = isDesktop ? 430 : 400;
-
-        const bodyRect = document.body.getBoundingClientRect().top;
-        const elementRect = element.getBoundingClientRect().top;
-        const elementPosition = elementRect - bodyRect;
-        const offsetPosition = elementPosition - offset;
-
-        window.scrollTo({
-            top: offsetPosition,
-            behavior: 'smooth'
-        });
-    }, 400); // Un pequeño retraso para que el botón ZIP ya esté visible
 }

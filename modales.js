@@ -18,6 +18,7 @@ function openModal(titleKey, contentKey) {
 
     legalModal.classList.remove('hidden');
     legalModal.classList.add('flex');
+    document.body.style.overflow = 'hidden'; // 🚀 Bloquear Scroll del Fondo
 
     setTimeout(() => {
         modalContent.classList.remove('scale-95', 'opacity-0');
@@ -35,6 +36,7 @@ function closeModal() {
     setTimeout(() => {
         legalModal.classList.add('hidden');
         legalModal.classList.remove('flex');
+        document.body.style.overflow = ''; // 🚀 Restaurar Scroll
     }, 200);
     if (navigator.vibrate) navigator.vibrate(20);
 }
@@ -59,6 +61,7 @@ window.openPremiumModal = function (force = false) {
 
     premiumModal.classList.remove('hidden');
     premiumModal.classList.add('flex');
+    document.body.style.overflow = 'hidden'; // 🚀 Bloquear Scroll del Fondo
 
     setTimeout(() => {
         premiumContent.classList.remove('scale-95', 'opacity-0');
@@ -76,6 +79,7 @@ window.closePremiumModal = function () {
     setTimeout(() => {
         premiumModal.classList.add('hidden');
         premiumModal.classList.remove('flex');
+        document.body.style.overflow = ''; // 🚀 Restaurar Scroll
     }, 200);
     if (navigator.vibrate) navigator.vibrate(20);
 };
@@ -85,7 +89,7 @@ if (premiumOverlay) premiumOverlay.addEventListener('click', closePremiumModal);
 
 document.getElementById('btnGoPro')?.addEventListener('click', () => openPremiumModal(true));
 document.getElementById('btnGoProMobile')?.addEventListener('click', () => {
-    document.getElementById('mobileMenu').classList.add('hidden');
+    if (typeof toggleMobileMenu === 'function') toggleMobileMenu(); // 🚀 Resetea iconos y cierra
     openPremiumModal(true);
 });
 
@@ -106,6 +110,7 @@ const closeProfileBtn = document.getElementById('closeProfileBtn');
 window.openProfileModal = function () {
     profileModal.classList.remove('hidden');
     profileModal.classList.add('flex');
+    document.body.style.overflow = 'hidden'; // 🚀 Bloquear Scroll del Fondo
     setTimeout(() => {
         profileContent.classList.remove('scale-95', 'opacity-0');
         profileContent.classList.add('scale-100', 'opacity-100');
@@ -120,6 +125,7 @@ window.closeProfileModal = function () {
     setTimeout(() => {
         profileModal.classList.add('hidden');
         profileModal.classList.remove('flex');
+        document.body.style.overflow = ''; // 🚀 Restaurar Scroll
     }, 200);
     if (navigator.vibrate) navigator.vibrate(20);
 };
@@ -129,7 +135,7 @@ if (profileOverlay) profileOverlay.addEventListener('click', closeProfileModal);
 
 document.getElementById('btnProfileDesktop')?.addEventListener('click', openProfileModal);
 document.getElementById('btnProfileMobile')?.addEventListener('click', () => {
-    document.getElementById('mobileMenu').classList.add('hidden');
+    if (typeof toggleMobileMenu === 'function') toggleMobileMenu(); // 🚀 Resetea iconos y cierra
     openProfileModal();
 });
 
@@ -139,10 +145,12 @@ if (togglePasswordBtn) {
     togglePasswordBtn.addEventListener('click', () => {
         if (authPassword.type === 'password') {
             authPassword.type = 'text';
-            togglePasswordBtn.innerHTML = '<i data-lucide="eye-off" class="w-4 h-4"></i>';
+            // 🚀 Ahora se ve la contraseña = Ojito abierto
+            togglePasswordBtn.innerHTML = '<i data-lucide="eye" class="w-4 h-4"></i>';
         } else {
             authPassword.type = 'password';
-            togglePasswordBtn.innerHTML = '<i data-lucide="eye" class="w-4 h-4"></i>';
+            // 🚀 Contraseña oculta = Ojito con rayita
+            togglePasswordBtn.innerHTML = '<i data-lucide="eye-off" class="w-4 h-4"></i>';
         }
         lucide.createIcons();
     });
@@ -183,11 +191,16 @@ window.updateGlobalImpact = function (newSavedBytes = 0) {
         if (mobileText) mobileText.innerText = formatted;
         if (profileTotalText) profileTotalText.innerText = formatted;
 
-        if (newSavedBytes > 0 && desktopBadge) {
-            desktopBadge.classList.add('scale-110', 'bg-green-500/30', 'border-green-400', 'shadow-[0_0_15px_rgba(34,197,94,0.4)]');
-            setTimeout(() => {
-                desktopBadge.classList.remove('scale-110', 'bg-green-500/30', 'border-green-400', 'shadow-[0_0_15px_rgba(34,197,94,0.4)]');
-            }, 400);
+        // 🚀 MEJORA: Animación para AMBOS (PC y Móvil)
+        if (newSavedBytes > 0) {
+            [desktopBadge, mobileBadge].forEach(badge => {
+                if (badge) {
+                    badge.classList.add('scale-110', 'bg-green-500/30', 'border-green-400', 'shadow-[0_0_15px_rgba(34,197,94,0.4)]');
+                    setTimeout(() => {
+                        badge.classList.remove('scale-110', 'bg-green-500/30', 'border-green-400', 'shadow-[0_0_15px_rgba(34,197,94,0.4)]');
+                    }, 400);
+                }
+            });
         }
     }
 };
