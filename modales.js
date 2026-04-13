@@ -19,6 +19,7 @@ function openModal(titleKey, contentKey) {
     legalModal.classList.remove('hidden');
     legalModal.classList.add('flex');
     document.body.style.overflow = 'hidden'; // 🚀 Bloquear Scroll del Fondo
+    if (window.innerWidth <= 480) document.getElementById('aiToggler')?.classList.add('hidden'); // 🚀 Ocultar bot en móvil
 
     setTimeout(() => {
         modalContent.classList.remove('scale-95', 'opacity-0');
@@ -37,6 +38,7 @@ function closeModal() {
         legalModal.classList.add('hidden');
         legalModal.classList.remove('flex');
         document.body.style.overflow = ''; // 🚀 Restaurar Scroll
+        if (window.innerWidth <= 480) document.getElementById('aiToggler')?.classList.remove('hidden'); // 🚀 Mostrar bot
     }, 200);
     if (navigator.vibrate) navigator.vibrate(20);
 }
@@ -62,6 +64,7 @@ window.openPremiumModal = function (force = false) {
     premiumModal.classList.remove('hidden');
     premiumModal.classList.add('flex');
     document.body.style.overflow = 'hidden'; // 🚀 Bloquear Scroll del Fondo
+    if (window.innerWidth <= 480) document.getElementById('aiToggler')?.classList.add('hidden'); // 🚀 Ocultar bot en móvil
 
     setTimeout(() => {
         premiumContent.classList.remove('scale-95', 'opacity-0');
@@ -80,6 +83,7 @@ window.closePremiumModal = function () {
         premiumModal.classList.add('hidden');
         premiumModal.classList.remove('flex');
         document.body.style.overflow = ''; // 🚀 Restaurar Scroll
+        if (window.innerWidth <= 480) document.getElementById('aiToggler')?.classList.remove('hidden'); // 🚀 Mostrar bot
     }, 200);
     if (navigator.vibrate) navigator.vibrate(20);
 };
@@ -111,6 +115,7 @@ window.openProfileModal = function () {
     profileModal.classList.remove('hidden');
     profileModal.classList.add('flex');
     document.body.style.overflow = 'hidden'; // 🚀 Bloquear Scroll del Fondo
+    if (window.innerWidth <= 480) document.getElementById('aiToggler')?.classList.add('hidden'); // 🚀 Ocultar bot en móvil
     setTimeout(() => {
         profileContent.classList.remove('scale-95', 'opacity-0');
         profileContent.classList.add('scale-100', 'opacity-100');
@@ -126,6 +131,7 @@ window.closeProfileModal = function () {
         profileModal.classList.add('hidden');
         profileModal.classList.remove('flex');
         document.body.style.overflow = ''; // 🚀 Restaurar Scroll
+        if (window.innerWidth <= 480) document.getElementById('aiToggler')?.classList.remove('hidden'); // 🚀 Mostrar bot
     }, 200);
     if (navigator.vibrate) navigator.vibrate(20);
 };

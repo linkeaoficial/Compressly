@@ -267,38 +267,61 @@ body.chat-active .ai-chat-window {
 }
 
 @keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
+
+/* 🚀 NUEVO: Estilos para mensajes del usuario y caja de texto */
+.msg-outgoing { display: flex; justify-content: flex-end; animation: slideUp 0.4s ease forwards; margin-bottom: 10px; }
+.msg-outgoing .msg-bubble { background: var(--ai-glow); color: white; border-radius: 18px 18px 4px 18px; border: none; box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3); }
+
+.ai-input-area {
+    padding: 16px 20px;
+    border-top: 1px solid var(--glass-border);
+    display: flex; gap: 10px;
+    background: rgba(0,0,0,0.2);
+}
+html:not(.dark) .ai-input-area { background: rgba(255,255,255,0.5); }
+
+.ai-input {
+    flex: 1; background: var(--glass-bg); border: 1px solid var(--glass-border);
+    border-radius: 12px; padding: 10px 16px; color: var(--text-main);
+    font-family: inherit; outline: none; transition: border 0.3s;
+}
+.ai-input:focus { border-color: var(--ai-glow); }
+
+.ai-send-btn {
+    background: var(--ai-glow); border: none; width: 42px; height: 42px;
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    color: white; cursor: pointer; transition: all 0.2s;
+}
+.ai-send-btn:hover { transform: scale(1.05); background: var(--ai-accent); }
+.ai-send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
 @media (max-width: 480px) {
     .ai-chat-window {
-        width: 100vw;
-        height: 100vh;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        border-radius: 0;
-        border: none;
-        max-height: 100vh;
-        z-index: 100000;
+        width: 100vw; height: 100vh; top: 0; left: 0; right: 0; bottom: 0;
+        border-radius: 0; border: none; max-height: 100vh; z-index: 100000;
     }
+    .ai-header { padding-top: 15px; }
 
-    .ai-header {
-        padding-top: 15px;
+    /* 🚀 Botón flotante normal cuando está cerrado */
+    .ai-toggler { bottom: 20px; right: 20px; z-index: 100001; }
+
+    /* 🚀 MAGIA: Mueve la X arriba a la derecha al abrir en móvil */
+    body.chat-active .ai-toggler {
+        top: 15px; 
+        right: 15px; 
+        bottom: auto; /* Anula el de abajo */
+        width: 40px; 
+        height: 40px;
+        background: transparent; 
+        border: none; 
+        box-shadow: none;
     }
-
-    .ai-toggler {
-        bottom: 20px;
-        right: 20px;
-        z-index: 100001;
+    body.chat-active .close-icon {
+        color: var(--text-muted); /* Color gris sutil para que no desentone con el header */
+        width: 32px; height: 32px;
     }
 }
 
@@ -332,8 +355,14 @@ body.chat-active.mobile-no-scroll {
             <p><span class="status-pulse"></span> <span data-i18n="bot_status">Sistema en línea</span></p>
         </div>
     </header>
-
-        <div class="ai-chatbox" id="aiChatbox"></div>
+        <div class="ai-chatbox custom-scrollbar pr-2" id="aiChatbox"></div>
+        
+        <div class="ai-input-area">
+            <input type="text" id="aiInput" class="ai-input" placeholder="Escribe tu mensaje..." autocomplete="off">
+            <button id="aiSendBtn" class="ai-send-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+            </button>
+        </div>
     </div>
     `;
     document.body.appendChild(botWrapper);
@@ -341,26 +370,100 @@ body.chat-active.mobile-no-scroll {
     // 🧠 3. CEREBRO Y LÓGICA (JS)
     const aiToggler = document.getElementById('aiToggler');
     const aiChatbox = document.getElementById('aiChatbox');
+    const aiInput = document.getElementById('aiInput');
+    const aiSendBtn = document.getElementById('aiSendBtn');
     let aiStarted = false;
 
+    // 🚀 URL de tu IA en Cloudflare (Sacada de tu captura)
+    const WORKER_URL = "https://agente-compressly.elitemarketing-a94.workers.dev"; // 🚀 Tu URL real
+
     const handleScrollAI = () => {
-        if (window.scrollY > 100) {
-            // ✅ Aparece si bajamos más de 100px
-            aiToggler.classList.add('show-bot');
-        } else {
-            // ✅ Desaparece si volvemos arriba (0 - 100px)
-            aiToggler.classList.remove('show-bot');
-        }
+        if (window.scrollY > 100) aiToggler.classList.add('show-bot');
+        else aiToggler.classList.remove('show-bot');
     };
     window.addEventListener('scroll', handleScrollAI);
     handleScrollAI();
 
+    // 🚀 Función para añadir mensajes al chat
+    function appendMessage(text, isUser = false) {
+        // 🚀 MAGIA: Convierte los **asteriscos** en negritas con color morado brillante
+        const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<b class="font-extrabold text-primary-400">$1</b>');
+
+        const msgDiv = document.createElement('div');
+        if (isUser) {
+            msgDiv.className = 'msg-outgoing';
+            msgDiv.innerHTML = `<div class="msg-bubble">${text}</div>`; // El texto del usuario queda igual
+        } else {
+            msgDiv.className = 'msg-incoming';
+            msgDiv.innerHTML = `
+                <div class="msg-avatar"></div>
+                <div class="msg-bubble">${formattedText}</div> 
+            `;
+        }
+        aiChatbox.appendChild(msgDiv);
+        aiChatbox.scrollTop = aiChatbox.scrollHeight; // Bajar el scroll automáticamente
+    }
+
+    // 🚀 Lógica de Enviar Mensaje a Llama 3.1
+    async function sendMessageToAI() {
+        const text = aiInput.value.trim();
+        if (!text) return;
+
+        // 1. Mostrar mensaje del usuario
+        appendMessage(text, true);
+        aiInput.value = '';
+        aiSendBtn.disabled = true;
+
+        // 2. Mostrar "Escribiendo..."
+        const typing = document.createElement('div');
+        typing.className = 'typing-box';
+        typing.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+        aiChatbox.appendChild(typing);
+        aiChatbox.scrollTop = aiChatbox.scrollHeight;
+
+        // 3. Llamar a Cloudflare
+        try {
+            const response = await fetch(WORKER_URL, {
+                method: "POST",
+                body: JSON.stringify({
+                    prompt: text,
+                    // 🚀 AQUÍ ESTÁ EL SECRETO: Enviamos el estado real del usuario
+                    isPremium: typeof isPremiumUser !== 'undefined' ? isPremiumUser : false
+                }),
+                headers: { "Content-Type": "application/json" }
+            });
+            const data = await response.json();
+
+            typing.remove(); // Quitar escribiendo
+
+            // 🛡️ ESCUDO ANTI-UNDEFINED
+            if (data.error) {
+                appendMessage("¡Ups! Mi sistema experimentó un pequeño fallo técnico 🔌🤖. ¡Intenta en unos segundos!");
+            } else if (data.response) {
+                appendMessage(data.response); // Mostrar respuesta correcta
+            } else {
+                appendMessage("Recibí la señal, pero no pude procesar el texto 😵‍💫. ¿Me lo repites?");
+            }
+
+            if (window.triggerVibration) window.triggerVibration([20, 30]);
+
+        } catch (error) {
+            typing.remove();
+            appendMessage("Lo siento, tuve un problema de conexión con la red principal. 😔📡 Intenta de nuevo.");
+        }
+        aiSendBtn.disabled = false;
+        aiInput.focus();
+    }
+
+    // Eventos de enviar (Clic y tecla Enter)
+    aiSendBtn.addEventListener('click', sendMessageToAI);
+    aiInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessageToAI();
+    });
+
     aiToggler.addEventListener('click', () => {
         document.body.classList.toggle('chat-active');
-
-        if (window.innerWidth <= 480) {
-            document.body.classList.toggle('mobile-no-scroll');
-        }
+        if (window.innerWidth <= 480) document.body.classList.toggle('mobile-no-scroll');
 
         if (!aiStarted && document.body.classList.contains('chat-active')) {
             aiStarted = true;
@@ -374,17 +477,8 @@ body.chat-active.mobile-no-scroll {
             setTimeout(() => {
                 typing.remove();
                 if (window.triggerVibration) window.triggerVibration([20, 30]);
-
-                const msgDiv = document.createElement('div');
-                msgDiv.className = 'msg-incoming';
                 const lang = (typeof currentLanguage !== 'undefined') ? currentLanguage : 'es';
-                const saludo = translations[currentLanguage].bot_welcome;
-
-                msgDiv.innerHTML = `
-                    <div class="msg-avatar"></div>
-                    <div class="msg-bubble" data-i18n="bot_welcome">${saludo}</div>
-                `;
-                aiChatbox.appendChild(msgDiv);
+                appendMessage(translations[lang].bot_welcome);
             }, 1500);
         } else {
             if (window.triggerVibration) window.triggerVibration(10);

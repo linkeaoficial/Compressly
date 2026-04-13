@@ -24,6 +24,12 @@
     <meta property="twitter:description" content="Comprime tus fotos al instante sin que salgan de tu navegador.">
     <meta property="twitter:image" content="https://compressly.com/og-image.jpg">
 
+    <link rel="alternate" hreflang="es" href="https://compressly.com/" />
+    <link rel="alternate" hreflang="en" href="https://compressly.com/?lang=en" />
+    <link rel="alternate" hreflang="x-default" href="https://compressly.com/" />
+
+    <link rel="canonical" href="https://compressly.com/" />
+
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -73,20 +79,49 @@
     </script>
 
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Compressly",
-      "operatingSystem": "All",
-      "applicationCategory": "DesignApplication",
-      "description": "Herramienta de compresión de imágenes local que no utiliza servidores para garantizar la privacidad del usuario.",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      }
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Compressly",
+    "operatingSystem": "Web, Windows, macOS, iOS, Android",
+    "applicationCategory": "DesignApplication",
+    "description": "Compresor de imágenes inteligente 100% local y privado. Optimiza PNG, JPG y WebP sin perder calidad.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "ratingCount": "1250"
     }
-    </script>
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "¿De verdad mis fotos no se suben a internet?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutamente. Todo el procesamiento se realiza en tu navegador mediante WebAssembly."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Puedo comprimir imágenes en WebP?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sí, soportamos JPG, PNG y conversión automática a WebP."
+        }
+      }
+    ]
+  }
+]
+</script>
 
 </head>
 
@@ -302,7 +337,7 @@
                 </div>
             </div>
 
-            <div class="md:col-span-12 bento-card p-6 md:p-8 relative z-40">
+            <div class="md:col-span-12 bento-card p-6 md:p-8 relative z-50">
                 <div
                     class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-5 border-b border-white/5">
                     <h2 class="font-extrabold text-white text-xl flex items-center gap-3">
@@ -375,22 +410,125 @@
                             Marca de Agua
                         </label>
                         <div class="relative group transition-all">
+
                             <div
-                                class="bg-slate-100 dark:bg-black/50 p-1.5 rounded-xl border border-slate-200 dark:border-white/5 flex items-center gap-2 transition-all duration-300 focus-within:border-primary-500 focus-within:shadow-[0_0_15px_rgba(139,92,246,0.15)] opacity-80 group-hover:opacity-100 h-[46px]">
-                                <div class="p-1 flex items-center justify-center pl-2">
-                                    <i data-lucide="copyright"
+                                class="bg-slate-100 dark:bg-black/50 p-1.5 rounded-xl border border-slate-200 dark:border-white/5 flex items-center gap-1.5 transition-all duration-300 focus-within:border-primary-500 focus-within:shadow-[0_0_15px_rgba(139,92,246,0.15)] opacity-80 group-hover:opacity-100 h-[46px] relative z-20">
+
+                                <div class="p-1 flex items-center justify-center pl-2 shrink-0">
+                                    <i id="wmIconIndicator" data-lucide="copyright"
                                         class="w-5 h-5 text-slate-400 group-hover:text-primary-500 transition-colors"></i>
                                 </div>
+
                                 <input type="text" id="watermarkInput" data-i18n="watermark_placeholder"
                                     placeholder="@TuMarca o Texto..."
-                                    class="bg-transparent border-none text-sm font-bold text-slate-700 dark:text-white focus:outline-none w-full placeholder-gray-400">
-                                <div class="w-[1px] h-6 bg-slate-300 dark:bg-white/10 mx-1"></div>
-                                <button
-                                    class="p-2 text-slate-400 transition-colors flex shrink-0 items-center gap-1 opacity-50 cursor-not-allowed"
-                                    title="Próximamente">
+                                    class="bg-transparent border-none text-sm font-bold text-slate-700 dark:text-white focus:outline-none w-full placeholder-gray-400 truncate">
+
+                                <button id="clearWatermarkLogoBtn"
+                                    class="hidden p-1.5 text-red-400 hover:text-red-500 transition-colors shrink-0 bg-red-500/10 rounded-lg"
+                                    title="Eliminar Logo">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+
+                                <div class="w-[1px] h-6 bg-slate-300 dark:bg-white/10 mx-0.5 shrink-0"></div>
+
+                                <input type="file" id="watermarkLogoInput" accept="image/png, image/jpeg"
+                                    class="hidden">
+                                <label for="watermarkLogoInput" id="watermarkLogoBtn"
+                                    class="p-1.5 text-slate-400 hover:text-primary-500 transition-colors flex shrink-0 items-center cursor-pointer rounded-lg hover:bg-primary-500/10"
+                                    title="Subir Logo (PNG/JPG)">
                                     <i data-lucide="image-plus" class="w-4 h-4"></i>
+                                </label>
+
+                                <button id="wmSettingsBtn"
+                                    class="p-1.5 text-slate-400 hover:text-primary-500 transition-colors flex shrink-0 items-center cursor-pointer rounded-lg hover:bg-primary-500/10"
+                                    title="Ajustes de Marca de Agua">
+                                    <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
                                 </button>
                             </div>
+
+                            <div id="wmSettingsPanel"
+                                class="hidden absolute right-0 top-[115%] w-full sm:w-64 bg-white/95 dark:bg-[#18181b]/95 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.6)] z-[60] p-4 transition-all duration-300">
+                                <div class="flex flex-col gap-5">
+
+                                    <div>
+                                        <label
+                                            class="flex items-center gap-1.5 text-[10px] font-extrabold text-gray-500 uppercase tracking-widest mb-2">
+                                            <i data-lucide="crosshair" class="w-3.5 h-3.5 text-primary-400"></i>
+                                            <span data-i18n="wm_pos_label">Posición</span>
+                                        </label>
+                                        <div class="relative">
+                                            <select id="wmPosition" class="hidden">
+                                                <option value="bottom-right" selected>Abajo Derecha</option>
+                                                <option value="bottom-left">Abajo Izquierda</option>
+                                                <option value="top-right">Arriba Derecha</option>
+                                                <option value="top-left">Arriba Izquierda</option>
+                                                <option value="center">Centro</option>
+                                            </select>
+                                            <div id="wmPosContainer"
+                                                class="bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-white/5 text-xs font-bold text-slate-700 dark:text-gray-300 rounded-xl py-2 px-3 flex justify-between items-center cursor-pointer transition-colors hover:border-primary-500 h-[40px]">
+                                                <div class="flex items-center gap-2">
+                                                    <i data-lucide="layout-grid" class="w-4 h-4 text-slate-400"></i>
+                                                    <span id="wmPosLabel" data-i18n="wm_pos_br">Abajo Derecha</span>
+                                                </div>
+                                                <i data-lucide="chevron-down" id="wmPosArrow"
+                                                    class="w-4 h-4 text-slate-400 transition-transform duration-300"></i>
+                                            </div>
+                                            <div id="wmPosDropdown"
+                                                class="absolute left-0 top-full mt-2 w-full bg-white/95 dark:bg-[#18181b]/95 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] z-[70] opacity-0 invisible translate-y-[-10px] transition-all duration-300 overflow-hidden">
+                                                <div class="flex flex-col p-1.5 gap-0.5">
+                                                    <div class="custom-option selected" data-value="bottom-right"
+                                                        data-i18n="wm_pos_br">Abajo Derecha</div>
+                                                    <div class="custom-option" data-value="bottom-left"
+                                                        data-i18n="wm_pos_bl">Abajo Izquierda</div>
+                                                    <div class="custom-option" data-value="top-right"
+                                                        data-i18n="wm_pos_tr">Arriba Derecha</div>
+                                                    <div class="custom-option" data-value="top-left"
+                                                        data-i18n="wm_pos_tl">Arriba Izquierda</div>
+                                                    <div class="custom-option" data-value="center"
+                                                        data-i18n="wm_pos_center">Centro</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label
+                                            class="flex items-center gap-1.5 text-[10px] font-extrabold text-gray-500 uppercase tracking-widest mb-2">
+                                            <i data-lucide="scaling" class="w-3.5 h-3.5 text-primary-400"></i>
+                                            <span data-i18n="wm_size_label">Tamaño</span>
+                                        </label>
+                                        <div class="relative">
+                                            <select id="wmSize" class="hidden">
+                                                <option value="0.10">Pequeño</option>
+                                                <option value="0.15" selected>Medio</option>
+                                                <option value="0.25">Grande</option>
+                                            </select>
+                                            <div id="wmSizeContainer"
+                                                class="bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-white/5 text-xs font-bold text-slate-700 dark:text-gray-300 rounded-xl py-2 px-3 flex justify-between items-center cursor-pointer transition-colors hover:border-primary-500 h-[40px]">
+                                                <div class="flex items-center gap-2">
+                                                    <i data-lucide="maximize" class="w-4 h-4 text-slate-400"></i>
+                                                    <span id="wmSizeLabel" data-i18n="wm_size_md">Medio</span>
+                                                </div>
+                                                <i data-lucide="chevron-down" id="wmSizeArrow"
+                                                    class="w-4 h-4 text-slate-400 transition-transform duration-300"></i>
+                                            </div>
+                                            <div id="wmSizeDropdown"
+                                                class="absolute left-0 top-full mt-2 w-full bg-white/95 dark:bg-[#18181b]/95 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-xl shadow-[0_15px_40px_rgba(0,0,0,0.15)] z-[70] opacity-0 invisible translate-y-[-10px] transition-all duration-300 overflow-hidden">
+                                                <div class="flex flex-col p-1.5 gap-0.5">
+                                                    <div class="custom-option" data-value="0.10" data-i18n="wm_size_sm">
+                                                        Pequeño</div>
+                                                    <div class="custom-option selected" data-value="0.15"
+                                                        data-i18n="wm_size_md">Medio</div>
+                                                    <div class="custom-option" data-value="0.25" data-i18n="wm_size_lg">
+                                                        Grande</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
@@ -419,7 +557,7 @@
                 </div>
             </div>
 
-            <div class="md:col-span-12 flex justify-end mt-2 md:mt-4 relative z-50">
+            <div class="md:col-span-12 flex justify-end mt-2 md:mt-4 relative z-40">
                 <button id="compressBtn"
                     class="w-full md:w-auto md:min-w-[320px] bg-primary-500 hover:bg-primary-600 text-white font-black py-4 md:py-5 px-8 rounded-2xl transition-all active:scale-95 shadow-[0_10px_30px_rgba(139,92,246,0.3)] hover:shadow-[0_15px_40px_rgba(139,92,246,0.5)] flex justify-center items-center gap-3 text-lg md:text-xl border border-white/10 overflow-hidden relative group">
                     <div

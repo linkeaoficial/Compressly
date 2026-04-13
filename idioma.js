@@ -138,7 +138,19 @@ const translations = {
         // Chatbot
         bot_title: "Asistente Virtual",
         bot_status: "En línea ahora",
-        bot_welcome: "¡Hola! 👋 Soy tu asistente virtual. ¿En qué puedo ayudarte a optimizar tu flujo de trabajo hoy?"
+        bot_welcome: "¡Hola! 👋 Soy tu asistente virtual. ¿En qué puedo ayudarte a optimizar tu flujo de trabajo hoy?",
+        // 🚀 NUEVOS: Textos de Marca de Agua
+        wm_pos_label: "Posición",
+        wm_size_label: "Tamaño",
+        wm_pos_br: "Abajo Derecha",
+        wm_pos_bl: "Abajo Izquierda",
+        wm_pos_tr: "Arriba Derecha",
+        wm_pos_tl: "Arriba Izquierda",
+        wm_pos_center: "Centro",
+        wm_size_sm: "Pequeño",
+        wm_size_md: "Medio",
+        wm_size_lg: "Grande",
+        wm_logo_selected: "Logo seleccionado ✓",
     },
     en: {
         nav_features: "Features",
@@ -270,7 +282,19 @@ const translations = {
         // Chatbot
         bot_title: "Virtual Assistant",
         bot_status: "Online now",
-        bot_welcome: "Hello! 👋 I'm your virtual assistant. How can I help you optimize your workflow today?"
+        bot_welcome: "Hello! 👋 I'm your virtual assistant. How can I help you optimize your workflow today?",
+        // 🚀 NUEVOS: Textos de Marca de Agua
+        wm_pos_label: "Position",
+        wm_size_label: "Size",
+        wm_pos_br: "Bottom Right",
+        wm_pos_bl: "Bottom Left",
+        wm_pos_tr: "Top Right",
+        wm_pos_tl: "Top Left",
+        wm_pos_center: "Center",
+        wm_size_sm: "Small",
+        wm_size_md: "Medium",
+        wm_size_lg: "Large",
+        wm_logo_selected: "Logo selected ✓",
     }
 };
 
@@ -279,6 +303,15 @@ let currentLanguage = localStorage.getItem('compressly_lang') || 'es';
 function applyLanguage(lang) {
     document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
+
+        // 🚀 NUEVO: Si hay un logo subido en memoria, reemplazamos el placeholder normal por el de "Logo seleccionado"
+        if (key === 'watermark_placeholder' && typeof customLogoImage !== 'undefined' && customLogoImage !== null) {
+            if (translations[lang] && translations[lang].wm_logo_selected) {
+                element.placeholder = translations[lang].wm_logo_selected;
+            }
+            return; // Salimos de esta vuelta para no sobreescribir con la frase vieja
+        }
+
         if (translations[lang] && translations[lang][key]) {
             if (element.tagName === 'INPUT') {
                 element.placeholder = translations[lang][key];

@@ -34,6 +34,32 @@ const resSizeBadge = document.getElementById('resSize');
 const origSizeBadge = document.getElementById('origSize');
 const downloadBtn = document.getElementById('downloadBtn');
 
+// 👑 APLICAR ESTADO VISUAL PREMIUM (Ocultar Precios y Botones PRO)
+function applyPremiumUI() {
+    if (isPremiumUser) {
+        // 1. Ocultar la sección de precios completa
+        const pricingSection = document.getElementById('precios');
+        if (pricingSection) pricingSection.style.display = 'none';
+
+        // 2. Transformar el botón "Go Pro" de PC en una insignia VIP
+        const btnGoPro = document.getElementById('btnGoPro');
+        if (btnGoPro) {
+            btnGoPro.className = 'bg-yellow-500/10 text-yellow-500 px-6 py-2.5 rounded-full text-sm font-black backdrop-blur-md border border-yellow-500/20 flex items-center gap-2 pointer-events-none';
+            btnGoPro.innerHTML = '<i data-lucide="crown" class="w-4 h-4 fill-current"></i> PRO Activo';
+        }
+
+        // 3. Ocultar el botón "Go Pro" del menú móvil
+        const btnGoProMobile = document.getElementById('btnGoProMobile');
+        if (btnGoProMobile) btnGoProMobile.style.display = 'none';
+
+        // Renderizar el nuevo icono de la corona si la librería está lista
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+}
+
+// Ejecutar al instante
+applyPremiumUI();
+
 let currentFile = null;
 let selectedFormat = 'image/jpeg'; // 🟢 JPG por defecto
 const exifToggle = document.getElementById('exifToggle'); // 🟢 Referencia al escudo
@@ -111,8 +137,15 @@ if (folderOrgBtn) {
     });
 }
 
-// 🚀 LÓGICA DE MARCA DE AGUA (Bloqueo de campo)
+// 🚀 LÓGICA DE MARCA DE AGUA (Texto, Logo, Papelera y Ajustes Flotantes)
 const watermarkInput = document.getElementById('watermarkInput');
+const watermarkLogoInput = document.getElementById('watermarkLogoInput');
+const watermarkLogoBtn = document.getElementById('watermarkLogoBtn');
+const clearWatermarkLogoBtn = document.getElementById('clearWatermarkLogoBtn'); // 🗑️ Nuevo
+const wmSettingsBtn = document.getElementById('wmSettingsBtn'); // 🎛️ Nuevo
+const wmSettingsPanel = document.getElementById('wmSettingsPanel'); // 🎈 Nuevo
+let customLogoImage = null; // Memoria RAM del Logo 🧠
+
 if (watermarkInput) {
     watermarkInput.addEventListener('focus', (e) => {
         if (!isPremiumUser) {
@@ -123,22 +156,221 @@ if (watermarkInput) {
     });
 }
 
-// 🎨 MOTOR DE PINTURA (Dibuja la marca de agua en la imagen)
+// 🎛️ Abrir/Cerrar Panel de Ajustes (Evita deformar el diseño en PC)
+if (wmSettingsBtn) {
+    wmSettingsBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation(); // Evitar que el clic lo cierre de inmediato
+        if (!isPremiumUser) { openPremiumModal(); return; }
+
+        wmSettingsPanel.classList.toggle('hidden');
+        wmSettingsBtn.classList.toggle('text-primary-500');
+        triggerVibration(10);
+    });
+}
+
+// 🖱️ Cerrar panel de ajustes si hacen clic en cualquier otra parte de la pantalla
+document.addEventListener('click', (e) => {
+    if (wmSettingsPanel && !wmSettingsPanel.classList.contains('hidden')) {
+        if (!wmSettingsPanel.contains(e.target) && !wmSettingsBtn.contains(e.target)) {
+            wmSettingsPanel.classList.add('hidden');
+            wmSettingsBtn.classList.remove('text-primary-500');
+        }
+    }
+});
+
+// 🖼️ Subir Logo
+if (watermarkLogoInput) {
+    watermarkLogoInput.addEventListener('change', (e) => {
+        if (!isPremiumUser) {
+            e.preventDefault();
+            watermarkLogoInput.value = '';
+            openPremiumModal();
+            return;
+        }
+
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    customLogoImage = img;
+                    Notify.show('Logo Cargado', 'Tu marca de agua visual está lista.', 'success');
+
+                    // 🚀 Magia UI: Ocultamos botón de subir, mostramos papelera
+                    watermarkLogoBtn.classList.add('hidden');
+                    clearWatermarkLogoBtn.classList.remove('hidden');
+
+                    // 🚀 Cambiamos el icono de copyright por uno de imagen
+                    const wmIconIndicator = document.getElementById('wmIconIndicator');
+                    if (wmIconIndicator) wmIconIndicator.setAttribute('data-lucide', 'image');
+
+                    watermarkInput.value = '';
+                    // 🚀 NUEVO: Traducción inteligente dinámica
+                    watermarkInput.placeholder = (typeof translations !== 'undefined' && translations[currentLanguage]) ? translations[currentLanguage].wm_logo_selected : 'Logo seleccionado ✓';
+                    watermarkInput.disabled = true;
+                    lucide.createIcons();
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+// 🗑️ Eliminar Logo (La Papelera Mágica)
+if (clearWatermarkLogoBtn) {
+    clearWatermarkLogoBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        customLogoImage = null; // 🧠 Borramos de la memoria
+        watermarkLogoInput.value = ''; // Limpiamos el archivo subido
+
+        // 🚀 Restauramos el icono a copyright
+        const wmIconIndicator = document.getElementById('wmIconIndicator');
+        if (wmIconIndicator) wmIconIndicator.setAttribute('data-lucide', 'copyright');
+
+        // Restauramos Interfaz
+        watermarkInput.disabled = false;
+        watermarkInput.placeholder = (typeof translations !== 'undefined' && translations[currentLanguage]) ? translations[currentLanguage].watermark_placeholder : '@TuMarca o Texto...';
+
+        clearWatermarkLogoBtn.classList.add('hidden'); // Ocultar papelera
+        watermarkLogoBtn.classList.remove('hidden'); // Volver a mostrar botón de subir imagen
+
+        lucide.createIcons();
+        Notify.show('Logo Eliminado', 'Se ha quitado la marca visual.', 'info');
+        triggerVibration(20);
+    });
+}
+
+// 🚀 LÓGICA DE SELECTORES PERSONALIZADOS (Ajustes de Marca de Agua)
+function setupWmCustomSelect(containerId, dropdownId, arrowId, labelId, selectId) {
+    const container = document.getElementById(containerId);
+    const dropdown = document.getElementById(dropdownId);
+    const arrow = document.getElementById(arrowId);
+    const label = document.getElementById(labelId);
+    const hiddenSelect = document.getElementById(selectId);
+
+    if (!container) return;
+
+    container.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('custom-select-dropdown-open');
+        arrow.classList.toggle('custom-select-arrow-open');
+        triggerVibration(20);
+    });
+
+    const options = dropdown.querySelectorAll('.custom-option');
+    options.forEach(opt => {
+        opt.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // 🛑 Muro de pago
+            if (!isPremiumUser) {
+                openPremiumModal();
+                dropdown.classList.remove('custom-select-dropdown-open');
+                arrow.classList.remove('custom-select-arrow-open');
+                return;
+            }
+
+            // 🟢 Marcar visualmente la opción
+            options.forEach(o => o.classList.remove('selected'));
+            opt.classList.add('selected');
+
+            // 🟢 Actualizar el texto del botón
+            label.innerText = opt.innerText;
+
+            // 🟢 Actualizar el select oculto
+            hiddenSelect.value = opt.getAttribute('data-value');
+            triggerVibration(10);
+
+            // 🟢 Cerrar el menú
+            dropdown.classList.remove('custom-select-dropdown-open');
+            arrow.classList.remove('custom-select-arrow-open');
+        });
+    });
+
+    // 🟢 Cerrar si hacen clic afuera
+    document.addEventListener('click', (e) => {
+        if (!container.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('custom-select-dropdown-open');
+            arrow.classList.remove('custom-select-arrow-open');
+        }
+    });
+}
+
+// Inicializamos los dos selectores nuevos
+setupWmCustomSelect('wmPosContainer', 'wmPosDropdown', 'wmPosArrow', 'wmPosLabel', 'wmPosition');
+setupWmCustomSelect('wmSizeContainer', 'wmSizeDropdown', 'wmSizeArrow', 'wmSizeLabel', 'wmSize');
+
+// 🚀 PROTEGER LOS NUEVOS CONTROLES DE POSICIÓN/TAMAÑO
+['wmPosition', 'wmSize'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+        el.addEventListener('change', (e) => {
+            if (!isPremiumUser) {
+                e.preventDefault();
+                el.value = el.id === 'wmSize' ? '0.15' : 'bottom-right'; // Reseteamos al valor base
+                openPremiumModal();
+            } else {
+                triggerVibration(10);
+            }
+        });
+    }
+});
+
+// 🎨 MOTOR DE PINTURA (Ahora con 5 posiciones y 3 tamaños) 📐
 function drawWatermark(context, canvas) {
+    const posSelect = document.getElementById('wmPosition')?.value || 'bottom-right';
+    const sizeMultiplier = parseFloat(document.getElementById('wmSize')?.value || 0.15);
+    const padding = Math.max(15, canvas.width * 0.02); // Margen dinámico que se adapta a la foto
+
+    // 1️⃣ Si hay un LOGO subido, lo pintamos 🌟
+    if (customLogoImage) {
+        const logoWidth = canvas.width * sizeMultiplier;
+        const ratio = customLogoImage.height / customLogoImage.width;
+        const logoHeight = logoWidth * ratio;
+
+        let xPos, yPos;
+
+        // 🧮 Lógica matemática de posiciones para el Logo
+        if (posSelect === 'bottom-right') { xPos = canvas.width - logoWidth - padding; yPos = canvas.height - logoHeight - padding; }
+        else if (posSelect === 'bottom-left') { xPos = padding; yPos = canvas.height - logoHeight - padding; }
+        else if (posSelect === 'top-right') { xPos = canvas.width - logoWidth - padding; yPos = padding; }
+        else if (posSelect === 'top-left') { xPos = padding; yPos = padding; }
+        else if (posSelect === 'center') { xPos = (canvas.width - logoWidth) / 2; yPos = (canvas.height - logoHeight) / 2; }
+
+        context.shadowColor = 'rgba(0, 0, 0, 0.5)';
+        context.shadowBlur = 10;
+        context.drawImage(customLogoImage, xPos, yPos, logoWidth, logoHeight);
+        context.shadowBlur = 0;
+        return;
+    }
+
+    // 2️⃣ Si NO hay logo, pintamos TEXTO ✍️
     if (!watermarkInput) return;
     const text = watermarkInput.value.trim();
     if (text !== "") {
-        context.fillStyle = 'rgba(255, 255, 255, 0.8)'; // Blanco translúcido
-        context.font = `normal ${Math.max(20, canvas.width / 40)}px "Plus Jakarta Sans", Arial, sans-serif`;
-        context.textAlign = 'right';
-        context.textBaseline = 'bottom';
-        // Sombra elegante para que se lea sobre fondos blancos
+        context.fillStyle = 'rgba(255, 255, 255, 0.8)';
+
+        // El tamaño de la fuente también cambia según si eligen Pequeño, Medio o Grande
+        const fontScale = sizeMultiplier / 0.15;
+        context.font = `normal ${Math.max(20, (canvas.width / 40) * fontScale)}px "Plus Jakarta Sans", Arial, sans-serif`;
+
         context.shadowColor = 'rgba(0, 0, 0, 0.8)';
         context.shadowBlur = 6;
         context.shadowOffsetX = 2;
         context.shadowOffsetY = 2;
-        // Dibujamos el texto en la esquina inferior derecha
-        context.fillText(text, canvas.width - 30, canvas.height - 30);
+
+        let xPos, yPos;
+
+        // 🧮 Lógica matemática de posiciones y alineación para el Texto
+        if (posSelect === 'bottom-right') { context.textAlign = 'right'; context.textBaseline = 'bottom'; xPos = canvas.width - padding; yPos = canvas.height - padding; }
+        else if (posSelect === 'bottom-left') { context.textAlign = 'left'; context.textBaseline = 'bottom'; xPos = padding; yPos = canvas.height - padding; }
+        else if (posSelect === 'top-right') { context.textAlign = 'right'; context.textBaseline = 'top'; xPos = canvas.width - padding; yPos = padding; }
+        else if (posSelect === 'top-left') { context.textAlign = 'left'; context.textBaseline = 'top'; xPos = padding; yPos = padding; }
+        else if (posSelect === 'center') { context.textAlign = 'center'; context.textBaseline = 'middle'; xPos = canvas.width / 2; yPos = canvas.height / 2; }
+
+        context.fillText(text, xPos, yPos);
     }
 }
 
@@ -350,6 +582,7 @@ function handleFileSelection(file) {
     const reader = new FileReader();
     reader.onload = (event) => {
         origPreview.src = event.target.result;
+        origPreview.alt = "Vista previa original de " + file.name; // 🚀 INYECCIÓN SEO ALT
 
         // 🟢 Extraer dimensiones reales de la imagen Original
         origPreview.onload = () => {
@@ -540,8 +773,9 @@ compressBtn.addEventListener('click', () => {
         success(result) {
             const resUrl = URL.createObjectURL(result);
             resPreview.src = resUrl;
+            resPreview.alt = "Imagen optimizada sin perder calidad de " + currentFile.name; // 🚀 INYECCIÓN SEO ALT
 
-            // 🟢 Extraer dimensiones de la imagen Resultado (Útil si se usó Redimensionar)
+            // 🟢 Extraer dimensiones de la imagen Resultado
             resPreview.onload = () => {
                 resDimBadge.innerText = `${resPreview.naturalWidth} x ${resPreview.naturalHeight}`;
                 resDimBadge.classList.remove('hidden');

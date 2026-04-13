@@ -1,5 +1,5 @@
 // 🚀 Aumentamos la versión del caché a v4
-const CACHE_NAME = 'compressly-v6';
+const CACHE_NAME = 'compressly-v7';
 
 const urlsToCache = [
     '/',
@@ -53,6 +53,8 @@ self.addEventListener('activate', event => {
 
 // 🚀 ESTRATEGIA: "Network First" (Internet Primero, Caché de respaldo)
 self.addEventListener('fetch', event => {
+    // 🛡️ IGNORAR LAS PETICIONES POST (Como las del Chatbot) PARA EVITAR ERRORES
+    if (event.request.method !== 'GET') return;
     if (!event.request.url.startsWith('http')) return;
 
     event.respondWith(
