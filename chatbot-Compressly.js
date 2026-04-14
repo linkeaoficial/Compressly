@@ -286,7 +286,9 @@ html:not(.dark) .ai-input-area { background: rgba(255,255,255,0.5); }
 .ai-input {
     flex: 1; background: var(--glass-bg); border: 1px solid var(--glass-border);
     border-radius: 12px; padding: 10px 16px; color: var(--text-main);
-    font-family: inherit; outline: none; transition: border 0.3s;
+    font-family: inherit; 
+    font-size: 16px !important; /* 🚀 FIX: Evita el auto-zoom catastrófico en iPhone/iOS */
+    outline: none; transition: border 0.3s;
 }
 .ai-input:focus { border-color: var(--ai-glow); }
 
@@ -300,8 +302,12 @@ html:not(.dark) .ai-input-area { background: rgba(255,255,255,0.5); }
 
 @media (max-width: 480px) {
     .ai-chat-window {
-        width: 100vw; height: 100vh; top: 0; left: 0; right: 0; bottom: 0;
-        border-radius: 0; border: none; max-height: 100vh; z-index: 100000;
+        width: 100vw; 
+        height: 100%; height: 100dvh; /* 🚀 FIX: Alto dinámico. Se adapta perfectamente al teclado */
+        top: 0; left: 0; right: 0; bottom: 0;
+        border-radius: 0; border: none; 
+        max-height: 100%; max-height: 100dvh; 
+        z-index: 100000;
     }
     .ai-header { padding-top: 15px; }
 

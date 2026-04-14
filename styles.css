@@ -57,6 +57,19 @@ html:not(.dark) .group:hover .group-hover\:bg-primary-500 * {
     color: #ffffff !important;
 }
 
+/* 🚀 EXCEPCIÓN PROFESIONAL: Permite que botones blancos dentro de fondos morados mantengan su color */
+html:not(.dark) .keep-purple,
+html:not(.dark) .keep-purple * {
+    color: #7c3aed !important;
+}
+
+/* Protegemos específicamente los iconos SVG (Lucide) para que no se rellenen como manchas */
+html:not(.dark) .keep-purple svg,
+html:not(.dark) .keep-purple svg * {
+    stroke: #7c3aed !important;
+    fill: none !important;
+}
+
 /* Tipografía y Fondos */
 html {
     scroll-behavior: smooth;
@@ -155,14 +168,38 @@ body {
     /* 96px: compensa los 80px del header + 16px de respiro visual */
 }
 
-/* 🟢 Scrollbar personalizado para el Modal Legal */
+/* 🚀 SCROLLBAR GLOBAL MODERNA (Más gruesa y cómoda para PC) */
+::-webkit-scrollbar {
+    width: 16px;
+    /* 👈 Bien ancha para agarrarla fácil con el ratón */
+    height: 16px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(139, 92, 246, 0.5);
+    /* Morado base */
+    border-radius: 20px;
+    /* 🚀 EL TRUCO: Borde del mismo color que el fondo (--color-bg-base) para que parezca que la barra flota como una cápsula */
+    border: 4px solid var(--color-bg-base);
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(139, 92, 246, 0.9);
+    /* Se ilumina en morado fuerte al pasar el ratón */
+}
+
+/* 🟢 Mantenemos la barra delgada SOLO para cajitas pequeñas internas (como los modales o el selector de tamaño) */
 .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
+    background: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
@@ -272,4 +309,67 @@ html.dark .custom-option {
         padding: 0.5rem !important;
         margin-bottom: 0.5rem !important;
     }
+}
+
+/* 📍 =========================================
+   SCROLL SPY (Navegación Lateral por Puntos)
+   ========================================= */
+.scroll-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(139, 92, 246, 0.2);
+    /* Morado muy transparente */
+    border: 2px solid transparent;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    cursor: pointer;
+}
+
+/* 🌟 Cuando el punto está activo (Estás en esa sección) */
+.scroll-dot.active {
+    background-color: var(--color-primary-500);
+    transform: scale(1.4);
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.6);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.scroll-dot:hover:not(.active) {
+    background-color: rgba(139, 92, 246, 0.6);
+    transform: scale(1.2);
+}
+
+/* 🏷️ El Tooltip que sale al lado del punto al pasar el ratón */
+.scroll-dot::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%) translateX(10px);
+    background: var(--color-surface-900);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--color-primary-500);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    pointer-events: none;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+html:not(.dark) .scroll-dot::after {
+    color: var(--color-primary-600);
+}
+
+/* Mostrar el Tooltip */
+.scroll-dot:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) translateX(0);
 }

@@ -111,14 +111,14 @@ const translations = {
         faq2_a: "Sí, nuestra interfaz está optimizada para dispositivos móviles. Puedes tomar una foto con tu cámara y comprimirla instantáneamente desde tu navegador Safari o Chrome en iOS y Android.",
         faq3_q: "¿Qué significa el Escudo Anti-Rastreo (GPS)?",
         faq3_a: "Las cámaras modernas (y los celulares) guardan datos invisibles dentro de la foto, llamados EXIF. Estos datos incluyen las coordenadas GPS exactas de dónde tomaste la foto, el tipo de cámara, y la fecha. El Escudo Anti-Rastreo (Función PRO) borra todos esos datos para que puedas subir tu imagen a internet sin revelar tu ubicación.",
-        footer_rights: "© 2026 Compressly Inc. Todos los derechos reservados.",
+        footer_rights: "© 2026 Compressly. Todos los derechos reservados.",
         footer_terms: "Términos y Condiciones",
         footer_privacy: "Política de Privacidad",
         legal_privacy_title: "Política de Privacidad",
         legal_terms_title: "Términos y Condiciones",
         legal_privacy_body: `<div class="space-y-6"><div><h3 class="text-white font-bold text-lg mb-2">1. Privacidad Local y Cero Servidores</h3><p class="leading-relaxed">En Compressly, garantizamos que tus imágenes nunca abandonan tu dispositivo. Todo el procesamiento y la compresión se realizan localmente en tu navegador web utilizando la memoria y el procesador de tu equipo.</p></div><div><h3 class="text-white font-bold text-lg mb-2">2. Recopilación de Datos</h3><p class="leading-relaxed">No recopilamos, almacenamos, copiamos ni transferimos tus imágenes, fotografías o archivos. Al no existir un servidor de subida en nuestra arquitectura, es técnicamente imposible para nosotros o para terceros acceder a tu contenido.</p></div><div><h3 class="text-white font-bold text-lg mb-2">3. Uso de Cookies Analíticas</h3><p class="leading-relaxed">Utilizamos cookies esenciales únicamente para el funcionamiento básico de la interfaz y para medir el tráfico general de la plataforma (estadísticas anónimas), sin rastrear ni almacenar información de identidad personal.</p></div></div>`,
-        legal_terms_body: `<div class="space-y-6"><div><h3 class="text-white font-bold text-lg mb-2">1. Uso de la Herramienta</h3><p class="leading-relaxed">Compressly se proporciona "tal cual". Al usar nuestra plataforma, aceptas utilizarla bajo tu propia responsabilidad. Es la herramienta ideal para la optimización de catálogos e-commerce, diseño web y fotografía profesional.</p></div><div><h3 class="text-white font-bold text-lg mb-2">2. Límites de Uso General</h3><p class="leading-relaxed">El uso de la herramienta está optimizado para procesar archivos de hasta 10MB de peso por imagen en los formatos oficialmente permitidos (JPG, PNG, WEBP).</p></div><div><h3 class="text-white font-bold text-lg mb-2">3. Propiedad Intelectual y Marca</h3><p class="leading-relaxed">El código fuente, los algoritmos de interfaz, el diseño visual y la marca "Compressly" son propiedad exclusiva de Compressly Inc. No está permitida la copia, clonación o reproducción del diseño de esta interfaz sin autorización explícita.</p></div></div>`,
-        profile_greeting: "Hola, Creador 👋",
+        legal_terms_body: `<div class="space-y-6"><div><h3 class="text-white font-bold text-lg mb-2">1. Uso de la Herramienta</h3><p class="leading-relaxed">Compressly se proporciona "tal cual". Al usar nuestra plataforma, aceptas utilizarla bajo tu propia responsabilidad. Es la herramienta ideal para la optimización de catálogos e-commerce, diseño web y fotografía profesional.</p></div><div><h3 class="text-white font-bold text-lg mb-2">2. Límites de Uso General</h3><p class="leading-relaxed">El uso de la herramienta está optimizado para procesar archivos de hasta 10MB de peso por imagen en los formatos oficialmente permitidos (JPG, PNG, WEBP).</p></div><div><h3 class="text-white font-bold text-lg mb-2">3. Propiedad Intelectual y Marca</h3><p class="leading-relaxed">El código fuente, los algoritmos de interfaz, el diseño visual y la marca "Compressly" son propiedad exclusiva de Compressly. No está permitida la copia, clonación o reproducción del diseño de esta interfaz sin autorización explícita.</p></div></div>`,
+        profile_greeting: "Hola, Creador",
         profile_status: "Perfil Local Activo",
         profile_impact_title: "Impacto Global",
         profile_impact_sub: "Has ahorrado al planeta:",
@@ -151,6 +151,13 @@ const translations = {
         wm_size_md: "Medio",
         wm_size_lg: "Grande",
         wm_logo_selected: "Logo seleccionado ✓",
+        // 🟢 NUEVOS: Textos para los Puntos de Navegación (Dots)
+        dot_inicio: "Inicio",
+        dot_features: "Características",
+        dot_how: "Cómo funciona",
+        dot_test: "Testimonios",
+        dot_price: "Planes PRO",
+        dot_faq: "FAQ",
     },
     en: {
         nav_features: "Features",
@@ -255,14 +262,14 @@ const translations = {
         faq2_a: "Yes, our interface is optimized for mobile devices. You can take a photo with your camera and compress it instantly from your Safari or Chrome browser on iOS and Android.",
         faq3_q: "What does the Anti-Tracking Shield (GPS) mean?",
         faq3_a: "Modern cameras (and phones) save invisible data inside the photo, called EXIF. This data includes the exact GPS coordinates of where you took the photo, the camera type, and the date. The Anti-Tracking Shield (PRO Feature) deletes all that data so you can upload your image to the internet without revealing your location.",
-        footer_rights: "© 2026 Compressly Inc. All rights reserved.",
+        footer_rights: "© 2026 Compressly. All rights reserved.",
         footer_terms: "Terms and Conditions",
         footer_privacy: "Privacy Policy",
         legal_privacy_title: "Privacy Policy",
         legal_terms_title: "Terms and Conditions",
         legal_privacy_body: `<div class="space-y-6"><div><h3 class="text-white font-bold text-lg mb-2">1. Local Privacy and Zero Servers</h3><p class="leading-relaxed">At Compressly, we guarantee that your images never leave your device. All processing and compression are done locally in your web browser using your device's memory and processor.</p></div><div><h3 class="text-white font-bold text-lg mb-2">2. Data Collection</h3><p class="leading-relaxed">We do not collect, store, copy, or transfer your images, photographs, or files. Since there is no upload server in our architecture, it is technically impossible for us or third parties to access your content.</p></div><div><h3 class="text-white font-bold text-lg mb-2">3. Use of Analytical Cookies</h3><p class="leading-relaxed">We use essential cookies solely for the basic functioning of the interface and to measure the general traffic of the platform (anonymous statistics), without tracking or storing personal identity information.</p></div></div>`,
-        legal_terms_body: `<div class="space-y-6"><div><h3 class="text-white font-bold text-lg mb-2">1. Use of the Tool</h3><p class="leading-relaxed">Compressly is provided "as is". By using our platform, you agree to use it at your own risk. It is the ideal tool for optimizing e-commerce catalogs, web design, and professional photography.</p></div><div><h3 class="text-white font-bold text-lg mb-2">2. General Usage Limits</h3><p class="leading-relaxed">The use of the tool is optimized to process files up to 10MB in weight per image in the officially supported formats (JPG, PNG, WEBP).</p></div><div><h3 class="text-white font-bold text-lg mb-2">3. Intellectual Property and Brand</h3><p class="leading-relaxed">The source code, interface algorithms, visual design, and the "Compressly" brand are the exclusive property of Compressly Inc. Copying, cloning, or reproducing the design of this interface without explicit authorization is not permitted.</p></div></div>`,
-        profile_greeting: "Hello, Creator 👋",
+        legal_terms_body: `<div class="space-y-6"><div><h3 class="text-white font-bold text-lg mb-2">1. Use of the Tool</h3><p class="leading-relaxed">Compressly is provided "as is". By using our platform, you agree to use it at your own risk. It is the ideal tool for optimizing e-commerce catalogs, web design, and professional photography.</p></div><div><h3 class="text-white font-bold text-lg mb-2">2. General Usage Limits</h3><p class="leading-relaxed">The use of the tool is optimized to process files up to 10MB in weight per image in the officially supported formats (JPG, PNG, WEBP).</p></div><div><h3 class="text-white font-bold text-lg mb-2">3. Intellectual Property and Brand</h3><p class="leading-relaxed">The source code, interface algorithms, visual design, and the "Compressly" brand are the exclusive property of Compressly. Copying, cloning, or reproducing the design of this interface without explicit authorization is not permitted.</p></div></div>`,
+        profile_greeting: "Hello, Creator",
         profile_status: "Local Profile Active",
         profile_impact_title: "Global Impact",
         profile_impact_sub: "You've saved the planet:",
@@ -295,6 +302,13 @@ const translations = {
         wm_size_md: "Medium",
         wm_size_lg: "Large",
         wm_logo_selected: "Logo selected ✓",
+        // 🟢 NUEVOS: Textos para los Puntos de Navegación (Dots)
+        dot_inicio: "Home",
+        dot_features: "Features",
+        dot_how: "How it Works",
+        dot_test: "Testimonials",
+        dot_price: "PRO Plans",
+        dot_faq: "FAQ",
     }
 };
 
@@ -315,6 +329,9 @@ function applyLanguage(lang) {
         if (translations[lang] && translations[lang][key]) {
             if (element.tagName === 'INPUT') {
                 element.placeholder = translations[lang][key];
+            } else if (element.classList.contains('scroll-dot')) {
+                // 🚀 TRUCO: Traduce el tooltip de los puntos
+                element.setAttribute('data-tooltip', translations[lang][key]);
             } else {
                 element.innerHTML = translations[lang][key];
             }

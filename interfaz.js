@@ -124,3 +124,41 @@ document.addEventListener('click', (e) => {
         if (customSelectArrow) customSelectArrow.classList.remove('custom-select-arrow-open');
     }
 });
+
+// 📍 ==========================================
+// RADAR SCROLL SPY (Navegación de Puntos Lateral MEJORADA)
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Quitamos 'main#inicio' de aquí, el sensor de tope máximo se encargará de él 🚀
+    const sections = document.querySelectorAll('#caracteristicas, #como-funciona, #testimonios, #precios, #faq');
+    const scrollDots = document.querySelectorAll('.scroll-dot');
+
+    if (sections.length > 0 && scrollDots.length > 0) {
+        // 2. Radar más preciso (Detecta cuando la sección cruza el centro de la pantalla)
+        const observerOptions = {
+            root: null,
+            rootMargin: '-20% 0px -40% 0px',
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    scrollDots.forEach(dot => dot.classList.remove('active'));
+                    const activeDot = document.querySelector(`.scroll-dot[href="#${entry.target.id}"]`);
+                    if (activeDot) activeDot.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => observer.observe(section));
+
+        // 🚀 3. SENSOR DE TOPE MÁXIMO (Asegura que "Inicio" se marque al llegar hasta arriba)
+        window.addEventListener('scroll', () => {
+            if (window.scrollY < 100) {
+                scrollDots.forEach(dot => dot.classList.remove('active'));
+                document.querySelector('.scroll-dot[href="#inicio"]')?.classList.add('active');
+            }
+        });
+    }
+});

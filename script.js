@@ -872,3 +872,4 @@ function setupDownload(url, filename) {
     downloadBtn.download = filename;
     downloadBtn.classList.remove('hidden');
 }
+

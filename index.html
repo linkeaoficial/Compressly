@@ -125,7 +125,7 @@
 
 </head>
 
-<body
+<body id="inicio"
     class="antialiased min-h-screen flex flex-col relative overflow-x-hidden bg-white dark:bg-[#09090B] text-black dark:text-white transition-colors duration-300">
 
     <div class="radial-bg"></div>
@@ -153,9 +153,9 @@
                         <span
                             class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-300 group-hover:w-full rounded-full"></span>
                     </a>
-                    <a href="#privacidad"
+                    <a href="blog-compressly/blog.html"
                         class="relative text-slate-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-white transition-colors text-sm font-bold group py-1">
-                        <span data-i18n="nav_privacy">Privacidad</span>
+                        <span>Blog</span>
                         <span
                             class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-300 group-hover:w-full rounded-full"></span>
                     </a>
@@ -224,6 +224,10 @@
                 <a href="#como-funciona"
                     class="mobile-link block px-4 py-3 text-base font-bold text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-colors">Cómo
                     Funciona</a>
+
+                <a href="blog-compressly/blog.html"
+                    class="mobile-link block px-4 py-3 text-base font-bold text-primary-500 hover:text-white hover:bg-white/5 rounded-xl transition-colors">Blog</a>
+
                 <a href="#privacidad"
                     class="mobile-link block px-4 py-3 text-base font-bold text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-colors">Privacidad</a>
 
@@ -249,19 +253,32 @@
         </div>
     </nav>
 
+    <div class="hidden lg:flex fixed right-6 top-1/2 -translate-y-1/2 flex-col gap-5 z-[80]">
+        <a href="#inicio" class="scroll-dot active" data-i18n="dot_inicio" data-tooltip="Inicio"></a>
+        <a href="#caracteristicas" class="scroll-dot" data-i18n="dot_features" data-tooltip="Características"></a>
+        <a href="#como-funciona" class="scroll-dot" data-i18n="dot_how" data-tooltip="Cómo Funciona"></a>
+        <a href="#testimonios" class="scroll-dot" data-i18n="dot_test" data-tooltip="Testimonios"></a>
+        <a href="#precios" class="scroll-dot" data-i18n="dot_price" data-tooltip="Planes PRO"></a>
+        <a href="#faq" class="scroll-dot" data-i18n="dot_faq" data-tooltip="Preguntas"></a>
+    </div>
+
     <main class="flex-grow relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12 md:py-16">
 
         <div class="text-center mb-16 relative z-20 px-4">
             <h1
                 class="text-5xl md:text-7xl font-extrabold text-black dark:text-white mb-6 tracking-tighter leading-tight drop-shadow-lg transition-colors duration-300">
+
                 <span data-i18n="hero_title_1">Compresión inteligente.</span><br class="block">
+
                 <span data-i18n="hero_title_2"
                     class="text-4xl md:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] leading-none">Calidad
                     intacta.</span>
             </h1>
+
             <p data-i18n="hero_subtitle" class="text-gray-400 max-w-2xl mx-auto text-lg md:text-xl font-medium px-2">
-                Optimización premium que
-                ocurre directamente en tu dispositivo. Más velocidad, máxima privacidad y sin límites.</p>
+                Optimización premium que ocurre directamente en tu dispositivo. Más velocidad, máxima privacidad y sin
+                límites.
+            </p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
@@ -875,7 +892,7 @@
             </div>
         </div>
 
-        <div class="mt-32 pt-16 border-t border-white/5">
+        <div id="testimonios" class="mt-32 pt-16 border-t border-white/5 scroll-mt-24">
             <div class="text-center mb-16">
                 <h2 class="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-4"><span
                         data-i18n="test_title_1">Amado por</span> <span data-i18n="test_title_2"
@@ -896,8 +913,10 @@
                                 class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i>
                         </div>
                         <p data-i18n="test1_text" class="text-slate-700 dark:text-gray-300 font-medium mb-6 italic">
-                            "Gestión de tiendas e-commerce es mi día a día. Antes perdía horas subiendo fotos a otros
-                            compresores. Con Compressly, proceso lotes enteros en segundos y sin salir de mi pantalla."
+                            "Gestión de tiendas e-commerce es mi día a día. Antes perdía horas subiendo fotos a
+                            otros
+                            compresores. Con Compressly, proceso lotes enteros en segundos y sin salir de mi
+                            pantalla."
                         </p>
                     </div>
                     <div class="flex items-center gap-4">
@@ -942,7 +961,8 @@
                                 class="w-4 h-4 fill-current"></i><i data-lucide="star"
                                 class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i>
                         </div>
-                        <p data-i18n="test3_text" class="text-slate-700 dark:text-gray-300 font-medium mb-6 italic">"La
+                        <p data-i18n="test3_text" class="text-slate-700 dark:text-gray-300 font-medium mb-6 italic">
+                            "La
                             herramienta de renombrado en lote y organización por carpetas ZIP me ahorró pagarle a un
                             asistente. Es una locura que esto funcione directo en el navegador."</p>
                     </div>
@@ -1058,9 +1078,10 @@
             </div>
         </div>
 
-        <div class="mt-32 pt-16 border-t border-white/5 mb-8">
+        <div id="faq" class="mt-32 pt-16 border-t border-white/5 mb-8 scroll-mt-24">
             <div class="text-center mb-12">
-                <h2 data-i18n="faq_title" class="text-3xl font-extrabold text-slate-900 dark:text-white mb-4">Preguntas
+                <h2 data-i18n="faq_title" class="text-3xl font-extrabold text-slate-900 dark:text-white mb-4">
+                    Preguntas
                     Frecuentes</h2>
             </div>
 
@@ -1076,8 +1097,10 @@
                     <p data-i18n="faq1_a"
                         class="text-slate-500 dark:text-gray-400 text-sm font-medium mt-4 leading-relaxed">
                         Absolutamente. Compressly utiliza una tecnología llamada WebAssembly. Todo el motor de
-                        compresión se descarga en tu navegador la primera vez que entras. Cuando arrastras una foto, es
-                        el procesador de tu computadora el que hace el trabajo pesado, no nuestros servidores. Por eso
+                        compresión se descarga en tu navegador la primera vez que entras. Cuando arrastras una foto,
+                        es
+                        el procesador de tu computadora el que hace el trabajo pesado, no nuestros servidores. Por
+                        eso
                         es tan rápido y 100% privado.</p>
                 </details>
 
@@ -1090,7 +1113,8 @@
                             class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform"></i>
                     </summary>
                     <p data-i18n="faq2_a"
-                        class="text-slate-500 dark:text-gray-400 text-sm font-medium mt-4 leading-relaxed">Sí, nuestra
+                        class="text-slate-500 dark:text-gray-400 text-sm font-medium mt-4 leading-relaxed">Sí,
+                        nuestra
                         interfaz está optimizada para dispositivos móviles. Puedes tomar una foto con tu cámara y
                         comprimirla instantáneamente desde tu navegador Safari o Chrome en iOS y Android.</p>
                 </details>
@@ -1104,7 +1128,8 @@
                             class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform"></i>
                     </summary>
                     <p data-i18n="faq3_a"
-                        class="text-slate-500 dark:text-gray-400 text-sm font-medium mt-4 leading-relaxed">Las cámaras
+                        class="text-slate-500 dark:text-gray-400 text-sm font-medium mt-4 leading-relaxed">Las
+                        cámaras
                         modernas (y los celulares) guardan datos invisibles dentro de la foto, llamados EXIF. Estos
                         datos incluyen las coordenadas GPS exactas de dónde tomaste la foto, el tipo de cámara, y la
                         fecha. El Escudo Anti-Rastreo (Función PRO) borra todos esos datos para que puedas subir tu
@@ -1123,7 +1148,7 @@
                     <span class="font-extrabold text-white tracking-tight">Compressly</span>
                 </div>
                 <div class="flex flex-col items-center gap-3 text-center order-last md:order-none">
-                    <p data-i18n="footer_rights" class="text-gray-500 text-sm font-semibold px-6">© 2026 Compressly Inc.
+                    <p data-i18n="footer_rights" class="text-gray-500 text-sm font-semibold px-6">© 2026 Compressly.
                         Todos los derechos reservados.</p>
                     <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs font-bold text-gray-500">
                         <button id="btnTerminos" data-i18n="footer_terms"
@@ -1220,11 +1245,20 @@
                         class="w-14 h-14 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl flex items-center justify-center shadow-lg">
                         <i data-lucide="user" class="w-7 h-7 text-white"></i>
                     </div>
-                    <div>
-                        <h2 data-i18n="profile_greeting" class="text-xl font-extrabold text-slate-900 dark:text-white">
-                            Hola, Creador 👋</h2>
-                        <p data-i18n="profile_status" class="text-sm font-medium text-slate-500 dark:text-gray-400">
-                            Perfil Local Activo</p>
+                    <div class="flex flex-col justify-center">
+                        <h2 data-i18n="profile_greeting"
+                            class="text-xl font-extrabold text-slate-900 dark:text-white leading-tight">
+                            Hola, Creador
+                        </h2>
+
+                        <p class="text-sm font-medium text-slate-500 dark:text-gray-400 flex items-center gap-2 mt-1">
+                            <span class="relative flex h-3 w-3 items-center justify-center shrink-0">
+                                <span
+                                    class="animate-ping absolute h-full w-full rounded-full bg-green-500 opacity-40"></span>
+                                <span class="relative rounded-full h-2 w-2 bg-green-500"></span>
+                            </span>
+                            <span data-i18n="profile_status">Perfil Local Activo</span>
+                        </p>
                     </div>
                 </div>
                 <button id="closeProfileBtn"

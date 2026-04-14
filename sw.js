@@ -4,6 +4,8 @@ const CACHE_NAME = 'compressly-v7';
 const urlsToCache = [
     '/',
     '/index.html',
+    '/blog-compressly/blog.html',
+    '/blog-compressly/articulo-shopify.html',
     '/styles.css',
     '/idioma.js',
     '/interfaz.js',

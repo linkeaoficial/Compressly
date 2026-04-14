@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cómo optimizar imágenes para Shopify y vender más | Compressly</title>
+    <meta name="description"
+        content="Guía definitiva para dueños de Shopify: Aprende a comprimir tus fotos de producto para mejorar la velocidad de carga y aumentar tus conversiones.">
+
+    <meta name="theme-color" content="#0B0B13">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { primary: { 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed' } }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../styles.css">
+
+    <script>
+        if (localStorage.getItem('theme') === 'light') document.documentElement.classList.remove('dark');
+        else document.documentElement.classList.add('dark');
+    </script>
+</head>
+
+<body
+    class="antialiased min-h-screen flex flex-col relative overflow-x-hidden bg-white dark:bg-[#09090B] text-black dark:text-white transition-colors duration-300">
+
+    <div class="radial-bg"></div>
+
+    <nav class="relative z-50 glass-nav border-b border-white/5 sticky top-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="../index.html" class="flex items-center gap-3 group">
+                    <div
+                        class="bg-primary-500 p-2 rounded-xl text-white shadow-[0_0_15px_rgba(139,92,246,0.5)] group-hover:scale-105 transition-transform">
+                        <i data-lucide="zap" class="w-6 h-6"></i>
+                    </div>
+                    <span
+                        class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Compressly</span>
+                </a>
+                <div class="flex items-center gap-2 md:gap-6">
+                    <button id="themeToggle"
+                        class="text-gray-500 dark:text-gray-400 hover:text-primary-500 focus:outline-none p-2 rounded-lg transition-colors">
+                        <i data-lucide="sun" class="w-5 h-5 hidden dark:block text-yellow-400"></i>
+                        <i data-lucide="moon" class="w-5 h-5 block dark:hidden text-gray-400"></i>
+                    </button>
+
+                    <a href="blog.html" title="Volver al Blog"
+                        class="text-slate-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-white transition-colors text-xs md:text-sm font-bold flex items-center gap-1.5 md:bg-transparent bg-slate-100 dark:bg-white/5 px-3 py-2 md:px-0 md:py-0 rounded-lg md:rounded-none">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                        <span>Blog</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow relative z-10 max-w-4xl mx-auto w-full px-4 py-16">
+
+        <header class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+                <span
+                    class="text-[10px] font-black bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 px-3 py-1 rounded-md uppercase tracking-widest">eCommerce</span>
+                <span class="text-xs text-gray-400 font-bold flex items-center gap-1"><i data-lucide="clock"
+                        class="w-4 h-4"></i> 5 min de lectura</span>
+            </div>
+            <h1
+                class="text-4xl md:text-6xl font-black text-slate-900 dark:text-white mb-8 tracking-tighter leading-tight">
+                Cómo optimizar las imágenes de tu tienda <span class="text-primary-500">Shopify</span> para vender más
+            </h1>
+            <div
+                class="flex items-center gap-4 p-4 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+                <div
+                    class="w-12 h-12 bg-primary-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                    C</div>
+                <div>
+                    <p class="text-sm font-black text-slate-900 dark:text-white">Equipo Compressly</p>
+                    <p class="text-xs text-gray-500 font-medium">Estrategas de Rendimiento Web</p>
+                </div>
+            </div>
+        </header>
+
+        <article
+            class="prose prose-slate dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 space-y-8 font-medium leading-relaxed">
+
+            <p class="text-xl leading-relaxed text-slate-700 dark:text-gray-200">
+                Si tienes una tienda en Shopify, sabes que la primera impresión lo es todo. Pero hay un asesino
+                silencioso de ventas que podrías estar ignorando: <b>la velocidad de carga.</b>
+            </p>
+
+            <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1200&q=80"
+                alt="Optimización eCommerce" class="w-full rounded-3xl border border-white/10 shadow-2xl">
+
+            <h2 class="text-2xl font-black text-slate-900 dark:text-white pt-4 flex items-center gap-3">
+                <i data-lucide="gauge" class="w-6 h-6 text-primary-500"></i> La Regla de los 3 Segundos
+            </h2>
+            <p>
+                Estudios de Google demuestran que si tu página tarda más de 3 segundos en cargar, el <b>40% de tus
+                    visitantes</b> se irá antes de ver tu primer producto. En el mundo del eCommerce, las imágenes de
+                alta resolución son las principales culpables de este retraso.
+            </p>
+
+            <div
+                class="bento-card p-8 border-l-4 border-l-primary-500 bg-primary-500/10 shadow-[0_0_25px_rgba(139,92,246,0.15)] my-10">
+                <p class="text-lg md:text-2xl italic font-black text-slate-900 dark:text-white leading-relaxed">
+                    "Optimizar no es bajar la calidad, es eliminar el peso innecesario que tus clientes no necesitan
+                    descargar."
+                </p>
+            </div>
+
+            <h2 class="text-2xl font-black text-slate-900 dark:text-white pt-4">1. El Formato WebP: Tu Mejor Aliado</h2>
+            <p>
+                Olvídate del JPG tradicional si quieres velocidad extrema. El formato <b>WebP</b> ofrece una compresión
+                hasta un 30% superior manteniendo la misma nitidez. Shopify ya soporta este formato, y usar herramientas
+                como <a href="../index.html" class="text-primary-500 hover:underline">Compressly</a> te permite
+                convertir
+                tus fotos automáticamente al instante.
+            </p>
+
+            <h2 class="text-2xl font-black text-slate-900 dark:text-white pt-4">2. Dimensiones Inteligentes</h2>
+            <p>
+                Subir una foto de 5000px tomada con tu cámara profesional es un error costoso. La mayoría de los
+                monitores y celulares no muestran más de 2000px de ancho. Redimensionar tus fotos antes de subirlas
+                ahorra megabytes enteros de datos.
+            </p>
+
+            <section
+                class="my-12 p-8 rounded-3xl bg-gradient-to-br from-primary-500 to-purple-700 text-white shadow-2xl relative overflow-hidden group">
+                <div class="absolute right-0 top-0 w-64 h-64 bg-white/10 blur-[80px] rounded-full"></div>
+                <div class="relative z-10 text-center sm:text-left">
+                    <h3 class="text-3xl font-black mb-4 tracking-tight">¿Quieres optimizar tu tienda ahora?</h3>
+                    <p class="text-primary-100 mb-8 font-bold">Usa Compressly gratis y prepara tus fotos para Shopify en
+                        segundos, sin servidores y con privacidad total.</p>
+
+                    <button onclick="window.location.href='../index.html'"
+                        class="keep-purple bg-white text-primary-600 px-8 py-4 rounded-2xl font-black text-lg hover:scale-105 active:scale-95 transition-all shadow-xl flex items-center gap-3 mx-auto sm:mx-0">
+                        <i data-lucide="zap" class="w-6 h-6"></i> Empezar Gratis
+                    </button>
+                </div>
+            </section>
+
+            <h2 class="text-2xl font-black text-slate-900 dark:text-white pt-4">3. Limpia el "Rastro" de tus fotos</h2>
+            <p>
+                Muchas fotos de producto contienen metadatos ocultos (EXIF) como la fecha, el modelo de cámara e incluso
+                coordenadas GPS si se tomaron con un móvil. Esto no solo añade peso innecesario, sino que expone tu
+                privacidad. Usar un **Escudo Anti-Rastreo** es vital para una marca profesional.
+            </p>
+
+        </article>
+
+        <footer
+            class="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-bold text-gray-500">Compartir:</span>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="shareArticle('x')"
+                        class="p-2.5 rounded-lg bg-slate-100 dark:bg-white/5 hover:text-primary-500 transition-all active:scale-90 flex items-center justify-center"
+                        title="Compartir en X">
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                            <path
+                                d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+                        </svg>
+                    </button>
+                    <button onclick="shareArticle('linkedin')"
+                        class="p-2.5 rounded-lg bg-slate-100 dark:bg-white/5 hover:text-primary-500 transition-all active:scale-90 flex items-center justify-center"
+                        title="Compartir en LinkedIn">
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                            <path
+                                d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                        </svg>
+                    </button>
+                    <button onclick="shareArticle('whatsapp')"
+                        class="p-2.5 rounded-lg bg-slate-100 dark:bg-white/5 hover:text-primary-500 transition-all active:scale-90 flex items-center justify-center"
+                        title="Compartir por WhatsApp">
+                        <i data-lucide="message-circle" class="w-5 h-5"></i>
+                    </button>
+                    <button id="copyBtn" onclick="copyArticleLink()"
+                        class="p-2.5 rounded-lg bg-slate-100 dark:bg-white/5 hover:text-primary-500 transition-all active:scale-90 flex items-center justify-center"
+                        title="Copiar enlace">
+                        <i data-lucide="link" class="w-5 h-5"></i>
+                    </button>
+                    <button onclick="nativeShare()"
+                        class="p-2.5 rounded-lg bg-primary-500/10 text-primary-500 hover:bg-primary-500 hover:text-white border border-primary-500/20 transition-all active:scale-90 flex items-center justify-center shadow-sm"
+                        title="Más opciones para compartir">
+                        <i data-lucide="share-2" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+            <a href="blog.html"
+                class="text-sm font-black text-primary-500 hover:text-primary-400 flex items-center gap-2 group mt-4 sm:mt-0">
+                Explorar más artículos <i data-lucide="chevron-right"
+                    class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+            </a>
+        </footer>
+    </main>
+
+    <footer
+        class="w-full relative z-50 border-t border-gray-200 dark:border-white/10 bg-white dark:bg-[#09090B] py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-gray-500 text-sm font-semibold">© 2026 Compressly. El Blog del Creador.</p>
+        </div>
+    </footer>
+
+    <script src="../interfaz.js"></script>
+    <script src="../notificaciones.js"></script>
+
+    <script>
+        // 📢 Lógica Maestra de Compartir (Actualizada para 𝕏)
+        function shareArticle(platform) {
+            const url = encodeURIComponent(window.location.href);
+            const title = encodeURIComponent(document.title);
+            let shareUrl = "";
+
+            switch (platform) {
+                case 'x': shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${title}`; break;
+                case 'linkedin': shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`; break;
+                case 'whatsapp': shareUrl = `https://api.whatsapp.com/send?text=${title}%20${url}`; break;
+            }
+
+            if (shareUrl) window.open(shareUrl, '_blank', 'width=600,height=400');
+        }
+
+        // 🔗 Lógica de Copiar Link
+        function copyArticleLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                if (typeof Notify !== 'undefined') {
+                    Notify.show('¡Enlace Copiado!', 'El link se ha guardado en tu portapapeles.', 'success');
+                }
+                const btn = document.getElementById('copyBtn');
+                const original = btn.innerHTML;
+                btn.innerHTML = '<i data-lucide="check" class="w-5 h-5 text-green-500"></i>';
+                lucide.createIcons();
+                setTimeout(() => { btn.innerHTML = original; lucide.createIcons(); }, 2000);
+            });
+        }
+
+        // 🌐 NUEVA: Lógica de Compartir Nativo (Menú del sistema operativo)
+        function nativeShare() {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.title,
+                    text: '¡Mira este increíble artículo en Compressly!',
+                    url: window.location.href
+                }).catch(err => {
+                    console.log('El usuario canceló el diálogo de compartir', err);
+                });
+            } else {
+                // Si el navegador no lo soporta (ej. algunas PC antiguas), copiamos el link automáticamente
+                copyArticleLink();
+                if (typeof Notify !== 'undefined') {
+                    Notify.show('Aviso', 'Hemos copiado el enlace porque tu navegador no soporta el menú nativo.', 'info');
+                }
+            }
+        }
+
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
