@@ -10,6 +10,7 @@
         content="Aprende estrategias avanzadas, trucos de rendimiento y secretos de optimización de imágenes para eCommerce, fotografía y diseño web.">
 
     <meta name="theme-color" content="#0B0B13">
+    <link rel="icon" type="image/png" href="../imagenes/compressly_logo2.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -30,20 +31,60 @@
         if (localStorage.getItem('theme') === 'light') document.documentElement.classList.remove('dark');
         else document.documentElement.classList.add('dark');
     </script>
+
+    <style>
+        @keyframes textSlideUp {
+
+            0%,
+            15% {
+                transform: translateY(0);
+            }
+
+            25%,
+            40% {
+                transform: translateY(-56px);
+            }
+
+            50%,
+            65% {
+                transform: translateY(-112px);
+            }
+
+            75%,
+            90% {
+                transform: translateY(-168px);
+            }
+
+            100% {
+                transform: translateY(-224px);
+            }
+        }
+
+        .animate-text-slide {
+            animation: textSlideUp 10s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .search-modal-open {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateY(0) !important;
+        }
+    </style>
 </head>
 
-<body
-    class="antialiased min-h-screen flex flex-col relative overflow-x-hidden bg-white dark:bg-[#09090B] text-black dark:text-white transition-colors duration-300">
+<body id="inicio"
+    class="antialiased min-h-screen flex flex-col relative overflow-x-hidden bg-white dark:bg-[#09090B] text-black dark:text-white">
 
     <div class="radial-bg"></div>
 
     <nav class="relative z-50 glass-nav border-b border-white/5 sticky top-0">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
-                <a href="../index.html" class="flex items-center gap-3 group">
+                <a href="../index.html" class="flex items-center gap-3 group cursor-pointer">
                     <div
-                        class="bg-primary-500 p-2 rounded-xl text-white shadow-[0_0_15px_rgba(139,92,246,0.5)] group-hover:scale-105 transition-transform">
-                        <i data-lucide="zap" class="w-6 h-6"></i>
+                        class="bg-primary-500 p-1.5 rounded-xl text-white shadow-[0_0_15px_rgba(139,92,246,0.5)] transition-transform duration-300 group-hover:scale-110">
+                        <img src="../imagenes/compressly_logo.png" alt="Logo Compressly"
+                            class="w-7 h-7 object-contain translate-x-[0.8px] -translate-y-[1.5px]">
                     </div>
                     <span
                         class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Compressly</span>
@@ -72,7 +113,7 @@
         </div>
     </nav>
 
-    <header class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+    <header class="relative z-40 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
         <span
             class="text-xs font-bold text-primary-500 bg-primary-500/10 px-4 py-2 rounded-full border border-primary-500/20 uppercase tracking-widest mb-6 inline-block shadow-[0_0_15px_rgba(139,92,246,0.2)]">
             <i data-lucide="book-open" class="w-4 h-4 inline-block mr-1 mb-0.5"></i> Recursos y Estrategias
@@ -85,6 +126,42 @@
         <p class="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto text-lg md:text-xl font-medium mb-10">
             Guías, secretos técnicos y estrategias de rendimiento web para dominar el mundo digital.
         </p>
+
+        <div class="relative max-w-2xl mx-auto mb-12 z-50 text-left" id="searchContainer">
+            <div
+                class="relative flex items-center bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-2xl shadow-[0_10px_30px_rgba(139,92,246,0.1)] focus-within:border-primary-500 focus-within:shadow-[0_0_20px_rgba(139,92,246,0.2)] transition-all duration-300 h-14 overflow-hidden group">
+
+                <i data-lucide="search"
+                    class="w-5 h-5 text-slate-400 ml-4 shrink-0 group-focus-within:text-primary-500 transition-colors"></i>
+
+                <div id="searchPlaceholder"
+                    class="absolute left-12 top-0 bottom-0 flex flex-col justify-start overflow-hidden pointer-events-none h-full w-[80%]">
+                    <div class="animate-text-slide flex flex-col text-sm font-bold text-gray-400">
+                        <span class="h-14 flex items-center">Busca "Imágenes para eCommerce"...</span>
+                        <span class="h-14 flex items-center">Busca "Optimización WebP"...</span>
+                        <span class="h-14 flex items-center">Busca "Seguridad y Privacidad"...</span>
+                        <span class="h-14 flex items-center">Busca "Acelerar mi tienda"...</span>
+                        <span class="h-14 flex items-center">Busca "Imágenes para eCommerce"...</span>
+                    </div>
+                </div>
+
+                <input type="text" id="blogSearchInput" autocomplete="off"
+                    class="w-full h-full bg-transparent border-none text-sm font-bold text-slate-800 dark:text-white px-3 focus:outline-none focus:ring-0 relative z-10"
+                    onfocus="document.getElementById('searchPlaceholder').style.opacity = '0'"
+                    onblur="if(!this.value) document.getElementById('searchPlaceholder').style.opacity = '1'">
+
+                <button id="clearSearchBtn"
+                    class="hidden mr-2 text-slate-400 hover:text-red-500 transition-colors p-2 rounded-xl hover:bg-red-500/10 relative z-20">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div id="searchResultsModal"
+                class="absolute top-[110%] left-0 w-full bg-white/95 dark:bg-[#18181b]/95 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_50px_rgba(139,92,246,0.1)] opacity-0 invisible translate-y-[-10px] transition-all duration-300 overflow-hidden">
+                <div class="max-h-[300px] overflow-y-auto custom-scrollbar p-2" id="searchResultsContainer">
+                </div>
+            </div>
+        </div>
 
         <div class="flex flex-wrap justify-center gap-3 mb-4">
             <button onclick="filterBlog('todos')" data-filter="todos"
@@ -231,7 +308,8 @@
         <div
             class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="flex items-center gap-2 opacity-70">
-                <i data-lucide="zap" class="w-5 h-5 text-[#A78BFA]"></i>
+                <img src="../imagenes/compressly_logo2.png" alt="Logo"
+                    class="w-5 h-5 object-contain translate-x-[4px] -translate-y-[0.9px]">
                 <span class="font-extrabold text-slate-900 dark:text-white tracking-tight">Compressly</span>
             </div>
             <p class="text-gray-500 text-sm font-semibold">© 2026 Compressly. El Blog del Creador.</p>
@@ -306,6 +384,78 @@
                 }
             }
         });
+
+        // 🔍 LÓGICA DEL BUSCADOR MÁGICO
+        const searchInput = document.getElementById('blogSearchInput');
+        const searchModal = document.getElementById('searchResultsModal');
+        const resultsContainer = document.getElementById('searchResultsContainer');
+        const clearSearchBtn = document.getElementById('clearSearchBtn');
+        const searchContainer = document.getElementById('searchContainer');
+
+        // Extraer la información de los artículos que ya están en la página
+        const allArticles = document.querySelectorAll('article[data-category]');
+        const articlesData = Array.from(allArticles).map(article => {
+            return {
+                title: article.querySelector('h2').innerText,
+                category: article.getAttribute('data-category'),
+                url: article.getAttribute('onclick').match(/'([^']+)'/)[1], // Saca el enlace
+                desc: article.querySelector('p').innerText,
+                img: article.querySelector('img').src // 🚀 NUEVO: Extraemos la imagen
+            }
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+
+            if (query.length > 0) {
+                clearSearchBtn.classList.remove('hidden');
+                searchModal.classList.add('search-modal-open');
+
+                // Filtrar los artículos
+                const filtered = articlesData.filter(a =>
+                    a.title.toLowerCase().includes(query) ||
+                    a.desc.toLowerCase().includes(query) ||
+                    a.category.toLowerCase().includes(query)
+                );
+
+                if (filtered.length > 0) {
+                    resultsContainer.innerHTML = filtered.map(a => `
+                        <a href="${a.url}" class="flex items-center p-3 hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl transition-colors group gap-4">
+                            <img src="${a.img}" class="w-12 h-12 rounded-lg object-cover shrink-0 shadow-sm border border-slate-200 dark:border-white/10" alt="Miniatura">
+                            <div class="flex flex-col min-w-0">
+                                <span class="text-sm font-extrabold text-slate-900 dark:text-white group-hover:text-primary-500 transition-colors truncate">${a.title}</span>
+                                <span class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">${a.desc}</span>
+                            </div>
+                        </a>
+                    `).join('');
+                } else {
+                    resultsContainer.innerHTML = `
+                        <div class="p-6 text-center text-sm font-bold text-gray-500 flex flex-col items-center">
+                            <i data-lucide="ghost" class="w-8 h-8 mb-2 opacity-50 text-primary-500"></i>
+                            Oops, no hay artículos mágicos para "${e.target.value}"
+                        </div>
+                    `;
+                    lucide.createIcons();
+                }
+            } else {
+                clearSearchBtn.classList.add('hidden');
+                searchModal.classList.remove('search-modal-open');
+            }
+        });
+
+        clearSearchBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            searchInput.focus();
+            searchInput.dispatchEvent(new Event('input')); // Activar el cierre del modal
+        });
+
+        // Ocultar modal si hacen clic en cualquier otra parte de la pantalla
+        document.addEventListener('click', (e) => {
+            if (!searchContainer.contains(e.target)) {
+                searchModal.classList.remove('search-modal-open');
+            }
+        });
+
     </script>
 </body>
 

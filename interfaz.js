@@ -162,3 +162,102 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// 📱 ==========================================
+// LÓGICA DE INSTALACIÓN PWA (BOTÓN INSTALAR)
+// ==========================================
+let deferredPrompt;
+const installBtn = document.getElementById('installAppBtn');
+const installBtnMobile = document.getElementById('installAppBtnMobile');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Evitar que el navegador muestre el aviso automático
+    e.preventDefault();
+    deferredPrompt = e;
+    // Mostrar los botones solo si la app se puede instalar
+    if (installBtn) installBtn.classList.remove('hidden');
+    if (installBtnMobile) installBtnMobile.classList.remove('hidden');
+});
+
+async function handleInstallClick() {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+        if (installBtn) installBtn.classList.add('hidden');
+        if (installBtnMobile) installBtnMobile.classList.add('hidden');
+    }
+    deferredPrompt = null;
+}
+
+if (installBtn) installBtn.addEventListener('click', handleInstallClick);
+if (installBtnMobile) installBtnMobile.addEventListener('click', handleInstallClick);
+
+window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    if (installBtn) installBtn.classList.add('hidden');
+    if (installBtnMobile) installBtnMobile.classList.add('hidden');
+    // Usamos tu sistema de notificaciones premium
+    if (typeof Notify !== 'undefined') {
+        Notify.show('¡App Instalada!', 'Compressly ya está lista en tu pantalla de inicio.', 'success');
+    }
+});
+
+
+// 📊 ==========================================
+// DASHBOARD ANALÍTICO (Estadísticas Locales)
+// ==========================================
+let appStats = JSON.parse(localStorage.getItem('compressly_stats')) || { total: 0, webp: 0, jpg: 0, png: 0 };
+
+window.updateDashboardStats = function (format) {
+    appStats.total += 1;
+    if (format === 'webp') appStats.webp += 1;
+    else if (format === 'jpg' || format === 'jpeg') appStats.jpg += 1;
+    else if (format === 'png') appStats.png += 1;
+
+    localStorage.setItem('compressly_stats', JSON.stringify(appStats));
+    renderDashboard();
+};
+
+window.renderDashboard = function () {
+    const statTotal = document.getElementById('statTotalImages');
+    if (!statTotal) return; // Si no estamos en el index, salir
+
+    statTotal.innerText = appStats.total;
+    if (appStats.total === 0) return;
+
+    // Calcular porcentajes exactos
+    const webpPct = Math.round((appStats.webp / appStats.total) * 100);
+    const jpgPct = Math.round((appStats.jpg / appStats.total) * 100);
+    const pngPct = Math.round((appStats.png / appStats.total) * 100);
+
+    // Mover las barras
+    document.getElementById('statWebpPct').innerText = webpPct + '%';
+    document.getElementById('barWebp').style.width = webpPct + '%';
+
+    document.getElementById('statJpgPct').innerText = jpgPct + '%';
+    document.getElementById('barJpg').style.width = jpgPct + '%';
+
+    document.getElementById('statPngPct').innerText = pngPct + '%';
+    document.getElementById('barPng').style.width = pngPct + '%';
+};
+
+// Cargar las barritas apenas se inicie la web
+document.addEventListener('DOMContentLoaded', renderDashboard);
+
+// 📈 ==========================================
+// LÓGICA DE BARRA DE PROGRESO DE LECTURA
+// ==========================================
+window.addEventListener('scroll', () => {
+    const progressBar = document.getElementById("readingProgress");
+    if (!progressBar) return;
+
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    // 🚀 Restamos 60px al alto total para compensar márgenes y garantizar que llegue al final
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight - 60;
+
+    let scrolled = (winScroll / height) * 100;
+    if (scrolled > 100) scrolled = 100; // 🚀 Tope de seguridad para que la barra no se salga del monitor
+
+    progressBar.style.width = scrolled + "%";
+});

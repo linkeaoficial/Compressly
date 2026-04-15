@@ -77,8 +77,8 @@ const translations = {
         test_sub: "Miles de gigabytes ahorrados alrededor del mundo.",
         test1_text: '"Gestión de tiendas e-commerce es mi día a día. Antes perdía horas subiendo fotos a otros compresores. Con Compressly, proceso lotes enteros en segundos y sin salir de mi pantalla."',
         test1_role: "Diseñadora Web",
-        test2_text: '"Como fotógrafo, mi peor pesadilla es que roben mi material original. Saber que la compresión es 100% local en mi RAM me da una tranquilidad impagable."',
-        test2_role: "Fotógrafo Profesional",
+        test2_text: '"Como fotógrafa, mi peor pesadilla es que roben mi material original. Saber que la compresión es 100% local en mi RAM me da una tranquilidad impagable."',
+        test2_role: "Fotógrafa Profesional",
         test3_text: '"La herramienta de renombrado en lote y organización por carpetas ZIP me ahorró pagarle a un asistente. Es una locura que esto funcione directo en el navegador."',
         test3_role: "Agencia de Marketing",
         price_title_1: "Planes Simples,",
@@ -158,6 +158,12 @@ const translations = {
         dot_test: "Testimonios",
         dot_price: "Planes PRO",
         dot_faq: "FAQ",
+        // 🚀 NUEVOS: Dashboard y Beta
+        beta_badge: "Beta",
+        beta_access: "Acceso Beta",
+        stat_title: "Estadísticas de Uso",
+        stat_processed: "Imágenes Procesadas:",
+        stat_webp: "WebP (Recomendado)",
     },
     en: {
         nav_features: "Features",
@@ -309,6 +315,12 @@ const translations = {
         dot_test: "Testimonials",
         dot_price: "PRO Plans",
         dot_faq: "FAQ",
+        // 🚀 NUEVOS: Dashboard y Beta
+        beta_badge: "Beta",
+        beta_access: "Beta Access",
+        stat_title: "Usage Statistics",
+        stat_processed: "Processed Images:",
+        stat_webp: "WebP (Recommended)",
     }
 };
 

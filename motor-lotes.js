@@ -57,6 +57,9 @@ async function processBatchEngine() {
             // Determinar extensión correcta
             const extension = selectedFormat === 'image/webp' ? 'webp' : (selectedFormat === 'image/png' ? 'png' : (selectedFormat === 'image/jpeg' ? 'jpg' : file.name.split('.').pop()));
 
+            // 📊 DASHBOARD: Sumar al lote de estadísticas
+            if (typeof updateDashboardStats === 'function') updateDashboardStats(extension);
+
             // Lógica Inteligente de Renombrado
             const customPrefix = document.getElementById('batchRenameInput').value.trim();
             let newFileName = '';

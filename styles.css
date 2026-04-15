@@ -75,7 +75,6 @@ html {
     scroll-behavior: smooth;
     background-color: var(--color-bg-base);
     /* 🟢 Hace que el fondo cambie suavemente */
-    transition: background-color 0.3s ease;
 }
 
 body {
@@ -195,16 +194,26 @@ body {
 
 /* 🟢 Mantenemos la barra delgada SOLO para cajitas pequeñas internas (como los modales o el selector de tamaño) */
 .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
+    width: 12px;
+    /* 🚀 Más ancho temporalmente para dar espacio al margen invisible */
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
+    margin-top: 16px;
+    /* 🚀 Corta la barra con más fuerza arriba para salvar la curva */
+    margin-bottom: 16px;
+    /* 🚀 Corta la barra con más fuerza abajo para salvar la curva */
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: var(--color-primary-500);
-    border-radius: 10px;
+    background-color: #8b5cf6;
+    /* 🚀 COLOR HEX EXACTO: Nunca falla en ningún navegador */
+    border-radius: 20px;
+    border: 4px solid transparent;
+    /* 🚀 Margen invisible a los lados */
+    background-clip: content-box;
+    /* 🚀 Hace que la barra se vea como una "píldora" flotante súper premium */
 }
 
 /* =========================================
@@ -294,20 +303,43 @@ html.dark .custom-option {
 /* 📱 AJUSTES DE MODALES PARA MÓVILES PEQUEÑOS */
 @media (max-width: 480px) {
 
+    /* Quitamos el margen lateral del fondo oscuro */
+    #profileModal,
+    #premiumModal,
+    #legalModal {
+        padding: 0 !important;
+    }
+
     #profileContent,
     #premiumContent,
     #modalContent {
-        padding: 1.25rem !important;
-        /* Menos padding interno */
-        max-height: 98vh !important;
-        /* Deja ver un poco del fondo */
+        padding: 1.5rem !important;
+        max-height: 100dvh !important;
+        /* Altura total de la pantalla */
+        height: 100dvh !important;
+        width: 100% !important;
+        /* Ancho total */
+        max-width: 100% !important;
+        border-radius: 0 !important;
+        /* Pegado a los bordes, sin curvas */
+        border: none !important;
         overflow-y: auto !important;
-        /* Permite scroll si la pantalla es muy pequeña */
+        scrollbar-width: none;
+        /* Oculta scroll en Firefox */
+        -ms-overflow-style: none;
+        /* Oculta scroll en IE */
+    }
+
+    /* Ocultar barra de scroll en Chrome/Safari/Edge móvil */
+    #profileContent::-webkit-scrollbar,
+    #premiumContent::-webkit-scrollbar,
+    #modalContent::-webkit-scrollbar {
+        display: none !important;
     }
 
     #profileContent .bg-green-500\/10 {
-        padding: 0.5rem !important;
-        margin-bottom: 0.5rem !important;
+        padding: 1rem !important;
+        margin-bottom: 1rem !important;
     }
 }
 
@@ -372,4 +404,27 @@ html:not(.dark) .scroll-dot::after {
     opacity: 1;
     visibility: visible;
     transform: translateY(-50%) translateX(0);
+}
+
+/* 📈 BARRA DE PROGRESO DE LECTURA PREMIUM */
+.progress-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    /* Muy delgada para que sea elegante */
+    background: transparent;
+    z-index: 100;
+    /* Por encima de la navegación */
+    pointer-events: none;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(to right, #a78bfa, #8b5cf6);
+    /* Degradado morado */
+    width: 0%;
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+    transition: width 0.1s ease-out;
 }

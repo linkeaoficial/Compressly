@@ -814,14 +814,16 @@ compressBtn.addEventListener('click', () => {
                 updateGlobalImpact(savedBytes);
             }
 
-            // 🚀 NUEVA NOTIFICACIÓN DE ÉXITO
-            Notify.show('¡Misión Cumplida!', savingPercent > 0 ? `Ahorraste un ${savingPercent}% de peso.` : 'Calidad optimizada al máximo.', 'success');
-
-            // 🟢 SOLUCIÓN: Detectar la extensión correcta basándonos en el botón seleccionado
-            // Determinar extensión correcta
+            // 🟢 SOLUCIÓN: Detectar la extensión correcta
             const extension = selectedFormat === 'image/webp' ? 'webp' :
                 (selectedFormat === 'image/png' ? 'png' :
                     (selectedFormat === 'image/jpeg' ? 'jpg' : currentFile.name.split('.').pop()));
+
+            // 📊 DASHBOARD: Registrar el formato usado en el perfil del usuario
+            if (typeof updateDashboardStats === 'function') updateDashboardStats(extension);
+
+            // 🚀 NUEVA NOTIFICACIÓN DE ÉXITO
+            Notify.show('¡Misión Cumplida!', savingPercent > 0 ? `Ahorraste un ${savingPercent}% de peso.` : 'Calidad optimizada al máximo.', 'success');
 
             // 🟢 Mostrar el formato final en la tarjetita visual
             resFormatBadge.innerText = extension.toUpperCase();

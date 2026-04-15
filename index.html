@@ -33,7 +33,8 @@
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="apple-touch-icon" href="imagenes/compressly_logo2.png">
+    <link rel="icon" type="image/png" href="imagenes/compressly_logo2.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -133,11 +134,17 @@
     <nav class="relative z-50 glass-nav border-b border-white/5 sticky top-0">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
-                <div class="flex items-center gap-3">
-                    <div class="bg-primary-500 p-2 rounded-xl text-white shadow-[0_0_15px_rgba(139,92,246,0.5)]">
-                        <i data-lucide="zap" class="w-6 h-6"></i>
+                <div class="flex items-center gap-3 group cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <div
+                        class="bg-primary-500 p-1.5 rounded-xl text-white shadow-[0_0_15px_rgba(139,92,246,0.5)] transition-transform duration-300 group-hover:scale-110">
+                        <img src="imagenes/compressly_logo.png" alt="Logo Compressly"
+                            class="w-7 h-7 object-contain translate-x-[0.8px] -translate-y-[1.5px]">
                     </div>
-                    <span class="text-2xl font-extrabold text-white tracking-tight">Compressly</span>
+                    <div class="flex items-center">
+                        <span class="text-2xl font-extrabold text-white tracking-tight">Compressly</span>
+                        <span data-i18n="beta_badge"
+                            class="ml-2 px-2 py-0.5 text-[10px] font-black bg-primary-500/20 text-primary-400 rounded-md border border-primary-500/30 uppercase tracking-widest hidden md:inline-block">Beta</span>
+                    </div>
                 </div>
 
                 <div class="hidden md:flex items-center gap-8">
@@ -171,7 +178,7 @@
                     </div>
 
                     <button id="langToggle"
-                        class="text-gray-400 hover:text-primary-400 focus:outline-none p-2 rounded-lg transition-colors flex items-center gap-1 font-bold text-sm">
+                        class="text-gray-400 hover:text-primary-400 focus:text-primary-500 focus:outline-none p-2 rounded-lg transition-colors flex items-center gap-1 font-bold text-sm">
                         <i data-lucide="globe" class="w-5 h-5"></i> <span id="currentLang">ES</span>
                     </button>
 
@@ -186,6 +193,12 @@
                         <i data-lucide="crown" class="w-4 h-4 text-yellow-400"></i> Go Pro
                     </button>
 
+                    <button id="installAppBtn"
+                        class="hidden bg-primary-500/10 hover:bg-primary-500/20 text-primary-400 p-2.5 rounded-full transition-all border border-primary-500/20 hover:scale-105"
+                        title="Instalar App">
+                        <i data-lucide="download" class="w-5 h-5"></i>
+                    </button>
+
                     <button id="btnProfileDesktop"
                         class="bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-white p-2.5 rounded-full transition-all border border-slate-200 dark:border-white/10 hover:scale-105"
                         title="Mi Perfil">
@@ -195,7 +208,7 @@
 
                 <div class="md:hidden flex items-center gap-2">
                     <button id="langToggleMobile"
-                        class="relative text-gray-400 hover:text-primary-400 focus:outline-none p-2 rounded-lg transition-colors flex items-center justify-center">
+                        class="relative text-gray-400 focus:text-primary-500 focus:outline-none p-2 rounded-lg transition-all active:scale-95 flex items-center justify-center">
                         <span id="currentLangMobile"
                             class="absolute -top-0.5 -right-0.5 text-[9px] font-black bg-primary-500 text-white px-1 rounded-sm leading-tight tracking-tighter shadow-sm z-10">ES</span>
                         <i data-lucide="globe" class="w-6 h-6"></i>
@@ -245,6 +258,11 @@
                     <i data-lucide="crown" class="w-5 h-5 text-yellow-300"></i> Go Pro
                 </button>
 
+                <button id="installAppBtnMobile"
+                    class="hidden w-full mt-2 bg-primary-500/10 hover:bg-primary-500/20 text-primary-400 px-5 py-3.5 rounded-xl text-base font-bold transition-all flex items-center justify-center gap-2 active:scale-95 border border-primary-500/20">
+                    <i data-lucide="download" class="w-5 h-5"></i> Instalar App
+                </button>
+
                 <button id="btnProfileMobile"
                     class="w-full mt-2 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-white px-5 py-3.5 rounded-xl text-base font-bold transition-all flex items-center justify-center gap-2 active:scale-95 border border-slate-200 dark:border-white/10">
                     <i data-lucide="user" class="w-5 h-5"></i> Mi Perfil
@@ -265,6 +283,13 @@
     <main class="flex-grow relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12 md:py-16">
 
         <div class="text-center mb-16 relative z-20 px-4">
+            <div class="mb-2 flex justify-center md:hidden">
+                <span data-i18n="beta_access"
+                    class="px-3 py-1 text-[9px] font-black bg-primary-500/10 text-primary-500 dark:text-primary-400 rounded-full border border-primary-500/20 uppercase tracking-widest">
+                    Acceso Beta
+                </span>
+            </div>
+
             <h1
                 class="text-5xl md:text-7xl font-extrabold text-black dark:text-white mb-6 tracking-tighter leading-tight drop-shadow-lg transition-colors duration-300">
 
@@ -907,69 +932,69 @@
                 <div class="bento-card p-8 flex flex-col justify-between">
                     <div>
                         <div class="flex items-center gap-1 text-yellow-400 mb-4">
-                            <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star"
-                                class="w-4 h-4 fill-current"></i><i data-lucide="star"
-                                class="w-4 h-4 fill-current"></i><i data-lucide="star"
-                                class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
                         </div>
                         <p data-i18n="test1_text" class="text-slate-700 dark:text-gray-300 font-medium mb-6 italic">
-                            "Gestión de tiendas e-commerce es mi día a día. Antes perdía horas subiendo fotos a
-                            otros
-                            compresores. Con Compressly, proceso lotes enteros en segundos y sin salir de mi
-                            pantalla."
+                            "Gestión de tiendas e-commerce es mi día a día. Antes perdía horas subiendo fotos a otros
+                            compresores. Con Compressly, proceso lotes enteros en segundos y sin salir de mi pantalla."
                         </p>
                     </div>
                     <div class="flex items-center gap-4">
-                        <div
-                            class="w-10 h-10 bg-gradient-to-br from-blue-400 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold">
-                            M</div>
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80"
+                            alt="María Gómez"
+                            class="w-10 h-10 rounded-full object-cover border border-white/10 shadow-sm">
                         <div>
                             <h4 class="text-sm font-extrabold text-slate-900 dark:text-white">María Gómez</h4>
                             <p data-i18n="test1_role" class="text-xs text-gray-500">Diseñadora Web</p>
                         </div>
                     </div>
                 </div>
+
                 <div
                     class="bento-card p-8 flex flex-col justify-between relative overflow-hidden border-primary-500/30">
                     <div class="absolute top-0 right-0 w-24 h-24 bg-primary-500/10 rounded-bl-[100px] -z-10"></div>
                     <div>
                         <div class="flex items-center gap-1 text-yellow-400 mb-4">
-                            <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star"
-                                class="w-4 h-4 fill-current"></i><i data-lucide="star"
-                                class="w-4 h-4 fill-current"></i><i data-lucide="star"
-                                class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
                         </div>
                         <p data-i18n="test2_text" class="text-slate-700 dark:text-gray-300 font-medium mb-6 italic">
-                            "Como fotógrafo, mi peor pesadilla es que roben mi material original. Saber que la
+                            "Como fotógrafa, mi peor pesadilla es que roben mi material original. Saber que la
                             compresión es 100% local en mi RAM me da una tranquilidad impagable."</p>
                     </div>
                     <div class="flex items-center gap-4">
-                        <div
-                            class="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-full flex items-center justify-center text-white font-bold">
-                            C</div>
+                        <img src="https://images.unsplash.com/photo-1554080353-a576cf803bda?auto=format&fit=crop&w=150&q=80"
+                            alt="Laura M." class="w-10 h-10 rounded-full object-cover border border-white/10 shadow-sm">
                         <div>
-                            <h4 class="text-sm font-extrabold text-slate-900 dark:text-white">Carlos R.</h4>
-                            <p data-i18n="test2_role" class="text-xs text-gray-500">Fotógrafo Profesional</p>
+                            <h4 class="text-sm font-extrabold text-slate-900 dark:text-white">Laura M.</h4>
+                            <p data-i18n="test2_role" class="text-xs text-gray-500">Fotógrafa Profesional</p>
                         </div>
                     </div>
                 </div>
+
                 <div class="bento-card p-8 flex flex-col justify-between">
                     <div>
                         <div class="flex items-center gap-1 text-yellow-400 mb-4">
-                            <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star"
-                                class="w-4 h-4 fill-current"></i><i data-lucide="star"
-                                class="w-4 h-4 fill-current"></i><i data-lucide="star"
-                                class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
                         </div>
                         <p data-i18n="test3_text" class="text-slate-700 dark:text-gray-300 font-medium mb-6 italic">
-                            "La
-                            herramienta de renombrado en lote y organización por carpetas ZIP me ahorró pagarle a un
+                            "La herramienta de renombrado en lote y organización por carpetas ZIP me ahorró pagarle a un
                             asistente. Es una locura que esto funcione directo en el navegador."</p>
                     </div>
                     <div class="flex items-center gap-4">
-                        <div
-                            class="w-10 h-10 bg-gradient-to-br from-orange-400 to-red-600 rounded-full flex items-center justify-center text-white font-bold">
-                            D</div>
+                        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=150&q=80"
+                            alt="David L." class="w-10 h-10 rounded-full object-cover border border-white/10 shadow-sm">
                         <div>
                             <h4 class="text-sm font-extrabold text-slate-900 dark:text-white">David L.</h4>
                             <p data-i18n="test3_role" class="text-xs text-gray-500">Agencia de Marketing</p>
@@ -977,166 +1002,167 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div id="precios" class="mt-32 pt-16 border-t border-white/5 scroll-mt-24">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-4"><span
-                        data-i18n="price_title_1">Planes Simples,</span>
-                    <span data-i18n="price_title_2"
-                        class="text-transparent bg-clip-text bg-gradient-to-r from-[#A78BFA] to-[#7C3AED]">Poder
-                        Absoluto</span>
-                </h2>
-                <p data-i18n="price_sub" class="text-gray-500 dark:text-gray-400 font-medium">Elige el plan que se
-                    adapte a tu flujo de
-                    trabajo.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                <div
-                    class="bento-card p-8 flex flex-col transition-all hover:border-slate-300 dark:hover:border-white/20">
-                    <h3 data-i18n="plan_free_title" class="text-xl font-extrabold text-slate-900 dark:text-white mb-2">
-                        Esencial</h3>
-                    <p data-i18n="plan_free_sub" class="text-sm text-gray-500 mb-6">Perfecto para uso ocasional y
-                        personal.</p>
-                    <div class="mb-8">
-                        <span data-i18n="plan_free_price"
-                            class="text-4xl font-black text-slate-900 dark:text-white">$0</span>
-                        <span data-i18n="plan_free_time" class="text-gray-500 font-bold">/ de por vida</span>
-                    </div>
-                    <ul class="space-y-4 mb-8 flex-grow">
-                        <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
-                            <i data-lucide="check" class="w-5 h-5 text-green-500 shrink-0"></i> <span
-                                data-i18n="plan_free_f1">Compresión Local (Sin internet)</span>
-                        </li>
-                        <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
-                            <i data-lucide="check" class="w-5 h-5 text-green-500 shrink-0"></i> <span
-                                data-i18n="plan_free_f2">Hasta 3 imágenes a la vez</span>
-                        </li>
-                        <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
-                            <i data-lucide="check" class="w-5 h-5 text-green-500 shrink-0"></i> <span
-                                data-i18n="plan_free_f3">Máximo 10MB por archivo</span>
-                        </li>
-                        <li class="flex items-start gap-3 text-sm font-bold text-gray-400 line-through">
-                            <i data-lucide="x" class="w-5 h-5 text-gray-300 dark:text-gray-600 shrink-0"></i> <span
-                                data-i18n="plan_free_f4">Redimensionar y Marca de Agua</span>
-                        </li>
-                        <li class="flex items-start gap-3 text-sm font-bold text-gray-400 line-through">
-                            <i data-lucide="x" class="w-5 h-5 text-gray-300 dark:text-gray-600 shrink-0"></i> <span
-                                data-i18n="plan_free_f5">Carpetas ZIP y Escudo GPS</span>
-                        </li>
-                    </ul>
-                    <button data-i18n="plan_free_btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
-                        class="w-full bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 text-slate-800 dark:text-white font-extrabold py-4 rounded-xl transition-colors">Comenzar
-                        Gratis</button>
+            <div id="precios" class="mt-32 pt-16 border-t border-white/5 scroll-mt-24">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-4"><span
+                            data-i18n="price_title_1">Planes Simples,</span>
+                        <span data-i18n="price_title_2"
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-[#A78BFA] to-[#7C3AED]">Poder
+                            Absoluto</span>
+                    </h2>
+                    <p data-i18n="price_sub" class="text-gray-500 dark:text-gray-400 font-medium">Elige el plan que se
+                        adapte a tu flujo de
+                        trabajo.</p>
                 </div>
 
-                <div
-                    class="bento-card p-8 flex flex-col relative border-primary-500/50 shadow-[0_0_40px_rgba(139,92,246,0.15)] transform md:-translate-y-4">
-                    <div class="absolute top-0 right-8 transform -translate-y-1/2">
-                        <span data-i18n="plan_pro_badge"
-                            class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">Más
-                            Popular</span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                    <div
+                        class="bento-card p-8 flex flex-col transition-all hover:border-slate-300 dark:hover:border-white/20">
+                        <h3 data-i18n="plan_free_title"
+                            class="text-xl font-extrabold text-slate-900 dark:text-white mb-2">
+                            Esencial</h3>
+                        <p data-i18n="plan_free_sub" class="text-sm text-gray-500 mb-6">Perfecto para uso ocasional y
+                            personal.</p>
+                        <div class="mb-8">
+                            <span data-i18n="plan_free_price"
+                                class="text-4xl font-black text-slate-900 dark:text-white">$0</span>
+                            <span data-i18n="plan_free_time" class="text-gray-500 font-bold">/ de por vida</span>
+                        </div>
+                        <ul class="space-y-4 mb-8 flex-grow">
+                            <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                                <i data-lucide="check" class="w-5 h-5 text-green-500 shrink-0"></i> <span
+                                    data-i18n="plan_free_f1">Compresión Local (Sin internet)</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                                <i data-lucide="check" class="w-5 h-5 text-green-500 shrink-0"></i> <span
+                                    data-i18n="plan_free_f2">Hasta 3 imágenes a la vez</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                                <i data-lucide="check" class="w-5 h-5 text-green-500 shrink-0"></i> <span
+                                    data-i18n="plan_free_f3">Máximo 10MB por archivo</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-bold text-gray-400 line-through">
+                                <i data-lucide="x" class="w-5 h-5 text-gray-300 dark:text-gray-600 shrink-0"></i> <span
+                                    data-i18n="plan_free_f4">Redimensionar y Marca de Agua</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-bold text-gray-400 line-through">
+                                <i data-lucide="x" class="w-5 h-5 text-gray-300 dark:text-gray-600 shrink-0"></i> <span
+                                    data-i18n="plan_free_f5">Carpetas ZIP y Escudo GPS</span>
+                            </li>
+                        </ul>
+                        <button data-i18n="plan_free_btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+                            class="w-full bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 text-slate-800 dark:text-white font-extrabold py-4 rounded-xl transition-colors">Comenzar
+                            Gratis</button>
                     </div>
-                    <h3
-                        class="text-xl font-extrabold text-primary-600 dark:text-primary-400 mb-2 flex items-center gap-2">
-                        <i data-lucide="crown" class="w-5 h-5"></i> PRO
-                    </h3>
-                    <p data-i18n="plan_pro_sub" class="text-sm text-gray-500 mb-6">Para agencias, fotógrafos y
-                        e-commerce.</p>
-                    <div class="mb-8">
-                        <span data-i18n="plan_pro_price"
-                            class="text-4xl font-black text-slate-900 dark:text-white">$19.99</span>
-                        <span data-i18n="plan_pro_time" class="text-gray-500 font-bold">/ de por vida</span>
+
+                    <div
+                        class="bento-card p-8 flex flex-col relative border-primary-500/50 shadow-[0_0_40px_rgba(139,92,246,0.15)] transform md:-translate-y-4">
+                        <div class="absolute top-0 right-8 transform -translate-y-1/2">
+                            <span data-i18n="plan_pro_badge"
+                                class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">Más
+                                Popular</span>
+                        </div>
+                        <h3
+                            class="text-xl font-extrabold text-primary-600 dark:text-primary-400 mb-2 flex items-center gap-2">
+                            <i data-lucide="crown" class="w-5 h-5"></i> PRO
+                        </h3>
+                        <p data-i18n="plan_pro_sub" class="text-sm text-gray-500 mb-6">Para agencias, fotógrafos y
+                            e-commerce.</p>
+                        <div class="mb-8">
+                            <span data-i18n="plan_pro_price"
+                                class="text-4xl font-black text-slate-900 dark:text-white">$19.99</span>
+                            <span data-i18n="plan_pro_time" class="text-gray-500 font-bold">/ de por vida</span>
+                        </div>
+                        <ul class="space-y-4 mb-8 flex-grow">
+                            <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                                <i data-lucide="check" class="w-5 h-5 text-primary-500 shrink-0"></i> <span
+                                    data-i18n="plan_pro_f1">Lotes ILIMITADOS de imágenes</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                                <i data-lucide="check" class="w-5 h-5 text-primary-500 shrink-0"></i> <span
+                                    data-i18n="plan_pro_f2">Archivos gigantes (+10MB)</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                                <i data-lucide="check" class="w-5 h-5 text-primary-500 shrink-0"></i> <span
+                                    data-i18n="plan_pro_f3">Marca de Agua y Redimensionado Inteligente</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                                <i data-lucide="check" class="w-5 h-5 text-primary-500 shrink-0"></i> <span
+                                    data-i18n="plan_pro_f4">Escudo Anti-Rastreo (GPS)</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                                <i data-lucide="check" class="w-5 h-5 text-primary-500 shrink-0"></i> <span
+                                    data-i18n="plan_pro_f5">Organización automática en ZIP</span>
+                            </li>
+                        </ul>
+                        <button data-i18n="plan_pro_btn" onclick="openPremiumModal(true)"
+                            class="w-full bg-primary-500 hover:bg-primary-600 active:scale-95 text-white font-extrabold py-4 rounded-xl transition-all shadow-lg hover:shadow-primary-500/30 flex justify-center items-center gap-2">
+                            <i data-lucide="crown" class="w-5 h-5 text-yellow-300"></i> Obtener Acceso PRO
+                        </button>
                     </div>
-                    <ul class="space-y-4 mb-8 flex-grow">
-                        <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
-                            <i data-lucide="check" class="w-5 h-5 text-primary-500 shrink-0"></i> <span
-                                data-i18n="plan_pro_f1">Lotes ILIMITADOS de imágenes</span>
-                        </li>
-                        <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
-                            <i data-lucide="check" class="w-5 h-5 text-primary-500 shrink-0"></i> <span
-                                data-i18n="plan_pro_f2">Archivos gigantes (+10MB)</span>
-                        </li>
-                        <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
-                            <i data-lucide="check" class="w-5 h-5 text-primary-500 shrink-0"></i> <span
-                                data-i18n="plan_pro_f3">Marca de Agua y Redimensionado Inteligente</span>
-                        </li>
-                        <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
-                            <i data-lucide="check" class="w-5 h-5 text-primary-500 shrink-0"></i> <span
-                                data-i18n="plan_pro_f4">Escudo Anti-Rastreo (GPS)</span>
-                        </li>
-                        <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
-                            <i data-lucide="check" class="w-5 h-5 text-primary-500 shrink-0"></i> <span
-                                data-i18n="plan_pro_f5">Organización automática en ZIP</span>
-                        </li>
-                    </ul>
-                    <button data-i18n="plan_pro_btn" onclick="openProfileModal()"
-                        class="w-full bg-primary-500 hover:bg-primary-600 active:scale-95 text-white font-extrabold py-4 rounded-xl transition-all shadow-lg hover:shadow-primary-500/30">Obtener
-                        Acceso PRO</button>
                 </div>
             </div>
-        </div>
 
-        <div id="faq" class="mt-32 pt-16 border-t border-white/5 mb-8 scroll-mt-24">
-            <div class="text-center mb-12">
-                <h2 data-i18n="faq_title" class="text-3xl font-extrabold text-slate-900 dark:text-white mb-4">
-                    Preguntas
-                    Frecuentes</h2>
+            <div id="faq" class="mt-32 pt-16 border-t border-white/5 mb-8 scroll-mt-24">
+                <div class="text-center mb-12">
+                    <h2 data-i18n="faq_title" class="text-3xl font-extrabold text-slate-900 dark:text-white mb-4">
+                        Preguntas
+                        Frecuentes</h2>
+                </div>
+
+                <div class="max-w-3xl mx-auto space-y-4">
+                    <details
+                        class="group bg-slate-100 dark:bg-black/30 border border-slate-200 dark:border-white/5 rounded-2xl p-6 transition-all hover:border-primary-500/30 cursor-pointer">
+                        <summary
+                            class="flex justify-between items-center font-bold text-slate-800 dark:text-white outline-none">
+                            <span data-i18n="faq1_q">¿De verdad mis fotos no se suben a internet?</span>
+                            <i data-lucide="chevron-down"
+                                class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform"></i>
+                        </summary>
+                        <p data-i18n="faq1_a"
+                            class="text-slate-500 dark:text-gray-400 text-sm font-medium mt-4 leading-relaxed">
+                            Absolutamente. Compressly utiliza una tecnología llamada WebAssembly. Todo el motor de
+                            compresión se descarga en tu navegador la primera vez que entras. Cuando arrastras una foto,
+                            es
+                            el procesador de tu computadora el que hace el trabajo pesado, no nuestros servidores. Por
+                            eso
+                            es tan rápido y 100% privado.</p>
+                    </details>
+
+                    <details
+                        class="group bg-slate-100 dark:bg-black/30 border border-slate-200 dark:border-white/5 rounded-2xl p-6 transition-all hover:border-primary-500/30 cursor-pointer">
+                        <summary
+                            class="flex justify-between items-center font-bold text-slate-800 dark:text-white outline-none">
+                            <span data-i18n="faq2_q">¿Puedo usar Compressly en mi celular?</span>
+                            <i data-lucide="chevron-down"
+                                class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform"></i>
+                        </summary>
+                        <p data-i18n="faq2_a"
+                            class="text-slate-500 dark:text-gray-400 text-sm font-medium mt-4 leading-relaxed">Sí,
+                            nuestra
+                            interfaz está optimizada para dispositivos móviles. Puedes tomar una foto con tu cámara y
+                            comprimirla instantáneamente desde tu navegador Safari o Chrome en iOS y Android.</p>
+                    </details>
+
+                    <details
+                        class="group bg-slate-100 dark:bg-black/30 border border-slate-200 dark:border-white/5 rounded-2xl p-6 transition-all hover:border-primary-500/30 cursor-pointer">
+                        <summary
+                            class="flex justify-between items-center font-bold text-slate-800 dark:text-white outline-none">
+                            <span data-i18n="faq3_q">¿Qué significa el Escudo Anti-Rastreo (GPS)?</span>
+                            <i data-lucide="chevron-down"
+                                class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform"></i>
+                        </summary>
+                        <p data-i18n="faq3_a"
+                            class="text-slate-500 dark:text-gray-400 text-sm font-medium mt-4 leading-relaxed">Las
+                            cámaras
+                            modernas (y los celulares) guardan datos invisibles dentro de la foto, llamados EXIF. Estos
+                            datos incluyen las coordenadas GPS exactas de dónde tomaste la foto, el tipo de cámara, y la
+                            fecha. El Escudo Anti-Rastreo (Función PRO) borra todos esos datos para que puedas subir tu
+                            imagen a internet sin revelar tu ubicación.</p>
+                    </details>
+                </div>
             </div>
-
-            <div class="max-w-3xl mx-auto space-y-4">
-                <details
-                    class="group bg-slate-100 dark:bg-black/30 border border-slate-200 dark:border-white/5 rounded-2xl p-6 transition-all hover:border-primary-500/30 cursor-pointer">
-                    <summary
-                        class="flex justify-between items-center font-bold text-slate-800 dark:text-white outline-none">
-                        <span data-i18n="faq1_q">¿De verdad mis fotos no se suben a internet?</span>
-                        <i data-lucide="chevron-down"
-                            class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform"></i>
-                    </summary>
-                    <p data-i18n="faq1_a"
-                        class="text-slate-500 dark:text-gray-400 text-sm font-medium mt-4 leading-relaxed">
-                        Absolutamente. Compressly utiliza una tecnología llamada WebAssembly. Todo el motor de
-                        compresión se descarga en tu navegador la primera vez que entras. Cuando arrastras una foto,
-                        es
-                        el procesador de tu computadora el que hace el trabajo pesado, no nuestros servidores. Por
-                        eso
-                        es tan rápido y 100% privado.</p>
-                </details>
-
-                <details
-                    class="group bg-slate-100 dark:bg-black/30 border border-slate-200 dark:border-white/5 rounded-2xl p-6 transition-all hover:border-primary-500/30 cursor-pointer">
-                    <summary
-                        class="flex justify-between items-center font-bold text-slate-800 dark:text-white outline-none">
-                        <span data-i18n="faq2_q">¿Puedo usar Compressly en mi celular?</span>
-                        <i data-lucide="chevron-down"
-                            class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform"></i>
-                    </summary>
-                    <p data-i18n="faq2_a"
-                        class="text-slate-500 dark:text-gray-400 text-sm font-medium mt-4 leading-relaxed">Sí,
-                        nuestra
-                        interfaz está optimizada para dispositivos móviles. Puedes tomar una foto con tu cámara y
-                        comprimirla instantáneamente desde tu navegador Safari o Chrome en iOS y Android.</p>
-                </details>
-
-                <details
-                    class="group bg-slate-100 dark:bg-black/30 border border-slate-200 dark:border-white/5 rounded-2xl p-6 transition-all hover:border-primary-500/30 cursor-pointer">
-                    <summary
-                        class="flex justify-between items-center font-bold text-slate-800 dark:text-white outline-none">
-                        <span data-i18n="faq3_q">¿Qué significa el Escudo Anti-Rastreo (GPS)?</span>
-                        <i data-lucide="chevron-down"
-                            class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform"></i>
-                    </summary>
-                    <p data-i18n="faq3_a"
-                        class="text-slate-500 dark:text-gray-400 text-sm font-medium mt-4 leading-relaxed">Las
-                        cámaras
-                        modernas (y los celulares) guardan datos invisibles dentro de la foto, llamados EXIF. Estos
-                        datos incluyen las coordenadas GPS exactas de dónde tomaste la foto, el tipo de cámara, y la
-                        fecha. El Escudo Anti-Rastreo (Función PRO) borra todos esos datos para que puedas subir tu
-                        imagen a internet sin revelar tu ubicación.</p>
-                </details>
-            </div>
-        </div>
     </main>
 
     <footer
@@ -1144,7 +1170,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="flex flex-col md:flex-row justify-between items-center gap-6">
                 <div class="flex items-center gap-2 opacity-70">
-                    <i data-lucide="zap" class="w-5 h-5 text-[#A78BFA]"></i>
+                    <img src="imagenes/compressly_logo2.png" alt="Logo"
+                        class="w-5 h-5 object-contain translate-x-[4px] -translate-y-[0.9px]">
                     <span class="font-extrabold text-white tracking-tight">Compressly</span>
                 </div>
                 <div class="flex flex-col items-center gap-3 text-center order-last md:order-none">
@@ -1196,7 +1223,7 @@
     <div id="premiumModal" class="fixed inset-0 z-[110] hidden items-center justify-center px-4">
         <div id="premiumOverlay"
             class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity cursor-pointer"></div>
-        <div class="bento-card relative z-10 w-full max-w-md flex flex-col shadow-[0_0_50px_rgba(250,204,21,0.15)] border-yellow-500/30 transform transition-all scale-95 opacity-0 p-8 text-center"
+        <div class="bento-card relative z-10 w-full max-w-md max-h-[90vh] overflow-y-auto custom-scrollbar flex flex-col shadow-[0_0_50px_rgba(250,204,21,0.15)] border-yellow-500/30 transform transition-all scale-95 opacity-0 p-8 text-center"
             id="premiumContent">
 
             <div
@@ -1206,16 +1233,19 @@
 
             <h2 data-i18n="premium_title" class="text-2xl font-extrabold text-slate-900 dark:text-white mb-3">Función
                 Exclusiva PRO</h2>
-            <p data-i18n="premium_desc"
-                class="text-slate-500 dark:text-gray-400 font-medium text-sm mb-8 leading-relaxed">
-                Estás intentando usar el poder total de Compressly. Únete a la lista VIP para ser de los primeros en
-                obtener una cuenta Premium.
+            <p class="text-slate-500 dark:text-gray-400 font-medium text-sm mb-8 leading-relaxed">
+                Estás a un paso del poder total. Obtén <b class="text-primary-500">acceso de por vida (Sin
+                    mensualidades)</b>. <br>
+                <span
+                    class="text-yellow-600 dark:text-yellow-400 text-xs uppercase tracking-widest font-black inline-block mt-2">¡Cupos
+                    de lanzamiento limitados!</span>
             </p>
 
             <form class="flex flex-col gap-3" onsubmit="event.preventDefault(); 
                 const email = this.querySelector('input[type=email]').value;
-                const msg = encodeURIComponent(`¡Hola! Quiero activar mi cuenta Compressly PRO por $19.99. Mi correo es: ${email}`);
-                window.open(`https://wa.me/580000000000?text=${msg}`, '_blank');
+                const msg = encodeURIComponent(`¡Hola! Quiero aprovechar la oferta de Compressly PRO por $19.99. Mi correo es: ${email}`);
+                // 🚀 Número actualizado: 584161356896
+                window.open(`https://wa.me/584161356896?text=${msg}`, '_blank');
                 closePremiumModal();">
 
                 <input type="email" required data-i18n="premium_email_ph" placeholder="Tu correo electrónico"
@@ -1236,7 +1266,7 @@
     <div id="profileModal" class="fixed inset-0 z-[120] hidden items-center justify-center px-4">
         <div id="profileOverlay"
             class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity cursor-pointer"></div>
-        <div class="bento-card relative z-10 w-full max-w-md flex flex-col shadow-2xl border-primary-500/30 transform transition-all scale-95 opacity-0 p-8"
+        <div class="bento-card relative z-10 w-full max-w-md max-h-[90vh] overflow-y-auto custom-scrollbar flex flex-col shadow-2xl border-primary-500/30 transform transition-all scale-95 opacity-0 p-8"
             id="profileContent">
 
             <div class="flex justify-between items-start border-b border-white/10 pb-5 mb-6">
@@ -1268,13 +1298,61 @@
             </div>
 
             <div
-                class="bg-green-500/10 border border-green-500/20 rounded-2xl p-5 mb-8 flex flex-col items-center text-center">
+                class="bg-green-500/10 border border-green-500/20 rounded-2xl p-5 mb-5 flex flex-col items-center text-center">
                 <i data-lucide="leaf" class="w-8 h-8 text-green-500 mb-2"></i>
                 <h3 data-i18n="profile_impact_title" class="text-slate-900 dark:text-white font-extrabold text-lg">
                     Impacto Global</h3>
                 <p data-i18n="profile_impact_sub" class="text-sm text-slate-500 dark:text-gray-400 font-medium mb-1">Has
                     ahorrado al planeta:</p>
                 <span id="profileTotalSaved" class="text-3xl font-black text-green-500 drop-shadow-md">0 MB</span>
+            </div>
+
+            <div
+                class="bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-2xl p-5 mb-8 text-left">
+                <h3 class="text-sm font-extrabold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                    <i data-lucide="pie-chart" class="w-4 h-4 text-primary-500"></i> <span
+                        data-i18n="stat_title">Estadísticas de Uso</span>
+                </h3>
+
+                <div
+                    class="flex justify-between text-xs font-bold text-gray-500 mb-4 border-b border-slate-200 dark:border-white/10 pb-3">
+                    <span data-i18n="stat_processed">Imágenes Procesadas:</span>
+                    <span id="statTotalImages" class="text-primary-500 font-black text-sm">0</span>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-xs font-bold mb-1.5">
+                            <span data-i18n="stat_webp" class="text-slate-700 dark:text-gray-300">WebP
+                                (Recomendado)</span>
+                            <span id="statWebpPct" class="text-primary-500">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 dark:bg-white/10 rounded-full h-2">
+                            <div id="barWebp" class="bg-primary-500 h-2 rounded-full transition-all duration-1000"
+                                style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs font-bold mb-1.5">
+                            <span class="text-slate-700 dark:text-gray-300">JPG</span>
+                            <span id="statJpgPct" class="text-blue-500">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 dark:bg-white/10 rounded-full h-2">
+                            <div id="barJpg" class="bg-blue-500 h-2 rounded-full transition-all duration-1000"
+                                style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs font-bold mb-1.5">
+                            <span class="text-slate-700 dark:text-gray-300">PNG</span>
+                            <span id="statPngPct" class="text-yellow-500">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 dark:bg-white/10 rounded-full h-2">
+                            <div id="barPng" class="bg-yellow-500 h-2 rounded-full transition-all duration-1000"
+                                style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="text-center">
