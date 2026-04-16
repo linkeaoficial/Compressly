@@ -62,17 +62,55 @@ export default {
       - importante: Responde siempre en el mismo idioma en el que te escribe el usuario.`;
       }
 
-      // 🚀 Llamada a la IA
-      const response = await env.AI.run("@cf/meta/llama-3.1-8b-instruct", {
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: prompt }
-        ],
-      });
 
-      return new Response(JSON.stringify(response), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      // 🎛️ SELECTOR DE MOTOR DE IA: Escribe "gemini" o "llama"
+      const motorIA = "gemini";
+
+      if (motorIA === "gemini") {
+        // 🚀 MOTOR 1: GOOGLE GEMINI 2.5 FLASH
+        const GEMINI_API_KEY = env.GEMINI_API_KEY;
+        const geminiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+        const geminiRequest = await fetch(geminiURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            system_instruction: {
+              parts: [{ text: systemPrompt }]
+            },
+            contents: [
+              { role: "user", parts: [{ text: prompt }] }
+            ]
+          })
+        });
+
+        const data = await geminiRequest.json();
+
+        // 🛡️ ESCUDO: Si Google devuelve un error (ej. 404 o llave inválida), lo atrapamos
+        if (data.error) {
+          throw new Error("Error directo de Google Gemini: " + data.error.message);
+        }
+
+        // 🧠 Extraemos el texto puro de la respuesta de Gemini
+        const textoRespuesta = data.candidates[0].content.parts[0].text;
+
+        return new Response(JSON.stringify({ response: textoRespuesta }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+
+      } else if (motorIA === "llama") {
+        // 🚀 MOTOR 2: CLOUDFLARE LLAMA 3.1
+        const response = await env.AI.run("@cf/meta/llama-3.1-8b-instruct", {
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: prompt }
+          ],
+        });
+
+        return new Response(JSON.stringify(response), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
 
     } catch (e) {
       return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: corsHeaders });

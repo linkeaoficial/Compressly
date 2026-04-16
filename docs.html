@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación Técnica | Compressly Engine</title>
+    <link rel="icon" type="image/png" href="imagenes/compressly_logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-white dark:bg-[#09090B] text-slate-900 dark:text-slate-200 antialiased">
+
+    <div class="progress-container">
+        <div class="progress-bar" id="readingProgress"></div>
+    </div>
+
+    <main class="max-w-4xl mx-auto px-6 py-20">
+        <div class="mb-16">
+            <div class="flex items-center gap-3 mb-4">
+                <span
+                    class="px-3 py-1 text-[10px] font-black bg-primary-500/10 text-primary-500 rounded-full border border-primary-500/20 uppercase tracking-widest">Technical
+                    Whitepaper</span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-6">Cómo funciona el motor de
+                Compressly</h1>
+            <p class="text-xl text-slate-500 dark:text-gray-400 leading-relaxed">Explora la arquitectura de
+                procesamiento local y los estándares de privacidad que hacen de Compressly la herramienta más segura del
+                mercado.</p>
+        </div>
+
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
+                <i data-lucide="cpu" class="text-primary-500"></i> Procesamiento 100% en el Cliente
+            </h2>
+            <div class="bento-card p-6 mb-6">
+                <p class="mb-4">A diferencia de los compresores tradicionales, Compressly utiliza la potencia de tu
+                    hardware mediante <strong>JavaScript moderno y APIs nativas del navegador</strong>.</p>
+                <div class="bg-black/50 rounded-xl p-4 border border-white/5 font-mono text-sm text-primary-400">
+                    // Flujo de datos Zero-Server
+                    Input -> FileReader API -> Canvas Rendering -> Blob Export -> Local Download
+                </div>
+            </div>
+            <p class="text-gray-500 text-sm">Este flujo garantiza que los bits de tus imágenes nunca toquen un servidor
+                externo, eliminando cualquier riesgo de interceptación de datos.</p>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3">
+                <i data-lucide="layers" class="text-primary-500"></i> Estándares de Optimización
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bento-card p-5">
+                    <h4 class="font-bold text-primary-500 mb-2">WebP Encoding</h4>
+                    <p class="text-sm text-gray-400">Utilizamos algoritmos de predicción espacial para reducir el tamaño
+                        del archivo sin pérdida de fidelidad visual perceptible (SSIM > 0.98).</p>
+                </div>
+                <div class="bento-card p-5">
+                    <h4 class="font-bold text-primary-500 mb-2">Alpha Channel Handling</h4>
+                    <p class="text-sm text-gray-400">Gestión inteligente de transparencia en archivos PNG para optimizar
+                        capas sin bordes dentados (aliasing).</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16 bg-primary-500/5 border border-primary-500/20 rounded-3xl p-8">
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-3">
+                <i data-lucide="shield-check" class="text-primary-500"></i> Privacidad de Grado Militar
+            </h2>
+            <p class="text-lg text-slate-600 dark:text-gray-400 mb-6">Nuestro compromiso con la seguridad se basa en la
+                <strong>no-existencia de almacenamiento</strong>. No podemos ser hackeados porque no guardamos nada.</p>
+            <ul class="space-y-4">
+                <li class="flex items-start gap-3">
+                    <i data-lucide="check-circle" class="w-5 h-5 text-green-500 shrink-0 mt-1"></i>
+                    <span><strong>Limpieza de Metadatos:</strong> Eliminación automática de perfiles ICC y GPS bajo
+                        demanda.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <i data-lucide="check-circle" class="w-5 h-5 text-green-500 shrink-0 mt-1"></i>
+                    <span><strong>Aislamiento de Memoria:</strong> Los archivos procesados se eliminan de la memoria RAM
+                        del navegador al cerrar la pestaña.</span>
+                </li>
+            </ul>
+        </section>
+
+        <div class="text-center py-12 border-t border-white/5">
+            <h3 class="text-xl font-bold mb-6">¿Listo para experimentar la velocidad?</h3>
+            <a href="index.html"
+                class="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-black px-8 py-4 rounded-2xl transition-all hover:scale-105">
+                Volver al Compresor <i data-lucide="zap" class="w-5 h-5"></i>
+            </a>
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+        // Lógica de la barra de progreso (la misma que usamos en el blog)
+        window.addEventListener('scroll', () => {
+            const progressBar = document.getElementById("readingProgress");
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            progressBar.style.width = scrolled + "%";
+        });
+    </script>
+</body>
+
+</html>
