@@ -42,15 +42,23 @@ const mobileMenu = document.getElementById('mobileMenu');
 
 window.toggleMobileMenu = function () {
     mobileMenu.classList.toggle('hidden');
+    document.body.classList.toggle('overflow-hidden');
     const iconMenu = document.getElementById('iconMenu');
     const iconClose = document.getElementById('iconClose');
+
+    // 🚀 Identificamos el botón del chatbot
+    const botBtn = document.getElementById('aiToggler');
 
     if (mobileMenu.classList.contains('hidden')) {
         iconMenu.classList.remove('hidden');
         iconClose.classList.add('hidden');
+        // 🚀 Mostrar bot al cerrar el menú
+        if (botBtn) botBtn.style.display = '';
     } else {
         iconMenu.classList.add('hidden');
         iconClose.classList.remove('hidden');
+        // 🚀 Ocultar bot al abrir el menú
+        if (botBtn) botBtn.style.display = 'none';
     }
     triggerVibration(50);
 };
@@ -66,14 +74,16 @@ document.querySelectorAll('.mobile-link').forEach(link => {
 });
 
 
-// 4. LÓGICA DEL MENÚ DESPLEGABLE PERSONALIZADO PREMIUM (Redimensionar)
+// 4. LÓGICA DEL MENÚ DESPLEGABLE PERSONALIZADO PREMIUM (Redimensionar) 🎯
 const customSelectContainer = document.getElementById('customSelectContainer');
 const customSelectTrigger = document.getElementById('customSelectTrigger');
 const customSelectDropdown = document.getElementById('customSelectDropdown');
 const customSelectArrow = document.getElementById('customSelectArrow');
 const customSelectLabel = document.getElementById('customSelectLabel');
-const customOptions = document.querySelectorAll('.custom-option');
-// 🚀 Borramos el 'const resizeSelect' global de aquí para que no choque con script.js
+
+// 🚀 CAMBIO VITAL: Ahora solo buscamos las opciones DENTRO del menú de redimensionar
+// Esto evita que el menú de Marca de Agua interfiera aquí.
+const customOptions = customSelectDropdown ? customSelectDropdown.querySelectorAll('.custom-option') : [];
 
 if (customSelectTrigger) {
     customSelectTrigger.addEventListener('click', (e) => {
@@ -260,4 +270,100 @@ window.addEventListener('scroll', () => {
     if (scrolled > 100) scrolled = 100; // 🚀 Tope de seguridad para que la barra no se salga del monitor
 
     progressBar.style.width = scrolled + "%";
+});
+
+
+// 👑 ==========================================
+// CONTROL DE ESTADOS VIP (PERFIL, MENÚS Y PRECIOS)
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+
+    function actualizarEstadoPlanes() {
+        const btnNavPc = document.getElementById('btnGoPro');
+        const btnNavMovil = document.getElementById('btnGoProMobile');
+
+        // 🚀 Conectamos con tus IDs reales del Perfil
+        const planBadge = document.getElementById('planBadge');
+        const planIcon = document.getElementById('planIcon');
+        const planLabel = document.getElementById('planLabel');
+
+        const btnTablaPro = document.getElementById('btnTablaPro');
+        const btnTablaUltra = document.getElementById('btnTablaUltra');
+
+        if (typeof DB !== 'undefined') {
+            if (DB.isUltra()) {
+                // 🚀 USUARIO ULTRA (Poder Total)
+
+                // 1. Perfil (Etiqueta Morada)
+                if (planLabel) planLabel.innerText = 'Plan ULTRA';
+                if (planIcon) planIcon.setAttribute('data-lucide', 'rocket');
+                if (planBadge) planBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border transition-all duration-500 bg-purple-500/10 border-purple-500/30 text-purple-600 dark:text-purple-400";
+
+                // 2. Menús (PC y Móvil)
+                if (btnNavPc) btnNavPc.innerHTML = '<i data-lucide="sparkles" class="w-4 h-4 text-purple-400"></i> ULTRA Activo';
+                if (btnNavMovil) {
+                    btnNavMovil.innerHTML = '<i data-lucide="sparkles" class="w-5 h-5 text-white"></i> ULTRA Activo';
+                    btnNavMovil.className = "w-full mt-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-5 py-3.5 rounded-xl text-base font-bold transition-all shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2";
+                }
+
+                // 3. Tabla Precios
+                if (btnTablaPro) {
+                    btnTablaPro.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i> Incluido en ULTRA';
+                    btnTablaPro.classList.add('opacity-50', 'pointer-events-none');
+                }
+                if (btnTablaUltra) {
+                    btnTablaUltra.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5 !text-white"></i> Tu Plan Actual';
+                    btnTablaUltra.classList.add('pointer-events-none');
+                }
+
+            } else if (DB.isPro()) {
+                // 👑 USUARIO PRO (Acceso Premium)
+
+                // 1. Perfil (Etiqueta Dorada)
+                if (planLabel) planLabel.innerText = 'Plan PRO';
+                if (planIcon) planIcon.setAttribute('data-lucide', 'crown');
+                if (planBadge) planBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border transition-all duration-500 bg-yellow-500/10 border-yellow-500/30 text-yellow-600 dark:text-yellow-400";
+
+                // 2. Menús (PC y Móvil)
+                if (btnNavPc) btnNavPc.innerHTML = '<i data-lucide="crown" class="w-4 h-4 text-yellow-400"></i> PRO Activo';
+                if (btnNavMovil) {
+                    btnNavMovil.innerHTML = '<i data-lucide="crown" class="w-5 h-5 text-yellow-300"></i> PRO Activo';
+                    btnNavMovil.className = "w-full mt-2 bg-gradient-to-r from-yellow-500 to-amber-600 text-white px-5 py-3.5 rounded-xl text-base font-bold transition-all shadow-lg shadow-yellow-500/20 flex items-center justify-center gap-2";
+                }
+
+                // 3. Tabla Precios
+                if (btnTablaPro) {
+                    btnTablaPro.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5 text-yellow-300"></i> Tu Plan Actual';
+                    btnTablaPro.classList.add('pointer-events-none');
+                }
+            }
+        }
+
+        // Refrescar iconos inyectados para que el cohete o corona carguen visualmente
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    // 🚀 NUEVO: Función para inyectar los créditos en la interfaz
+    function actualizarCreditosUI() {
+        const aiCreditsDisplay = document.getElementById('aiCreditsDisplay'); // Contador en Auto-SEO
+        const profileAiCredits = document.getElementById('profileAiCredits'); // Contador en el Perfil
+
+        if (typeof DB !== 'undefined') {
+            // Buscamos los créditos en tu DB local (la ruta correcta es DB.user)
+            let creditos = 0;
+            if (DB.user && DB.user.aiCredits !== undefined) {
+                creditos = DB.user.aiCredits;
+            }
+
+            // Pintamos el número real en la pantalla
+            if (aiCreditsDisplay) aiCreditsDisplay.innerText = creditos;
+            if (profileAiCredits) profileAiCredits.innerText = creditos;
+        }
+    }
+
+    // Ejecución rápida al cargar
+    setTimeout(() => {
+        actualizarEstadoPlanes();
+        actualizarCreditosUI(); // 🚀 Disparamos la lectura de créditos
+    }, 100);
 });

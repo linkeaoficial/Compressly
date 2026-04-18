@@ -64,7 +64,10 @@ window.openPremiumModal = function (force = false) {
     premiumModal.classList.remove('hidden');
     premiumModal.classList.add('flex');
     document.body.style.overflow = 'hidden'; // 🚀 Bloquear Scroll del Fondo
-    if (window.innerWidth <= 480) document.getElementById('aiToggler')?.classList.add('hidden'); // 🚀 Ocultar bot en móvil
+
+    // 🚀 Ocultar bot en TODAS las pantallas (PC y Móvil)
+    const botBtn = document.getElementById('aiToggler');
+    if (botBtn) botBtn.style.display = 'none';
 
     setTimeout(() => {
         premiumContent.classList.remove('scale-95', 'opacity-0');
@@ -83,7 +86,10 @@ window.closePremiumModal = function () {
         premiumModal.classList.add('hidden');
         premiumModal.classList.remove('flex');
         document.body.style.overflow = ''; // 🚀 Restaurar Scroll
-        if (window.innerWidth <= 480) document.getElementById('aiToggler')?.classList.remove('hidden'); // 🚀 Mostrar bot
+
+        // 🚀 Mostrar bot nuevamente al cerrar en TODAS las pantallas
+        const botBtn = document.getElementById('aiToggler');
+        if (botBtn) botBtn.style.display = '';
     }, 200);
     if (navigator.vibrate) navigator.vibrate(20);
 };
@@ -115,7 +121,11 @@ window.openProfileModal = function () {
     profileModal.classList.remove('hidden');
     profileModal.classList.add('flex');
     document.body.style.overflow = 'hidden'; // 🚀 Bloquear Scroll del Fondo
-    if (window.innerWidth <= 480) document.getElementById('aiToggler')?.classList.add('hidden'); // 🚀 Ocultar bot en móvil
+
+    // 🚀 Ocultar bot en TODAS las pantallas (PC y Móvil)
+    const botBtn = document.getElementById('aiToggler');
+    if (botBtn) botBtn.style.display = 'none';
+
     setTimeout(() => {
         profileContent.classList.remove('scale-95', 'opacity-0');
         profileContent.classList.add('scale-100', 'opacity-100');
@@ -131,7 +141,10 @@ window.closeProfileModal = function () {
         profileModal.classList.add('hidden');
         profileModal.classList.remove('flex');
         document.body.style.overflow = ''; // 🚀 Restaurar Scroll
-        if (window.innerWidth <= 480) document.getElementById('aiToggler')?.classList.remove('hidden'); // 🚀 Mostrar bot
+
+        // 🚀 Mostrar bot nuevamente al cerrar en TODAS las pantallas
+        const botBtn = document.getElementById('aiToggler');
+        if (botBtn) botBtn.style.display = '';
     }, 200);
     if (navigator.vibrate) navigator.vibrate(20);
 };
@@ -212,3 +225,198 @@ window.updateGlobalImpact = function (newSavedBytes = 0) {
 };
 
 updateGlobalImpact(0);
+
+// 💡 ==========================================
+// LÓGICA DEL CENTRO DE IDEAS (FEEDBACK)
+// ==========================================
+const feedbackModal = document.getElementById('feedbackModal');
+const feedbackOverlay = document.getElementById('feedbackOverlay');
+const feedbackContent = document.getElementById('feedbackContent');
+
+// Elementos del selector personalizado de Feedback
+const feedbackSelectContainer = document.getElementById('feedbackSelectContainer');
+const feedbackSelectTrigger = document.getElementById('feedbackSelectTrigger');
+const feedbackSelectDropdown = document.getElementById('feedbackSelectDropdown');
+const feedbackSelectLabel = document.getElementById('feedbackSelectLabel');
+const feedbackSelectArrow = document.getElementById('feedbackSelectArrow');
+const feedbackTypeHidden = document.getElementById('feedbackType');
+
+window.openFeedbackModal = function () {
+    feedbackModal.classList.remove('hidden');
+    feedbackModal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+
+    // 🚀 Ocultar bot en TODAS las pantallas (Misma lógica que el PRO)
+    const botBtn = document.getElementById('aiToggler');
+    if (botBtn) botBtn.style.display = 'none';
+
+    setTimeout(() => {
+        feedbackContent.classList.remove('scale-95', 'opacity-0');
+        feedbackContent.classList.add('scale-100', 'opacity-100');
+    }, 10);
+
+    lucide.createIcons();
+    if (navigator.vibrate) navigator.vibrate([50, 50]);
+};
+
+window.closeFeedbackModal = function () {
+    // Cerrar el dropdown si estaba abierto al cerrar el modal
+    feedbackSelectDropdown?.classList.remove('custom-select-dropdown-open');
+    feedbackSelectArrow?.classList.remove('custom-select-arrow-open');
+
+    feedbackContent.classList.remove('scale-100', 'opacity-100');
+    feedbackContent.classList.add('scale-95', 'opacity-0');
+
+    setTimeout(() => {
+        feedbackModal.classList.add('hidden');
+        feedbackModal.classList.remove('flex');
+        document.body.style.overflow = '';
+        const botBtn = document.getElementById('aiToggler');
+        if (botBtn) botBtn.style.display = '';
+    }, 200);
+    if (navigator.vibrate) navigator.vibrate(20);
+};
+
+// Manejo del selector personalizado
+feedbackSelectContainer?.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation(); // 🚀 ESCUDO 1: Evita que scripts externos detecten el clic aquí
+    feedbackSelectDropdown.classList.toggle('custom-select-dropdown-open');
+    feedbackSelectArrow.classList.toggle('custom-select-arrow-open');
+});
+
+feedbackSelectDropdown?.querySelectorAll('.custom-option').forEach(option => {
+    option.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation(); // 🚀 ESCUDO 2: Bloquea definitivamente el modal PRO
+
+        const val = option.getAttribute('data-value');
+
+        // 🚀 NUEVO: Capturamos la estructura HTML para mantener el diseño responsive
+        const textHtml = option.querySelector('.option-text').innerHTML;
+
+        // Actualizar UI (Usamos innerHTML para no borrar las clases de Tailwind)
+        feedbackSelectLabel.innerHTML = textHtml;
+        feedbackTypeHidden.value = val;
+
+        // Actualizar clases de selección
+        feedbackSelectDropdown.querySelectorAll('.custom-option').forEach(opt => opt.classList.remove('selected'));
+        option.classList.add('selected');
+
+        // 🚀 MEJORA: Cerrar el menú automáticamente después de seleccionar la opción
+        feedbackSelectDropdown.classList.remove('custom-select-dropdown-open');
+        feedbackSelectArrow.classList.remove('custom-select-arrow-open');
+
+        if (navigator.vibrate) navigator.vibrate(10);
+    });
+});
+
+// Cerrar dropdown al hacer clic fuera
+document.addEventListener('click', () => {
+    feedbackSelectDropdown?.classList.remove('custom-select-dropdown-open');
+    feedbackSelectArrow?.classList.remove('custom-select-arrow-open');
+});
+
+if (feedbackOverlay) feedbackOverlay.addEventListener('click', closeFeedbackModal);
+
+document.getElementById('feedbackForm')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (typeof Notify !== 'undefined') {
+        Notify.show('¡Mensaje Enviado!', 'Gracias por ayudarnos a mejorar Compressly.', 'success');
+    }
+    closeFeedbackModal();
+    document.getElementById('feedbackText').value = '';
+});
+
+// 🚀 FUNCIONES DEL MODAL ULTRA
+window.openUltraModal = function () {
+    const modal = document.getElementById('ultraModal');
+    const content = document.getElementById('ultraContent');
+
+    if (modal && content) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden'; // 🚀 Bloqueo de scroll profesional
+
+        // 🤖 OCULTAR CHATBOT IA
+        const botBtn = document.getElementById('aiToggler');
+        if (botBtn) botBtn.style.display = 'none';
+
+        setTimeout(() => {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }, 10);
+
+        lucide.createIcons();
+        if (navigator.vibrate) navigator.vibrate([50, 50]);
+    }
+};
+
+window.closeUltraModal = function () {
+    const modal = document.getElementById('ultraModal');
+    const content = document.getElementById('ultraContent');
+
+    if (modal && content) {
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = ''; // 🔓 Liberar scroll
+
+            // 🤖 MOSTRAR CHATBOT IA
+            const botBtn = document.getElementById('aiToggler');
+            if (botBtn) botBtn.style.display = '';
+        }, 200);
+        if (navigator.vibrate) navigator.vibrate(20);
+    }
+};
+
+// 🔋 FUNCIONES DEL MODAL DE RECARGA
+window.openRechargeModal = function () {
+    const modal = document.getElementById('rechargeModal');
+    const content = document.getElementById('rechargeContent');
+
+    if (modal && content) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+
+        // 🤖 OCULTAR CHATBOT IA
+        const botBtn = document.getElementById('aiToggler');
+        if (botBtn) botBtn.style.display = 'none';
+
+        setTimeout(() => {
+            // 🚀 Cambiamos a escala para que sea igual al modal PRO
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }, 10);
+
+        lucide.createIcons();
+        if (navigator.vibrate) navigator.vibrate([50, 50]);
+    }
+};
+
+window.closeRechargeModal = function () {
+    const modal = document.getElementById('rechargeModal');
+    const content = document.getElementById('rechargeContent');
+
+    if (modal && content) {
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+
+            // 🤖 MOSTRAR CHATBOT IA
+            const botBtn = document.getElementById('aiToggler');
+            if (botBtn) botBtn.style.display = '';
+        }, 200);
+        if (navigator.vibrate) navigator.vibrate(20);
+    }
+};

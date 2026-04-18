@@ -300,6 +300,25 @@ html:not(.dark) .ai-input-area { background: rgba(255,255,255,0.5); }
 .ai-send-btn:hover { transform: scale(1.05); background: var(--ai-accent); }
 .ai-send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
+/* 🎙️ ESTILOS DEL BOTÓN DE MICRÓFONO */
+.ai-mic-btn {
+    background: transparent; border: 1px solid var(--glass-border); width: 42px; height: 42px;
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+}
+.ai-mic-btn:hover { background: rgba(139, 92, 246, 0.1); color: var(--ai-glow); }
+
+/* 🔴 Animación de latido cuando está grabando */
+.ai-mic-btn.recording {
+    background: rgba(239, 68, 68, 0.15); color: #EF4444; border-color: rgba(239, 68, 68, 0.4);
+    animation: pulse-mic 1.5s infinite;
+}
+@keyframes pulse-mic {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
 @media (max-width: 480px) {
     .ai-chat-window {
         width: 100vw; 
@@ -364,6 +383,9 @@ body.chat-active.mobile-no-scroll {
         <div class="ai-chatbox custom-scrollbar pr-2" id="aiChatbox"></div>
         
         <div class="ai-input-area">
+            <button id="aiMicBtn" class="ai-mic-btn" title="Hablar por micrófono">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+            </button>
             <input type="text" id="aiInput" class="ai-input" placeholder="Escribe tu mensaje..." autocomplete="off">
             <button id="aiSendBtn" class="ai-send-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
@@ -378,7 +400,71 @@ body.chat-active.mobile-no-scroll {
     const aiChatbox = document.getElementById('aiChatbox');
     const aiInput = document.getElementById('aiInput');
     const aiSendBtn = document.getElementById('aiSendBtn');
+    const aiMicBtn = document.getElementById('aiMicBtn'); // 🎙️ Nuevo Botón
     let aiStarted = false;
+
+    // 🎙️ MAGIA DE VOZ A TEXTO (Web Speech API)
+    let recognition;
+    let isRecording = false;
+
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false; // Se detiene al dejar de hablar
+        recognition.interimResults = false;
+        recognition.lang = (typeof currentLanguage !== 'undefined' && currentLanguage === 'en') ? 'en-US' : 'es-ES';
+
+        recognition.onstart = function () {
+            isRecording = true;
+            aiMicBtn.classList.add('recording');
+            aiInput.placeholder = "Escuchando... 🎙️";
+            if (navigator.vibrate) navigator.vibrate(50); // Vibración háptica
+        };
+
+        recognition.onresult = function (event) {
+            // Convierte la voz en texto y la pega en la caja
+            const transcript = event.results[0][0].transcript;
+            aiInput.value = transcript;
+        };
+
+        recognition.onerror = function (event) {
+            isRecording = false;
+            aiMicBtn.classList.remove('recording');
+            aiInput.placeholder = "Escribe tu mensaje...";
+
+            // 🚨 ESCUDO: Avisar si el usuario bloqueó el micrófono
+            if (event.error === 'not-allowed') {
+                if (typeof Notify !== 'undefined') {
+                    Notify.show('Micrófono bloqueado 🎙️', 'Debes dar permisos en tu navegador para usar la voz.', 'error');
+                } else {
+                    alert("Debes dar permisos de micrófono en el navegador para usar esta función.");
+                }
+            } else {
+                aiInput.placeholder = "Error al escuchar ❌";
+                setTimeout(() => aiInput.placeholder = "Escribe tu mensaje...", 2000);
+            }
+        };
+
+        recognition.onend = function () {
+            isRecording = false;
+            aiMicBtn.classList.remove('recording');
+            aiInput.placeholder = "Escribe tu mensaje...";
+            if (navigator.vibrate) navigator.vibrate([30, 30]); // Doble vibración al terminar
+
+            // 🚀 Envío Automático: Si el usuario habló, enviamos el texto a la IA al instante
+            if (aiInput.value.trim() !== "") {
+                sendMessageToAI();
+            }
+        };
+
+        aiMicBtn.addEventListener('click', () => {
+            if (isRecording) recognition.stop();
+            else recognition.start();
+        });
+    } else {
+        // Si el navegador es muy viejo y no soporta voz, ocultamos el botón
+        aiMicBtn.style.display = "none";
+    }
 
     // 🚀 URL de tu IA en Cloudflare (Sacada de tu captura)
     const WORKER_URL = "https://agente-compressly.elitemarketing-a94.workers.dev"; // 🚀 Tu URL real
@@ -415,6 +501,13 @@ body.chat-active.mobile-no-scroll {
         const text = aiInput.value.trim();
         if (!text) return;
 
+        // 📡 ESCUDO OFFLINE: Si no hay internet, protegemos la experiencia
+        if (!navigator.onLine) {
+            appendMessage("¡Ups! Parece que estás desconectado 📡. Aún puedes comprimir imágenes porque mi motor es 100% local, pero mi cerebro de IA requiere internet para charlar.");
+            aiInput.value = '';
+            return;
+        }
+
         // 1. Mostrar mensaje del usuario
         appendMessage(text, true);
         aiInput.value = '';
@@ -433,8 +526,10 @@ body.chat-active.mobile-no-scroll {
                 method: "POST",
                 body: JSON.stringify({
                     prompt: text,
-                    // 🚀 AQUÍ ESTÁ EL SECRETO: Enviamos el estado real del usuario
-                    isPremium: typeof isPremiumUser !== 'undefined' ? isPremiumUser : false
+                    // 🚀 AQUÍ ESTÁ EL SECRETO: Enviamos el estado real y si está leyendo el blog
+                    isPremium: typeof isPremiumUser !== 'undefined' ? isPremiumUser : false,
+                    isBlog: !!document.querySelector('article'),
+                    articleText: document.querySelector('article') ? document.querySelector('article').innerText.substring(0, 15000) : ""
                 }),
                 headers: { "Content-Type": "application/json" }
             });
@@ -484,7 +579,13 @@ body.chat-active.mobile-no-scroll {
                 typing.remove();
                 if (window.triggerVibration) window.triggerVibration([20, 30]);
                 const lang = (typeof currentLanguage !== 'undefined') ? currentLanguage : 'es';
-                appendMessage(translations[lang].bot_welcome);
+
+                // 📚 Saludo Inteligente: Detecta si está en el blog
+                if (document.querySelector('article')) {
+                    appendMessage("¡Hola! Soy tu asistente de lectura 📚. ¿Qué duda tienes sobre este artículo?");
+                } else {
+                    appendMessage(translations[lang].bot_welcome);
+                }
             }, 1500);
         } else {
             if (window.triggerVibration) window.triggerVibration(10);

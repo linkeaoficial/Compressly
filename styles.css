@@ -306,13 +306,17 @@ html.dark .custom-option {
     /* Quitamos el margen lateral del fondo oscuro */
     #profileModal,
     #premiumModal,
-    #legalModal {
+    #legalModal,
+    #ultraModal,
+    #rechargeModal {
         padding: 0 !important;
     }
 
     #profileContent,
     #premiumContent,
-    #modalContent {
+    #modalContent,
+    #ultraContent,
+    #rechargeContent {
         padding: 1.5rem !important;
         max-height: 100dvh !important;
         /* Altura total de la pantalla */
@@ -324,10 +328,18 @@ html.dark .custom-option {
         /* Pegado a los bordes, sin curvas */
         border: none !important;
         overflow-y: auto !important;
+
         scrollbar-width: none;
         /* Oculta scroll en Firefox */
         -ms-overflow-style: none;
         /* Oculta scroll en IE */
+    }
+
+    /* 🚀 REGLA EXCLUSIVA: Aplicamos el centrado vertical a los modales de pago en móvil */
+    #premiumContent,
+    #ultraContent,
+    #rechargeContent {
+        justify-content: center !important;
     }
 
     /* Ocultar barra de scroll en Chrome/Safari/Edge móvil */

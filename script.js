@@ -1,6 +1,8 @@
-// 👑 CONFIGURACIÓN GLOBAL DE USUARIO (El cerebro de la monetización)
-// Cambia a 'false' para activar todos los bloqueos Premium
-let isPremiumUser = false;
+// 🗄️ LA VARIABLE GLOBAL FUE REEMPLAZADA POR 'DB' en data_compressly.js
+// 🔄 Mantenemos la compatibilidad del código viejo así:
+Object.defineProperty(window, 'isPremiumUser', {
+    get: function () { return DB.isPro(); }
+});
 
 lucide.createIcons();
 
@@ -34,27 +36,30 @@ const resSizeBadge = document.getElementById('resSize');
 const origSizeBadge = document.getElementById('origSize');
 const downloadBtn = document.getElementById('downloadBtn');
 
-// 👑 APLICAR ESTADO VISUAL PREMIUM (Ocultar Precios y Botones PRO)
+// 👑 APLICAR ESTADO VISUAL PREMIUM (Menús Dinámicos PRO y ULTRA)
 function applyPremiumUI() {
-    if (isPremiumUser) {
-        // 1. Ocultar la sección de precios completa
-        const pricingSection = document.getElementById('precios');
-        if (pricingSection) pricingSection.style.display = 'none';
+    const btnGoPro = document.getElementById('btnGoPro');
+    const btnGoProMobile = document.getElementById('btnGoProMobile');
 
-        // 2. Transformar el botón "Go Pro" de PC en una insignia VIP
-        const btnGoPro = document.getElementById('btnGoPro');
+    // 🚀 PRIORIDAD ULTRA (Morado)
+    if (typeof DB !== 'undefined' && DB.isUltra()) {
         if (btnGoPro) {
-            btnGoPro.className = 'bg-yellow-500/10 text-yellow-500 px-6 py-2.5 rounded-full text-sm font-black backdrop-blur-md border border-yellow-500/20 flex items-center gap-2 pointer-events-none';
-            btnGoPro.innerHTML = '<i data-lucide="crown" class="w-4 h-4 fill-current"></i> PRO Activo';
+            btnGoPro.className = 'bg-purple-500/10 text-purple-500 px-6 py-2.5 rounded-full text-sm font-black backdrop-blur-md border border-purple-500/20 flex items-center gap-2 pointer-events-none whitespace-nowrap shrink-0';
+            btnGoPro.innerHTML = '<i data-lucide="sparkles" class="w-4 h-4 fill-current"></i> ULTRA Activo';
         }
-
-        // 3. Ocultar el botón "Go Pro" del menú móvil
-        const btnGoProMobile = document.getElementById('btnGoProMobile');
         if (btnGoProMobile) btnGoProMobile.style.display = 'none';
 
-        // Renderizar el nuevo icono de la corona si la librería está lista
-        if (typeof lucide !== 'undefined') lucide.createIcons();
     }
+    // 👑 SEGUNDO NIVEL PRO (Amarillo)
+    else if (typeof DB !== 'undefined' && DB.isPro()) {
+        if (btnGoPro) {
+            btnGoPro.className = 'bg-yellow-500/10 text-yellow-500 px-6 py-2.5 rounded-full text-sm font-black backdrop-blur-md border border-yellow-500/20 flex items-center gap-2 pointer-events-none whitespace-nowrap shrink-0';
+            btnGoPro.innerHTML = '<i data-lucide="crown" class="w-4 h-4 fill-current"></i> PRO Activo';
+        }
+        if (btnGoProMobile) btnGoProMobile.style.display = 'none';
+    }
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 // Ejecutar al instante
@@ -179,16 +184,20 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// 🖼️ Subir Logo
+// 🖼️ Protección de Clic en el Botón de Logo
+if (watermarkLogoBtn) {
+    watermarkLogoBtn.addEventListener('click', (e) => {
+        if (!isPremiumUser) {
+            e.preventDefault(); // 🛑 Evita que se abra el selector de archivos
+            openPremiumModal(); // 💰 Muestra el modal de ventas
+        }
+    });
+}
+
+// 🖼️ Subir Logo (Este se mantiene casi igual, pero quitamos la validación interna que ya hicimos arriba)
 if (watermarkLogoInput) {
     watermarkLogoInput.addEventListener('change', (e) => {
-        if (!isPremiumUser) {
-            e.preventDefault();
-            watermarkLogoInput.value = '';
-            openPremiumModal();
-            return;
-        }
-
+        // Ya no necesitamos el if(!isPremiumUser) aquí porque el clic ya lo bloquea
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
@@ -536,7 +545,7 @@ function handleMultipleFiles(filesArray) {
             const isDesktop = window.innerWidth >= 768;
 
             // 🟢 Reducimos a 100 para que en PC suba mucho más y se vean las miniaturas
-            const offset = isDesktop ? 100 : 250;
+            const offset = isDesktop ? 280 : 250;
 
             const bodyRect = document.body.getBoundingClientRect().top;
             const elementRect = element.getBoundingClientRect().top;
@@ -631,7 +640,7 @@ function handleFileSelection(file) {
             const isDesktop = window.innerWidth >= 768;
 
             // 🟢 Bajamos el margen a 100 para centrar la vista en el área de trabajo en PC
-            const offset = isDesktop ? 100 : 250;
+            const offset = isDesktop ? 280 : 250;
 
             const bodyRect = document.body.getBoundingClientRect().top;
             const elementRect = element.getBoundingClientRect().top;
@@ -822,6 +831,44 @@ compressBtn.addEventListener('click', () => {
             // 📊 DASHBOARD: Registrar el formato usado en el perfil del usuario
             if (typeof updateDashboardStats === 'function') updateDashboardStats(extension);
 
+            // 🚀 MÓDULO AUTO-SEO: Validación Inteligente (DB)
+            const seoToggle = document.getElementById('seoToggle');
+            const canUseSEO = DB.isUltra() && DB.hasCredits();
+
+            // Si intenta usarlo pero no cumple los requisitos, lo apagamos y avisamos
+            if (seoToggle && seoToggle.checked && !canUseSEO) {
+                seoToggle.checked = false;
+                if (!DB.isUltra()) {
+                    Notify.show('Requiere Plan ULTRA', 'El Auto-SEO es una función exclusiva del plan IA.', 'warning');
+                } else if (!DB.hasCredits()) {
+                    Notify.show('Créditos Agotados ⚡', 'Recarga energía IA para seguir generando SEO.', 'error');
+                    if (typeof openRechargeModal === 'function') openRechargeModal(); // 🚀 Abre el cajero automático
+                }
+            }
+
+            if (seoToggle && seoToggle.checked && canUseSEO) {
+                const seoContainer = document.getElementById('seoResults');
+                if (seoContainer) {
+                    seoContainer.innerHTML = '';
+                    seoContainer.classList.remove('hidden');
+
+                    const skeletonId = 'seo-loading-single';
+                    const skeleton = document.createElement('div');
+                    skeleton.id = skeletonId;
+                    skeleton.className = "p-4 bg-primary-500/5 border border-primary-500/20 rounded-2xl animate-pulse flex items-center gap-3";
+                    skeleton.innerHTML = `
+                        <div class="w-8 h-8 rounded-full bg-primary-500/20 flex items-center justify-center text-primary-500 font-black text-[10px]">1</div>
+                        <div class="text-[10px] font-bold text-primary-600 uppercase tracking-widest">Analizando con IA...</div>
+                    `;
+                    seoContainer.appendChild(skeleton);
+
+                    // Llamamos a la función global (que ahora vive segura en motor-lotes.js)
+                    if (typeof generarAutoSEO === 'function') {
+                        generarAutoSEO(result, 0, extension, skeletonId);
+                    }
+                }
+            }
+
             // 🚀 NUEVA NOTIFICACIÓN DE ÉXITO
             Notify.show('¡Misión Cumplida!', savingPercent > 0 ? `Ahorraste un ${savingPercent}% de peso.` : 'Calidad optimizada al máximo.', 'success');
 
@@ -839,23 +886,28 @@ compressBtn.addEventListener('click', () => {
 
             // 📱💻 Control de Scroll Inteligente (Móvil vs PC)
             setTimeout(() => {
-                const element = document.getElementById('resSize');
-
-                // Detectamos si es una pantalla de PC (mayor a 768px de ancho)
+                // 🚀 Lógica Inteligente: Decidir a dónde mirar
+                let element, offset;
                 const isDesktop = window.innerWidth >= 768;
 
-                // Si es PC usamos un número pequeño para que baje MÁS. Si es móvil, usamos el 520.
-                const offset = isDesktop ? 230 : 520; // 👈 AJUSTA ESTOS NÚMEROS A TU GUSTO
+                if (seoToggle && seoToggle.checked && canUseSEO) {
+                    // 🤖 Si el Auto-SEO está prendido, miramos hacia la caja del SEO
+                    element = document.getElementById('seo-module-container');
+                    offset = isDesktop ? 200 : 100;
+                } else {
+                    // 🖼️ Si no hay SEO, miramos hacia el tamaño de la imagen comprimida
+                    element = document.getElementById('resSize');
+                    offset = isDesktop ? 230 : 520;
+                }
 
-                const bodyRect = document.body.getBoundingClientRect().top;
-                const elementRect = element.getBoundingClientRect().top;
-                const elementPosition = elementRect - bodyRect;
-                const offsetPosition = elementPosition - offset;
-
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                });
+                if (element) {
+                    const bodyRect = document.body.getBoundingClientRect().top;
+                    const elementRect = element.getBoundingClientRect().top;
+                    window.scrollTo({
+                        top: (elementRect - bodyRect) - offset,
+                        behavior: 'smooth'
+                    });
+                }
             }, 300);
         },
         error(err) {
@@ -875,3 +927,68 @@ function setupDownload(url, filename) {
     downloadBtn.classList.remove('hidden');
 }
 
+
+// 👑 ==========================================
+// BLOQUEO ULTRA / RECARGA PARA MÓDULO SEO (Memoria Persistente)
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const seoToggle = document.getElementById('seoToggle');
+
+    if (seoToggle) {
+        // 🧠 0. RECUPERAR MEMORIA AL RECARGAR LA PÁGINA
+        // Esperamos un instante para asegurar que la DB ya verificó el usuario
+        setTimeout(() => {
+            if (typeof DB !== 'undefined') {
+                const isAutoSeoSaved = localStorage.getItem('auto_seo_enabled') === 'true';
+
+                // 🛡️ Magia: Solo lo re-encendemos si lo dejó activo Y aún tiene permisos (ULTRA + Créditos)
+                if (isAutoSeoSaved && DB.isUltra() && DB.hasCredits()) {
+                    seoToggle.checked = true;
+                } else {
+                    seoToggle.checked = false;
+                    // Limpiamos la memoria por seguridad si ya no tiene permisos
+                    localStorage.setItem('auto_seo_enabled', 'false');
+                }
+            }
+        }, 150);
+
+        // 🛡️ 1. Validamos el permiso ANTES de que el interruptor cambie de posición
+        seoToggle.addEventListener('click', (e) => {
+            if (typeof DB !== 'undefined') {
+                // Si no es ULTRA (Gratis o PRO) -> Ofrecer Suscripción
+                if (!DB.isUltra()) {
+                    e.preventDefault(); // Evita que se encienda
+                    seoToggle.checked = false;
+                    if (typeof openUltraModal === 'function') openUltraModal();
+                }
+                // Si ya es ULTRA pero no tiene créditos -> Ofrecer Recarga
+                else if (!DB.hasCredits()) {
+                    e.preventDefault(); // Evita que se encienda
+                    seoToggle.checked = false;
+                    if (typeof openRechargeModal === 'function') openRechargeModal();
+                }
+            }
+        });
+
+        // 🔔 2. Mostramos la notificación CUANDO el cambio es exitoso
+        seoToggle.addEventListener('change', () => {
+            // 💾 Guardamos la decisión del usuario en el disco duro de su navegador
+            localStorage.setItem('auto_seo_enabled', seoToggle.checked);
+
+            if (seoToggle.checked) {
+                // Notificación al activar ✨
+                if (typeof Notify !== 'undefined') {
+                    Notify.show('Auto-SEO Activado', 'La IA procesará tus imágenes para optimizar el e-commerce.', 'success');
+                }
+            } else {
+                // Notificación al desactivar 💤
+                if (typeof Notify !== 'undefined') {
+                    Notify.show('Auto-SEO Desactivado', 'Las imágenes se procesarán sin metadatos de IA.', 'info');
+                }
+            }
+
+            // 📳 Vibración táctil si está disponible
+            if (typeof triggerVibration === 'function') triggerVibration(30);
+        });
+    }
+});
