@@ -486,3 +486,27 @@ html.dark main img:hover {
 .reaction-btn:active {
     transform: scale(0.8);
 }
+
+/* 🟢 FIX MODAL PERFIL MÓVIL: Quita el aplastamiento y arregla el scroll */
+@media (max-width: 768px) {
+    #profileContent {
+        display: block !important;
+        overflow-y: auto !important;
+        padding: 1.5rem !important;
+    }
+
+    .col-perfil {
+        padding: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+}
+
+/* Separador estético para la zona de sincronización en móvil */
+.col-nube {
+    margin-top: 2rem !important;
+    padding: 1.5rem 0 0 0 !important;
+    border-top: 1px solid rgba(139, 92, 246, 0.2) !important;
+    border-left: none !important;
+}

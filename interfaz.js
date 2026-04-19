@@ -278,68 +278,81 @@ window.addEventListener('scroll', () => {
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
 
-    function actualizarEstadoPlanes() {
+    window.actualizarEstadoPlanes = function () {
         const btnNavPc = document.getElementById('btnGoPro');
         const btnNavMovil = document.getElementById('btnGoProMobile');
-
-        // 🚀 Conectamos con tus IDs reales del Perfil
         const planBadge = document.getElementById('planBadge');
         const planIcon = document.getElementById('planIcon');
         const planLabel = document.getElementById('planLabel');
+        const guestView = document.getElementById('guestStateView');
+        const loggedInView = document.getElementById('loggedInStateView');
+        const statusText = document.getElementById('profileStatusText');
+        const statusDot = document.getElementById('profileStatusDot');
+        const statusPing = document.getElementById('profileStatusPing');
 
-        const btnTablaPro = document.getElementById('btnTablaPro');
-        const btnTablaUltra = document.getElementById('btnTablaUltra');
+        // 💡 NUEVO SELECTOR: El nombre del plan en la tarjeta derecha
+        const accountPlanName = document.getElementById('accountPlanName');
 
-        if (typeof DB !== 'undefined') {
-            if (DB.isUltra()) {
-                // 🚀 USUARIO ULTRA (Poder Total)
+        if (typeof DB === 'undefined') return;
 
-                // 1. Perfil (Etiqueta Morada)
-                if (planLabel) planLabel.innerText = 'Plan ULTRA';
-                if (planIcon) planIcon.setAttribute('data-lucide', 'rocket');
-                if (planBadge) planBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border transition-all duration-500 bg-purple-500/10 border-purple-500/30 text-purple-600 dark:text-purple-400";
+        // 🔐 LÓGICA DE VISTAS (Invitado vs Logueado)
+        if (DB.user.plan !== 'free') {
+            if (guestView) guestView.classList.add('hidden');
+            if (loggedInView) loggedInView.classList.remove('hidden');
+            if (statusText) statusText.innerText = 'Nube Sincronizada';
+            if (statusDot) statusDot.className = "relative rounded-full h-2 w-2 bg-blue-500";
+            if (statusPing) statusPing.className = "animate-ping absolute h-full w-full rounded-full bg-blue-500 opacity-40";
+        } else {
+            if (guestView) guestView.classList.remove('hidden');
+            if (loggedInView) loggedInView.classList.add('hidden');
+            if (statusText) statusText.innerText = 'Perfil Local Activo';
+            if (statusDot) statusDot.className = "relative rounded-full h-2 w-2 bg-green-500";
+            if (statusPing) statusPing.className = "animate-ping absolute h-full w-full rounded-full bg-green-500 opacity-40";
+        }
 
-                // 2. Menús (PC y Móvil)
-                if (btnNavPc) btnNavPc.innerHTML = '<i data-lucide="sparkles" class="w-4 h-4 text-purple-400"></i> ULTRA Activo';
-                if (btnNavMovil) {
-                    btnNavMovil.innerHTML = '<i data-lucide="sparkles" class="w-5 h-5 text-white"></i> ULTRA Activo';
-                    btnNavMovil.className = "w-full mt-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-5 py-3.5 rounded-xl text-base font-bold transition-all shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2";
-                }
+        // 🎨 LÓGICA DE ESTILOS POR PLAN
+        // Definimos la clase base para el botón del menú
+        const baseMenuBtnClass = "px-3 lg:px-6 py-2.5 rounded-full text-[11px] lg:text-sm font-black transition-all flex items-center gap-2 shrink-0 ";
 
-                // 3. Tabla Precios
-                if (btnTablaPro) {
-                    btnTablaPro.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i> Incluido en ULTRA';
-                    btnTablaPro.classList.add('opacity-50', 'pointer-events-none');
-                }
-                if (btnTablaUltra) {
-                    btnTablaUltra.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5 !text-white"></i> Tu Plan Actual';
-                    btnTablaUltra.classList.add('pointer-events-none');
-                }
+        if (DB.isUltra()) {
+            if (planLabel) planLabel.innerText = 'Plan ULTRA';
+            if (accountPlanName) accountPlanName.innerText = 'Plan ULTRA IA';
 
-            } else if (DB.isPro()) {
-                // 👑 USUARIO PRO (Acceso Premium)
+            if (planIcon) planIcon.setAttribute('data-lucide', 'rocket');
+            if (planBadge) planBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border transition-all duration-500 bg-purple-500/10 border-purple-500/30 text-purple-600 dark:text-purple-400";
 
-                // 1. Perfil (Etiqueta Dorada)
-                if (planLabel) planLabel.innerText = 'Plan PRO';
-                if (planIcon) planIcon.setAttribute('data-lucide', 'crown');
-                if (planBadge) planBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border transition-all duration-500 bg-yellow-500/10 border-yellow-500/30 text-yellow-600 dark:text-yellow-400";
+            if (btnNavPc) {
+                // 🚀 Botón Menú: Degradado Morado con Sombra de Neón
+                btnNavPc.innerHTML = '<i data-lucide="sparkles" class="w-3.5 h-3.5 lg:w-4 lg:h-4 !text-white"></i> <span class="!text-white whitespace-nowrap">ULTRA Activo</span>';
+                btnNavPc.className = baseMenuBtnClass + "bg-gradient-to-r from-purple-600 to-indigo-600 shadow-[0_0_20px_rgba(168,85,247,0.5)] border border-purple-400/50 pointer-events-none !text-white";
+            }
+        } else if (DB.isPro()) {
+            if (planLabel) planLabel.innerText = 'Plan PRO';
+            if (accountPlanName) accountPlanName.innerText = 'Plan PRO Acceso';
 
-                // 2. Menús (PC y Móvil)
-                if (btnNavPc) btnNavPc.innerHTML = '<i data-lucide="crown" class="w-4 h-4 text-yellow-400"></i> PRO Activo';
-                if (btnNavMovil) {
-                    btnNavMovil.innerHTML = '<i data-lucide="crown" class="w-5 h-5 text-yellow-300"></i> PRO Activo';
-                    btnNavMovil.className = "w-full mt-2 bg-gradient-to-r from-yellow-500 to-amber-600 text-white px-5 py-3.5 rounded-xl text-base font-bold transition-all shadow-lg shadow-yellow-500/20 flex items-center justify-center gap-2";
-                }
+            if (planIcon) planIcon.setAttribute('data-lucide', 'crown');
+            if (planBadge) planBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border transition-all duration-500 bg-yellow-500/10 border-yellow-500/30 text-yellow-600 dark:text-yellow-400";
 
-                // 3. Tabla Precios
-                if (btnTablaPro) {
-                    btnTablaPro.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5 text-yellow-300"></i> Tu Plan Actual';
-                    btnTablaPro.classList.add('pointer-events-none');
-                }
+            if (btnNavPc) {
+                // 👑 Botón Menú: Degradado Dorado Brillante
+                btnNavPc.innerHTML = '<i data-lucide="crown" class="w-3.5 h-3.5 lg:w-4 lg:h-4 !text-white"></i> <span class="!text-white whitespace-nowrap">PRO Activo</span>';
+                btnNavPc.className = baseMenuBtnClass + "bg-gradient-to-r from-yellow-500 to-amber-600 shadow-[0_0_20px_rgba(245,158,11,0.4)] border border-yellow-400/50 pointer-events-none !text-white";
+            }
+
+        } else {
+            if (planLabel) planLabel.innerText = 'Plan Esencial';
+            if (accountPlanName) accountPlanName.innerText = 'Plan Esencial';
+
+            if (planIcon) planIcon.setAttribute('data-lucide', 'award');
+            if (planBadge) planBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border transition-all duration-500 border-slate-300 dark:border-white/20 text-slate-700 dark:text-gray-300 bg-gradient-to-r from-slate-100 to-slate-200 dark:from-white/10 dark:to-white/5 backdrop-blur-md shadow-sm";
+
+            if (btnNavPc) {
+                // 🔄 Botón Menú: Modo Normal Glassmorphism
+                btnNavPc.innerHTML = '<i data-lucide="crown" class="w-3.5 h-3.5 lg:w-4 lg:h-4 text-yellow-400"></i> <span class="whitespace-nowrap">Go Pro</span>';
+                btnNavPc.className = baseMenuBtnClass + "bg-white/10 hover:bg-white/20 text-white backdrop-blur-md border border-white/10 hover:border-white/30 hover:scale-105 cursor-pointer";
             }
         }
 
-        // Refrescar iconos inyectados para que el cohete o corona carguen visualmente
         if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
@@ -363,6 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Ejecución rápida al cargar
     setTimeout(() => {
+        if (typeof DB !== 'undefined') DB.updateUI(); // 🚀 FIX: Enciende la caja de IA y los colores correctos desde el segundo cero
         actualizarEstadoPlanes();
         actualizarCreditosUI(); // 🚀 Disparamos la lectura de créditos
     }, 100);

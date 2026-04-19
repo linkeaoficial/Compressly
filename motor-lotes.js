@@ -30,14 +30,17 @@ async function processBatchEngine() {
     // 🚀 VALIDACIÓN TEMPRANA: Revisamos permisos ANTES de borrar el trabajo anterior
     let willUseSEO = false;
     if (seoToggle && seoToggle.checked) {
-        if (typeof DB !== 'undefined' && DB.isUltra() && DB.hasCredits()) {
+        // 🚀 Ahora solo exigimos tener saldo
+        if (typeof DB !== 'undefined' && DB.hasCredits()) {
             willUseSEO = true;
         } else {
-            // Apagamos el interruptor suavemente sin destruir los resultados viejos
             seoToggle.checked = false;
+
+            // Estrategia de Venta al quedarse sin saldo
             if (!DB.isUltra()) {
-                Notify.show('Requiere Plan ULTRA', 'El Auto-SEO es exclusivo del plan IA.', 'warning');
-            } else if (!DB.hasCredits()) {
+                Notify.show('Créditos Gratis Agotados ⚡', 'Sube al Plan ULTRA para desbloquear el poder total.', 'warning');
+                if (typeof openUltraModal === 'function') openUltraModal();
+            } else {
                 Notify.show('Créditos Agotados ⚡', 'Recarga energía para seguir generando SEO.', 'error');
                 if (typeof openRechargeModal === 'function') openRechargeModal();
             }
@@ -88,18 +91,19 @@ async function processBatchEngine() {
             // 📊 DASHBOARD: Sumar al lote de estadísticas
             if (typeof updateDashboardStats === 'function') updateDashboardStats(extension);
 
-            // 🚀 MÓDULO AUTO-SEO: Validación Inteligente (DB)
+            // 🚀 MÓDULO AUTO-SEO: Validación Inteligente Freemium (DB)
             const seoToggle = document.getElementById('seoToggle');
-            const canUseSEO = DB.isUltra() && DB.hasCredits();
+            const canUseSEO = DB.hasCredits(); // 🟢 Ahora la ÚNICA regla es tener saldo
 
-            // Si intenta usarlo pero no cumple los requisitos, lo apagamos y avisamos
+            // Si intenta usarlo pero no tiene saldo, lo apagamos y empezamos la estrategia de venta
             if (seoToggle && seoToggle.checked && !canUseSEO) {
                 seoToggle.checked = false;
                 if (!DB.isUltra()) {
-                    Notify.show('Requiere Plan ULTRA', 'El Auto-SEO es una función exclusiva del plan IA.', 'warning');
-                } else if (!DB.hasCredits()) {
-                    Notify.show('Créditos Agotados ⚡', 'Recarga energía IA para seguir generando SEO.', 'error');
-                    if (typeof openRechargeModal === 'function') openRechargeModal(); // 🚀 Abre el cajero automático
+                    Notify.show('Créditos Gratis Agotados ⚡', 'Sube al Plan ULTRA para desbloquear el poder total.', 'warning');
+                    if (typeof openUltraModal === 'function') openUltraModal();
+                } else {
+                    Notify.show('Créditos Agotados ⚡', 'Recarga energía IA para seguir optimizando.', 'error');
+                    if (typeof openRechargeModal === 'function') openRechargeModal();
                 }
             }
 

@@ -831,18 +831,19 @@ compressBtn.addEventListener('click', () => {
             // 📊 DASHBOARD: Registrar el formato usado en el perfil del usuario
             if (typeof updateDashboardStats === 'function') updateDashboardStats(extension);
 
-            // 🚀 MÓDULO AUTO-SEO: Validación Inteligente (DB)
+            // 🚀 MÓDULO AUTO-SEO: Validación Inteligente Freemium (DB)
             const seoToggle = document.getElementById('seoToggle');
-            const canUseSEO = DB.isUltra() && DB.hasCredits();
+            const canUseSEO = DB.hasCredits(); // 🟢 Ahora la ÚNICA regla es tener saldo
 
-            // Si intenta usarlo pero no cumple los requisitos, lo apagamos y avisamos
+            // Si intenta usarlo pero no tiene saldo, lo apagamos y empezamos la estrategia de venta
             if (seoToggle && seoToggle.checked && !canUseSEO) {
                 seoToggle.checked = false;
                 if (!DB.isUltra()) {
-                    Notify.show('Requiere Plan ULTRA', 'El Auto-SEO es una función exclusiva del plan IA.', 'warning');
-                } else if (!DB.hasCredits()) {
-                    Notify.show('Créditos Agotados ⚡', 'Recarga energía IA para seguir generando SEO.', 'error');
-                    if (typeof openRechargeModal === 'function') openRechargeModal(); // 🚀 Abre el cajero automático
+                    Notify.show('Créditos Gratis Agotados ⚡', 'Sube al Plan ULTRA para desbloquear el poder total.', 'warning');
+                    if (typeof openUltraModal === 'function') openUltraModal();
+                } else {
+                    Notify.show('Créditos Agotados ⚡', 'Recarga energía IA para seguir optimizando.', 'error');
+                    if (typeof openRechargeModal === 'function') openRechargeModal();
                 }
             }
 
@@ -936,17 +937,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (seoToggle) {
         // 🧠 0. RECUPERAR MEMORIA AL RECARGAR LA PÁGINA
-        // Esperamos un instante para asegurar que la DB ya verificó el usuario
         setTimeout(() => {
             if (typeof DB !== 'undefined') {
                 const isAutoSeoSaved = localStorage.getItem('auto_seo_enabled') === 'true';
 
-                // 🛡️ Magia: Solo lo re-encendemos si lo dejó activo Y aún tiene permisos (ULTRA + Créditos)
-                if (isAutoSeoSaved && DB.isUltra() && DB.hasCredits()) {
+                // 🚀 Ahora solo revisamos si TIENE CRÉDITOS para recordar el botón prendido
+                if (isAutoSeoSaved && DB.hasCredits()) {
                     seoToggle.checked = true;
                 } else {
                     seoToggle.checked = false;
-                    // Limpiamos la memoria por seguridad si ya no tiene permisos
                     localStorage.setItem('auto_seo_enabled', 'false');
                 }
             }
@@ -955,17 +954,36 @@ document.addEventListener('DOMContentLoaded', () => {
         // 🛡️ 1. Validamos el permiso ANTES de que el interruptor cambie de posición
         seoToggle.addEventListener('click', (e) => {
             if (typeof DB !== 'undefined') {
-                // Si no es ULTRA (Gratis o PRO) -> Ofrecer Suscripción
-                if (!DB.isUltra()) {
-                    e.preventDefault(); // Evita que se encienda
+
+                // 🛑 PASO 1 (FUTURO SUPABASE): ¿Está logueado?
+                // Como aún no tienes Supabase, usaremos el plan 'free' simulando que no está logueado,
+                // y asumiremos que cuando se loguee le darás un estado interno de autenticado.
+                // Por ahora, simularemos que si tiene el plan 'free' y 0 créditos, nunca se registró.
+
+                const isLoggedIn = false; // 👈 En el futuro esto será: supabase.auth.getSession() !== null
+
+                // Si NO está logueado, le pedimos que cree su cuenta para darle el regalo
+                if (!isLoggedIn && DB.user.plan === 'free') {
+                    e.preventDefault();
                     seoToggle.checked = false;
-                    if (typeof openUltraModal === 'function') openUltraModal();
+                    Notify.show('Requiere Cuenta Gratis ☁️', 'Regístrate o Inicia Sesión para reclamar tus 3 créditos de IA.', 'info');
+                    if (typeof openProfileModal === 'function') openProfileModal();
+                    return; // Cortamos la ejecución aquí
                 }
-                // Si ya es ULTRA pero no tiene créditos -> Ofrecer Recarga
-                else if (!DB.hasCredits()) {
-                    e.preventDefault(); // Evita que se encienda
+
+                // 🚀 PASO 2: Si ya está logueado pero NO tiene créditos (Se le acabaron)
+                if (!DB.hasCredits()) {
+                    e.preventDefault();
                     seoToggle.checked = false;
-                    if (typeof openRechargeModal === 'function') openRechargeModal();
+
+                    // Estrategia de Venta
+                    if (!DB.isUltra()) {
+                        Notify.show('Créditos Agotados ⚡', 'Sube al Plan ULTRA para desbloquear el poder total.', 'warning');
+                        if (typeof openUltraModal === 'function') openUltraModal();
+                    } else {
+                        Notify.show('Créditos Agotados ⚡', 'Recarga energía IA para seguir optimizando.', 'error');
+                        if (typeof openRechargeModal === 'function') openRechargeModal();
+                    }
                 }
             }
         });

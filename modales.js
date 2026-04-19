@@ -420,3 +420,95 @@ window.closeRechargeModal = function () {
         if (navigator.vibrate) navigator.vibrate(20);
     }
 };
+
+// ⚙️ ==========================================
+// LÓGICA DEL MODAL DE AJUSTES Y SEGURIDAD
+// ==========================================
+window.openSettingsModal = function () {
+    const modal = document.getElementById('settingsModal');
+    const content = document.getElementById('settingsContent');
+    const settingsEmailDisplay = document.getElementById('settingsEmailDisplay');
+    const userEmailDisplay = document.getElementById('userEmailDisplay');
+
+    if (modal && content) {
+        // 🚀 Clonar el email para que sea exacto al del perfil
+        if (settingsEmailDisplay && userEmailDisplay) {
+            settingsEmailDisplay.innerText = userEmailDisplay.innerText;
+        }
+
+        // Mostrar el modal de Ajustes
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+
+        // 💡 Truco de UX: Ocultar visualmente el de perfil para que no se vea feo "encimado"
+        const profileModal = document.getElementById('profileModal');
+        if (profileModal) profileModal.classList.add('opacity-0');
+
+        setTimeout(() => {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }, 10);
+
+        lucide.createIcons();
+        if (navigator.vibrate) navigator.vibrate(20);
+    }
+};
+
+window.closeSettingsModal = function () {
+    const modal = document.getElementById('settingsModal');
+    const content = document.getElementById('settingsContent');
+
+    if (modal && content) {
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+
+            // 💡 Truco de UX: Volver a mostrar el modal de perfil que estaba debajo
+            const profileModal = document.getElementById('profileModal');
+            if (profileModal) profileModal.classList.remove('opacity-0');
+        }, 200);
+        if (navigator.vibrate) navigator.vibrate(20);
+    }
+};
+
+// 🛡️ LÓGICA ANTI-SPAM PARA CAMBIO DE CONTRASEÑA
+window.solicitarCambioPassword = function (btn) {
+    // 1. Si el botón ya está desactivado (cargando), no hacemos nada (Escudo Anti-Doble Clic)
+    if (btn.disabled) return;
+
+    // 2. Desactivamos el botón y lo ponemos un poco transparente
+    btn.disabled = true;
+    btn.classList.add('opacity-70', 'pointer-events-none');
+
+    // Guardamos el contenido original para restaurarlo después
+    const contenidoOriginal = btn.innerHTML;
+
+    // 3. Cambiamos el contenido a un estado de "Cargando..."
+    btn.innerHTML = `
+        <div class="flex items-center justify-center w-full gap-3">
+            <i data-lucide="loader-2" class="w-5 h-5 text-primary-500 animate-spin"></i>
+            <span class="text-primary-500">Enviando enlace seguro...</span>
+        </div>
+    `;
+    lucide.createIcons(); // Refrescamos los iconos para que gire
+
+    // 4. Simulamos la llamada a Supabase (Demora 2 segundos)
+    setTimeout(() => {
+        // En el futuro aquí irá: await supabase.auth.resetPasswordForEmail(...)
+
+        // Lanzamos la notificación
+        if (typeof Notify !== 'undefined') {
+            Notify.show('Enlace de Recuperación', 'Te hemos enviado un correo para cambiar tu contraseña de forma segura.', 'success');
+        }
+
+        // 5. Restauramos el botón a su estado original
+        btn.innerHTML = contenidoOriginal;
+        btn.disabled = false;
+        btn.classList.remove('opacity-70', 'pointer-events-none');
+        lucide.createIcons();
+
+    }, 2000); // 2000 milisegundos = 2 segundos
+};
