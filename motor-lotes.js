@@ -315,7 +315,7 @@ function mostrarResultadosSEO(seoData, index, targetElement, previewUrl) {
                     </div>
                 </div>
             </div>
-            <img src="imagenes/compressly_logo2.png" class="w-4 h-4 md:w-5 md:h-5 opacity-30 grayscale" alt="IA">
+            <img src="imagenes/compressly_logo.png" class="w-4 h-4 md:w-5 md:h-5 opacity-30 grayscale" alt="IA">
         </div>
         <div class="space-y-4">
             

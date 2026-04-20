@@ -10,7 +10,7 @@ const DB = {
 
     // Datos del usuario actual (Inicia como Gratis con 3 créditos)
     user: {
-        plan: 'ultra',       // Opciones: 'free', 'pro', 'ultra'
+        plan: 'pro',       // Opciones: 'free', 'pro', 'ultra'
         aiCredits: 7        // Saldo de Energía para Auto-SEO
     },
 
@@ -63,20 +63,41 @@ const DB = {
         const actionContainer = document.getElementById('profileActionContainer');
 
         if (planLabel && planBadge) {
-            // 🚀 MOSTRAR LA CAJA DE CRÉDITOS PARA TODOS (Para que vean el regalo)
+            // 🚀 MOSTRAR LA CAJA DE CRÉDITOS PARA TODOS
             if (aiStat) aiStat.classList.remove('hidden');
+
+            // 💎 Elementos de la tabla de precios
+            const btnTablaFree = document.getElementById('btnTablaFree');
+            const btnTablaPro = document.getElementById('btnTablaPro');
+            const btnTablaUltra = document.getElementById('btnTablaUltra');
 
             if (this.isUltra()) {
                 planLabel.innerText = 'Plan ULTRA IA';
                 planBadge.className = 'inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-6 border bg-purple-500/10 text-purple-600 border-purple-500/30';
                 if (planIcon) planIcon.setAttribute('data-lucide', 'sparkles');
 
-                // 🚀 BOTÓN BLINDADO: Se ve idéntico en modo claro y oscuro
                 if (actionContainer) actionContainer.innerHTML = `
                     <button onclick="closeProfileModal(); openRechargeModal();" 
                         class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 !text-white font-black py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95 border border-white/10">
                         <i data-lucide="battery-charging" class="w-4 h-4 !text-white"></i> RECARGAR ENERGÍA IA
                     </button>`;
+
+                // 🔒 Tabla de Precios: Usuario Ultra
+                if (btnTablaFree) {
+                    btnTablaFree.innerHTML = `<i data-lucide="check" class="w-5 h-5"></i> Plan Base`;
+                    btnTablaFree.className = `w-full bg-slate-200 dark:bg-white/5 text-slate-500 dark:text-gray-400 font-extrabold py-4 rounded-xl flex justify-center items-center gap-2 cursor-default border border-transparent`;
+                    btnTablaFree.onclick = null;
+                }
+                if (btnTablaPro) {
+                    btnTablaPro.innerHTML = `<i data-lucide="check" class="w-5 h-5"></i> Incluido en ULTRA`;
+                    btnTablaPro.className = `w-full bg-slate-200 dark:bg-white/5 text-slate-500 dark:text-gray-400 font-extrabold py-4 rounded-xl flex justify-center items-center gap-2 cursor-default border border-transparent`;
+                    btnTablaPro.onclick = null;
+                }
+                if (btnTablaUltra) {
+                    btnTablaUltra.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5"></i> Tu Plan Actual`;
+                    btnTablaUltra.className = `w-full bg-purple-500/20 text-purple-600 dark:text-purple-400 border border-purple-500/30 font-extrabold py-4 rounded-xl flex justify-center items-center gap-2 cursor-default relative z-10`;
+                    btnTablaUltra.onclick = null;
+                }
             }
             else if (this.isPro()) {
                 planLabel.innerText = 'Plan PRO Acceso';
@@ -84,6 +105,23 @@ const DB = {
                 if (planIcon) planIcon.setAttribute('data-lucide', 'crown');
 
                 if (actionContainer) actionContainer.innerHTML = `<button onclick="closeProfileModal(); openUltraModal();" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95"><i data-lucide="rocket" class="w-4 h-4"></i> SUBIR A ULTRA IA</button>`;
+
+                // 🔒 Tabla de Precios: Usuario PRO
+                if (btnTablaFree) {
+                    btnTablaFree.innerHTML = `<i data-lucide="check" class="w-5 h-5"></i> Plan Base`;
+                    btnTablaFree.className = `w-full bg-slate-200 dark:bg-white/5 text-slate-500 dark:text-gray-400 font-extrabold py-4 rounded-xl flex justify-center items-center gap-2 cursor-default border border-transparent`;
+                    btnTablaFree.onclick = null;
+                }
+                if (btnTablaPro) {
+                    btnTablaPro.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5"></i> Tu Plan Actual`;
+                    btnTablaPro.className = `w-full bg-primary-500/20 text-primary-600 dark:text-primary-400 border border-primary-500/30 font-extrabold py-4 rounded-xl flex justify-center items-center gap-2 cursor-default`;
+                    btnTablaPro.onclick = null;
+                }
+                if (btnTablaUltra) {
+                    btnTablaUltra.innerHTML = `<i data-lucide="rocket" class="w-5 h-5 !text-white"></i> Mejorar a ULTRA`;
+                    btnTablaUltra.className = `w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-[1.02] active:scale-95 !text-white font-extrabold py-4 rounded-xl transition-all shadow-lg shadow-purple-500/30 flex justify-center items-center gap-2 relative z-10`;
+                    btnTablaUltra.onclick = () => { if (typeof openUltraModal === 'function') openUltraModal(); };
+                }
             }
             else {
                 planLabel.innerText = 'Plan Esencial';
@@ -91,6 +129,23 @@ const DB = {
                 if (planIcon) planIcon.setAttribute('data-lucide', 'award');
 
                 if (actionContainer) actionContainer.innerHTML = `<button onclick="closeProfileModal(); window.scrollTo({top: document.getElementById('precios').offsetTop, behavior: 'smooth'});" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-black py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95">VER PLANES PREMIUM</button>`;
+
+                // 🔓 Tabla de Precios: Usuario Gratis
+                if (btnTablaFree) {
+                    btnTablaFree.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5"></i> Tu Plan Actual`;
+                    btnTablaFree.className = `w-full bg-slate-200 dark:bg-white/10 text-slate-600 dark:text-gray-400 font-extrabold py-4 rounded-xl flex justify-center items-center gap-2 cursor-default border border-transparent`;
+                    btnTablaFree.onclick = null;
+                }
+                if (btnTablaPro) {
+                    btnTablaPro.innerHTML = `<i data-lucide="crown" class="w-5 h-5 text-yellow-300"></i> Obtener Acceso PRO`;
+                    btnTablaPro.className = `w-full bg-primary-500 hover:bg-primary-600 active:scale-95 text-white font-extrabold py-4 rounded-xl transition-all shadow-lg hover:shadow-primary-500/30 flex justify-center items-center gap-2`;
+                    btnTablaPro.onclick = () => { if (typeof openPremiumModal === 'function') openPremiumModal(true); };
+                }
+                if (btnTablaUltra) {
+                    btnTablaUltra.innerHTML = `<i data-lucide="rocket" class="w-5 h-5 !text-white"></i> Suscribirse a ULTRA`;
+                    btnTablaUltra.className = `w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-[1.02] active:scale-95 !text-white font-extrabold py-4 rounded-xl transition-all shadow-lg shadow-purple-500/30 flex justify-center items-center gap-2 relative z-10`;
+                    btnTablaUltra.onclick = () => { if (typeof openUltraModal === 'function') openUltraModal(); };
+                }
             }
         }
 
