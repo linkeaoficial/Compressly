@@ -21,19 +21,25 @@ export default {
     if (request.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
     try {
-      // 🚀 Atrapamos targetExtension que nos manda el frontend
-      const { prompt, isPremium, isBlog, articleText, isSEO, imageBase64, targetExtension } = await request.json();
+      // 🚀 Atrapamos targetExtension y LANG que nos manda el frontend
+      const { prompt, isPremium, isBlog, articleText, isSEO, imageBase64, targetExtension, lang } = await request.json();
 
       // 🛍️ ==========================================
       // INICIO MÓDULO AUTO-SEO PARA E-COMMERCE (Visión IA)
       // ==========================================
       if (isSEO && imageBase64) {
         // Si por alguna razón no llega la extensión, usamos webp por defecto para no romper nada
-        const extIA = targetExtension || "webp";
+        const extIA = targetExtension || "jpg";
+
+        // 🚀 MAGIA DE IDIOMAS: Detectamos qué pidió el frontend
+        const idiomaObjetivo = (lang === 'en') ? 'English' : 'Español';
 
         const seoPrompt = `Eres un experto en SEO para E-commerce. Analiza esta imagen de producto.
         Devuelve ÚNICAMENTE un objeto JSON válido con esta estructura exacta, sin texto adicional ni formato Markdown.
-        REGLA VITAL: No uses saltos de línea (\\n) ni comillas dobles sin escapar dentro de los textos. Todo debe estar en una sola línea continua:
+        
+        REGLA VITAL 1: Los VALORES del JSON (el contenido que escribes) DEBEN estar estrictamente en ${idiomaObjetivo}.
+        REGLA VITAL 2: Las CLAVES del JSON (nombre_archivo, alt_text, descripcion_corta) DEBEN mantenerse en español, tal cual están aquí abajo, para no romper el código.
+        REGLA VITAL 3: No uses saltos de línea (\\n) ni comillas dobles sin escapar dentro de los textos. Todo debe estar en una sola línea continua:
         {
           "nombre_archivo": "nombre-optimizado-separado-por-guiones.${extIA}",
           "alt_text": "Texto descriptivo para accesibilidad de la imagen",
@@ -54,12 +60,31 @@ export default {
                 { text: seoPrompt },
                 { inline_data: { mime_type: "image/jpeg", data: imageBase64 } }
               ]
-            }]
+            }],
+            // 🚀 APAGAMOS LOS FILTROS DE SEGURIDAD PARANOICOS DE GOOGLE
+            safetySettings: [
+              { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+              { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+              { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+              { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
+            ]
           })
         });
 
         const data = await geminiRequest.json();
+
+        // 🛡️ ESCUDO DE SOBRECARGA: Si la API gratuita está saturada (Rate Limit)
+        if (data.error && data.error.code === 429) {
+          throw new Error("Sistema saturado por exceso de peticiones. Espera unos segundos e intenta de nuevo.");
+        }
+
         if (data.error) throw new Error(data.error.message);
+
+        // 🛡️ ESCUDO ANTI-EXPLOSIÓN: Si Google bloquea la imagen por algún motivo
+        if (!data.candidates || !data.candidates[0].content) {
+          const reason = data.candidates?.[0]?.finishReason || "Desconocido";
+          throw new Error(`Análisis denegado por la IA. Motivo: ${reason}`);
+        }
 
         // Limpiamos el Markdown por si la IA es rebelde
         let jsonLimpio = data.candidates[0].content.parts[0].text;

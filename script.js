@@ -388,7 +388,7 @@ qualityRange.addEventListener('input', (e) => {
 });
 qualityRange.addEventListener('change', () => triggerVibration(30));
 
-// 🟢 Muro de Pago para el Escudo Anti-Rastreo
+// 🟢 Muro de Pago para el Escudo Anti-Rastreo (Con Memoria Permanente)
 exifToggle.addEventListener('change', (e) => {
     triggerVibration([30, 50]);
 
@@ -397,9 +397,13 @@ exifToggle.addEventListener('change', (e) => {
             e.preventDefault();
             exifToggle.checked = false;
             openPremiumModal();
+            localStorage.setItem('anti_rastreo_enabled', 'false'); // Aseguramos que quede apagado si no es PRO
         } else {
+            localStorage.setItem('anti_rastreo_enabled', 'true'); // Guardamos estado activo
             Notify.show('Escudo Activado', 'Los metadatos serán eliminados.', 'info');
         }
+    } else {
+        localStorage.setItem('anti_rastreo_enabled', 'false'); // Guardamos estado apagado
     }
 });
 
@@ -709,10 +713,25 @@ document.getElementById('clearBtn').addEventListener('click', () => {
     compressBtn.innerHTML = '<i data-lucide="zap" class="w-5 h-5"></i> Comprimir';
     compressBtn.classList.remove('opacity-75', 'pointer-events-none');
 
+    // 🧹 NUEVO: Limpiar y ocultar la tarjeta de Auto-SEO si estaba abierta
+    const seoContainer = document.getElementById('seoResults');
+    if (seoContainer) {
+        seoContainer.innerHTML = '';
+        seoContainer.classList.add('hidden');
+    }
+
     lucide.createIcons();
 
     // 🚀 NUEVA NOTIFICACIÓN 
     Notify.show('Lienzo Limpio', 'Se han eliminado las imágenes y reseteado los ajustes.', 'info');
+
+    // 🚀 NUEVO: SCROLL INTELIGENTE HACIA ARRIBA
+    setTimeout(() => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }, 100);
 });
 
 // 🚀 VINCULACIÓN: El botón del Lote ahora activa la misma limpieza general
@@ -723,8 +742,10 @@ compressBtn.addEventListener('click', () => {
     if (!currentFile && batchFiles.length === 0) {
         triggerVibration([100, 50, 100]);
 
-        // 🐛 CORREGIDO: Cambiamos 'warning' por 'error' para que el sistema no colapse
-        Notify.show('Falta la imagen', 'Por favor, sube al menos una imagen antes de intentar comprimir.', 'error');
+        // 🛡️ Cambiado a 'warning' para usar el nuevo diseño amarillo de notificaciones.js
+        if (typeof Notify !== 'undefined') {
+            Notify.show('Falta Imagen', 'Debes subir una foto antes de poder comprimirla.', 'warning');
+        }
 
         // 🚀 ANIMACIÓN MODERNA DE ATENCIÓN (Parpadeo Morado Intenso)
         // 🚀 1. SCROLL HACIA ARRIBA (Iniciamos rápido para guiar al usuario)
@@ -930,18 +951,18 @@ function setupDownload(url, filename) {
 
 
 // 👑 ==========================================
-// BLOQUEO ULTRA / RECARGA PARA MÓDULO SEO (Memoria Persistente)
+// BLOQUEO PREMIUM / MEMORIA PERSISTENTE (SEO y Anti-Rastreo)
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const seoToggle = document.getElementById('seoToggle');
+    const exifToggle = document.getElementById('exifToggle');
 
-    if (seoToggle) {
-        // 🧠 0. RECUPERAR MEMORIA AL RECARGAR LA PÁGINA
-        setTimeout(() => {
-            if (typeof DB !== 'undefined') {
-                const isAutoSeoSaved = localStorage.getItem('auto_seo_enabled') === 'true';
-
-                // 🚀 Ahora solo revisamos si TIENE CRÉDITOS para recordar el botón prendido
+    // 🧠 0. RECUPERAR MEMORIA AL RECARGAR LA PÁGINA (Sincronización con el Plan)
+    setTimeout(() => {
+        if (typeof DB !== 'undefined') {
+            // --- Memoria para Auto-SEO ---
+            const isAutoSeoSaved = localStorage.getItem('auto_seo_enabled') === 'true';
+            if (seoToggle) {
                 if (isAutoSeoSaved && DB.hasCredits()) {
                     seoToggle.checked = true;
                 } else {
@@ -949,8 +970,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('auto_seo_enabled', 'false');
                 }
             }
-        }, 150);
 
+            // --- Memoria para Anti-Rastreo (GPS/EXIF) ---
+            const isAntiRastreoSaved = localStorage.getItem('anti_rastreo_enabled') === 'true';
+            if (exifToggle) {
+                // Solo se mantiene encendido si es usuario PRO o ULTRA
+                if (isAntiRastreoSaved && isPremiumUser) {
+                    exifToggle.checked = true;
+                } else {
+                    exifToggle.checked = false;
+                    localStorage.setItem('anti_rastreo_enabled', 'false');
+                }
+            }
+        }
+    }, 150);
+
+    if (seoToggle) {
         // 🛡️ 1. Validamos el permiso ANTES de que el interruptor cambie de posición
         seoToggle.addEventListener('click', (e) => {
             if (typeof DB !== 'undefined') {

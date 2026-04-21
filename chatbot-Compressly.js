@@ -296,6 +296,7 @@ html:not(.dark) .ai-input-area { background: rgba(255,255,255,0.5); }
     background: var(--ai-glow); border: none; width: 42px; height: 42px;
     border-radius: 12px; display: flex; align-items: center; justify-content: center;
     color: white; cursor: pointer; transition: all 0.2s;
+    flex-shrink: 0; /* 🚀 FIX: Escudo para que el input no lo aplaste en móvil */
 }
 .ai-send-btn:hover { transform: scale(1.05); background: var(--ai-accent); }
 .ai-send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
@@ -305,6 +306,7 @@ html:not(.dark) .ai-input-area { background: rgba(255,255,255,0.5); }
     background: transparent; border: 1px solid var(--glass-border); width: 42px; height: 42px;
     border-radius: 12px; display: flex; align-items: center; justify-content: center;
     color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+    flex-shrink: 0; /* 🚀 FIX: Escudo para que mantenga sus proporciones intactas */
 }
 .ai-mic-btn:hover { background: rgba(139, 92, 246, 0.1); color: var(--ai-glow); }
 
@@ -467,7 +469,7 @@ body.chat-active.mobile-no-scroll {
     }
 
     // 🚀 URL de tu IA en Cloudflare (Sacada de tu captura)
-    const WORKER_URL = "https://agente-compressly.elitemarketing-a94.workers.dev"; // 🚀 Tu URL real
+    const WORKER_URL = "https://agente-compressly-ia.linkeaoficial2025.workers.dev"; // 🚀 Tu URL real
 
     const handleScrollAI = () => {
         if (window.scrollY > 100) aiToggler.classList.add('show-bot');
@@ -553,7 +555,11 @@ body.chat-active.mobile-no-scroll {
             appendMessage("Lo siento, tuve un problema de conexión con la red principal. 😔📡 Intenta de nuevo.");
         }
         aiSendBtn.disabled = false;
-        aiInput.focus();
+
+        // 🚀 MAGIA ANTI-TECLADO EN MÓVIL: Solo enfocamos si es pantalla de PC
+        if (window.innerWidth > 480) {
+            aiInput.focus();
+        }
     }
 
     // Eventos de enviar (Clic y tecla Enter)

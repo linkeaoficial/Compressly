@@ -12,14 +12,22 @@ const btnTerminos = document.getElementById('btnTerminos');
 const btnPrivacidad = document.getElementById('btnPrivacidad');
 const btnPrivacidadCard = document.getElementById('btnPrivacidadCard');
 
+// 🟢 CÓDIGO NUEVO:
 function openModal(titleKey, contentKey) {
     modalTitle.innerHTML = `<i data-lucide="shield" class="w-6 h-6 text-primary-400"></i> ${translations[currentLanguage][titleKey]}`;
     modalBody.innerHTML = translations[currentLanguage][contentKey];
 
     legalModal.classList.remove('hidden');
     legalModal.classList.add('flex');
+
+    // 🛡️ TRUCO ANTI-GOLPE VISUAL: Calculamos el ancho de la barra y lo damos como padding
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    document.body.style.paddingRight = `${scrollbarWidth}px`;
     document.body.style.overflow = 'hidden'; // 🚀 Bloquear Scroll del Fondo
-    if (window.innerWidth <= 480) document.getElementById('aiToggler')?.classList.add('hidden'); // 🚀 Ocultar bot en móvil
+
+    // 🤖 Ocultar bot en TODAS las pantallas (Exactamente igual que Centro de Ideas)
+    const botBtn = document.getElementById('aiToggler');
+    if (botBtn) botBtn.style.display = 'none';
 
     setTimeout(() => {
         modalContent.classList.remove('scale-95', 'opacity-0');
@@ -27,7 +35,7 @@ function openModal(titleKey, contentKey) {
     }, 10);
 
     lucide.createIcons();
-    if (navigator.vibrate) navigator.vibrate(30);
+    if (navigator.vibrate) navigator.vibrate([50, 50]);
 }
 
 function closeModal() {
@@ -37,8 +45,14 @@ function closeModal() {
     setTimeout(() => {
         legalModal.classList.add('hidden');
         legalModal.classList.remove('flex');
-        document.body.style.overflow = ''; // 🚀 Restaurar Scroll
-        if (window.innerWidth <= 480) document.getElementById('aiToggler')?.classList.remove('hidden'); // 🚀 Mostrar bot
+
+        // 🔓 Restaurar Scroll y quitar el padding anti-salto
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+
+        // 🤖 Mostrar bot nuevamente en TODAS las pantallas
+        const botBtn = document.getElementById('aiToggler');
+        if (botBtn) botBtn.style.display = '';
     }, 200);
     if (navigator.vibrate) navigator.vibrate(20);
 }

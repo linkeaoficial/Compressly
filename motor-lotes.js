@@ -121,6 +121,12 @@ async function processBatchEngine() {
 
                 // Llamada a la IA (Pasamos el ID del skeleton para reemplazarlo luego)
                 await generarAutoSEO(compressedBlob, i, extension, skeletonId);
+
+                // 🚀 PAUSA DE CORTESÍA: Evita saturar la API gratuita de Gemini en procesamientos por lotes
+                // Solo esperamos si hay más imágenes pendientes en la cola
+                if (i < batchFiles.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                }
             }
 
             // Lógica Inteligente de Renombrado
@@ -228,18 +234,27 @@ async function generarAutoSEO(blob, index, currentExtension, skeletonId) {
         const base64data = reader.result.split(',')[1];
 
         // 2. Llamada al Agente Cloud
-        const WORKER_URL = "https://agente-compressly.elitemarketing-a94.workers.dev";
+        const WORKER_URL = "https://agente-compressly-ia.linkeaoficial2025.workers.dev";
         const response = await fetch(WORKER_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 isSEO: true,
                 imageBase64: base64data,
-                targetExtension: currentExtension
+                targetExtension: currentExtension,
+                lang: typeof currentLanguage !== 'undefined' ? currentLanguage : 'es'
             })
         });
 
-        if (!response.ok) throw new Error("Fallo en la respuesta de la IA");
+        // 🛡️ AHORA LEEMOS EL ERROR REAL DEL WORKER EN LUGAR DE ESCONDERLO
+        if (!response.ok) {
+            let errorReal = "Fallo de conexión con la IA.";
+            try {
+                const errJson = await response.json();
+                if (errJson.error) errorReal = errJson.error;
+            } catch (e) { }
+            throw new Error(errorReal);
+        }
 
         const seoData = await response.json();
 
@@ -256,7 +271,7 @@ async function generarAutoSEO(blob, index, currentExtension, skeletonId) {
         console.error("Fallo Auto-SEO:", error);
         const skeleton = document.getElementById(skeletonId);
         if (skeleton) {
-            // 🚀 Mensaje Premium y Amigable en lugar de un error técnico
+            // 🚀 Mostramos el error EXACTO que envió el Worker (Saturación, Bloqueo, etc.)
             skeleton.classList.remove('animate-pulse', 'bg-primary-500/5');
             skeleton.classList.add('bg-red-500/10', 'border-red-500/30');
             skeleton.innerHTML = `
@@ -264,17 +279,12 @@ async function generarAutoSEO(blob, index, currentExtension, skeletonId) {
                     <i data-lucide="alert-triangle" class="w-4 h-4"></i>
                 </div>
                 <div>
-                    <div class="text-[10px] font-black text-red-500 uppercase tracking-widest">Imagen Compleja</div>
-                    <div class="text-[10px] text-slate-500 dark:text-gray-400 font-medium mt-0.5">La IA no pudo procesar esta imagen para E-commerce.</div>
+                    <div class="text-[10px] font-black text-red-500 uppercase tracking-widest">Aviso del Sistema</div>
+                    <div class="text-[10px] text-slate-500 dark:text-gray-400 font-medium mt-0.5">${error.message}</div>
                 </div>
             `;
-            if (typeof lucide !== 'undefined') lucide.createIcons();
 
-            // 🛡️ Devolvemos el crédito si la IA falló
-            if (typeof DB !== 'undefined') {
-                DB.user.aiCredits++;
-                DB.updateUI();
-            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
     }
 }

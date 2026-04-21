@@ -1,85 +1,124 @@
 <!DOCTYPE html>
 <html lang="es" class="dark">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style id="manto-invisibilidad-ia">
+    /* 1. Ocultar el módulo de Auto-SEO en la app principal */
+    #seo-module-container {
+        display: none !important;
+    }
 
-    <title>Compressly | Compresor de Imágenes 100% Privado y Local</title>
-    <meta name="description"
-        content="Optimiza tus imágenes sin servidores. Compresión instantánea, segura y gratuita para JPG, PNG, Y WEBP. Privacidad total para tus archivos.">
-    <meta name="author" content="CEO Compressly">
-    <meta name="theme-color" content="#0B0B13">
+    /* 2. Ocultar la tarjeta del Plan ULTRA en la tabla de precios */
+    .bento-card:has(#btnTablaUltra) {
+        display: none !important;
+    }
 
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://compressly.com/">
-    <meta property="og:title" content="Compressly | Compresor de Imágenes Inteligente">
-    <meta property="og:description"
-        content="Optimización de grado militar que ocurre 100% en tu dispositivo. Más velocidad, máxima privacidad.">
-    <meta property="og:image" content="https://compressly.com/og-image.jpg">
+    /* 3. Centrar la tabla de precios (Free y PRO) */
+    @media (min-width: 768px) {
+        div.grid:has(#btnTablaUltra) {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            max-width: 56rem !important;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
 
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://compressly.com/">
-    <meta property="twitter:title" content="Compressly | Compresor de Imágenes Local">
-    <meta property="twitter:description" content="Comprime tus fotos al instante sin que salgan de tu navegador.">
-    <meta property="twitter:image" content="https://compressly.com/og-image.jpg">
+    /* 4. Ocultar botones de Recarga de Energía y Plan Ultra en toda la web */
+    button[onclick*="openRechargeModal"],
+    button[onclick*="openUltraModal"] {
+        display: none !important;
+    }
 
-    <link rel="alternate" hreflang="es" href="https://compressly.com/" />
-    <link rel="alternate" hreflang="en" href="https://compressly.com/?lang=en" />
-    <link rel="alternate" hreflang="x-default" href="https://compressly.com/" />
+    /* 5. Ocultar el bloque de "Créditos de Energía" dentro del Perfil del Usuario */
+    div:has(> div > div > #profileAiCredits),
+    div.flex.justify-between:has(#profileAiCredits) {
+        display: none !important;
+    }
 
-    <link rel="canonical" href="https://compressly.com/" />
+    /* 6. CORREGIDO: Ocultar el Aviso Legal (Cubre ambas versiones de diseño que creamos) */
+    div.mt-16.mb-8.max-w-4xl.text-center,
+    div.mt-20.mb-10.max-w-4xl.text-center {
+        display: none !important;
+    }
+</style>
+</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="imagenes/compressly_favicon.png">
-    <link rel="icon" type="image/png" href="imagenes/compressly_favicon.png">
+<title>Compressly | Compresor de Imágenes 100% Privado y Local</title>
+<meta name="description"
+    content="Optimiza tus imágenes sin servidores. Compresión instantánea, segura y gratuita para JPG, PNG, Y WEBP. Privacidad total para tus archivos.">
+<meta name="author" content="CEO Compressly">
+<meta name="theme-color" content="#0B0B13">
 
-    <script src="https://cdn.tailwindcss.com"></script>
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://compressly.com/">
+<meta property="og:title" content="Compressly | Compresor de Imágenes Inteligente">
+<meta property="og:description"
+    content="Optimización de grado militar que ocurre 100% en tu dispositivo. Más velocidad, máxima privacidad.">
+<meta property="og:image" content="https://compressly.com/og-image.jpg">
 
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#f5f3ff',
-                            100: '#ede9fe',
-                            200: '#ddd6fe',
-                            300: '#c4b5fd',
-                            400: '#a78bfa',
-                            500: '#8b5cf6',
-                            600: '#7c3aed',
-                        }
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://compressly.com/">
+<meta property="twitter:title" content="Compressly | Compresor de Imágenes Local">
+<meta property="twitter:description" content="Comprime tus fotos al instante sin que salgan de tu navegador.">
+<meta property="twitter:image" content="https://compressly.com/og-image.jpg">
+
+<link rel="alternate" hreflang="es" href="https://compressly.com/" />
+<link rel="alternate" hreflang="en" href="https://compressly.com/?lang=en" />
+<link rel="alternate" hreflang="x-default" href="https://compressly.com/" />
+
+<link rel="canonical" href="https://compressly.com/" />
+
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="imagenes/compressly_favicon.png">
+<link rel="icon" type="image/png" href="imagenes/compressly_favicon.png">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+    tailwind.config = {
+        darkMode: 'class',
+        theme: {
+            extend: {
+                colors: {
+                    primary: {
+                        50: '#f5f3ff',
+                        100: '#ede9fe',
+                        200: '#ddd6fe',
+                        300: '#c4b5fd',
+                        400: '#a78bfa',
+                        500: '#8b5cf6',
+                        600: '#7c3aed',
                     }
                 }
             }
         }
-    </script>
+    }
+</script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/compressorjs/1.2.1/compressor.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/compressorjs/1.2.1/compressor.min.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
-    <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css">
 
-    <script>
-        // 🟢 Al cargar, si el usuario no tiene preferencias guardadas, forzamos el modo oscuro por defecto en su memoria local.
-        if (!localStorage.getItem('theme')) {
-            localStorage.setItem('theme', 'dark');
-        }
+<script>
+    // 🟢 Al cargar, si el usuario no tiene preferencias guardadas, forzamos el modo oscuro por defecto en su memoria local.
+    if (!localStorage.getItem('theme')) {
+        localStorage.setItem('theme', 'dark');
+    }
 
-        if (localStorage.getItem('theme') === 'light') {
-            document.documentElement.classList.remove('dark');
-        } else {
-            document.documentElement.classList.add('dark');
-        }
-    </script>
+    if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.remove('dark');
+    } else {
+        document.documentElement.classList.add('dark');
+    }
+</script>
 
-    <script type="application/ld+json">
+<script type="application/ld+json">
 [
   {
     "@context": "https://schema.org",
@@ -679,18 +718,15 @@
                             </div>
                         </label>
                     </div>
+
                     <div id="seoResults"
                         class="hidden mt-5 flex flex-col gap-3 max-h-[500px] overflow-y-auto custom-scrollbar pr-1 md:pr-2">
                     </div>
                 </div>
             </div>
-
             <div class="md:col-span-12 flex justify-end mt-4 relative z-40">
                 <button id="compressBtn"
                     class="w-full md:w-auto md:min-w-[320px] bg-primary-500 hover:bg-primary-600 text-white font-black py-4 md:py-5 px-8 rounded-2xl transition-all active:scale-95 shadow-[0_10px_30px_rgba(139,92,246,0.3)] hover:shadow-[0_15px_40px_rgba(139,92,246,0.5)] flex justify-center items-center gap-3 text-lg md:text-xl border border-white/10 overflow-hidden relative group">
-                    <div
-                        class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out">
-                    </div>
                     <i data-lucide="zap" class="w-6 h-6 relative z-10"></i>
                     <span class="relative z-10 tracking-wide" data-i18n="btn_compress">Comprimir Imágenes</span>
                 </button>
@@ -1290,6 +1326,17 @@
                             imagen a internet sin revelar tu ubicación.</p>
                     </details>
                 </div>
+            </div>
+
+            <div class="mt-16 mb-8 text-center px-4 max-w-4xl mx-auto">
+                <p
+                    class="text-[11px] md:text-xs text-slate-400 dark:text-gray-500 leading-relaxed font-medium border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-black/20 p-4 rounded-2xl shadow-sm">
+                    <strong class="text-slate-600 dark:text-gray-300">Aviso Legal y Uso Aceptable:</strong> Está
+                    estrictamente prohibido utilizar Compressly para procesar imágenes con contenido ilegal, violento,
+                    explícito o que infrinja derechos de autor. Nos reservamos el derecho de bloquear permanentemente el
+                    acceso, la dirección IP y los créditos a los usuarios que violen esta norma. Al utilizar esta
+                    herramienta, aceptas nuestros términos de servicio.
+                </p>
             </div>
     </main>
 
