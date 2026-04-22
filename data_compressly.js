@@ -10,7 +10,7 @@ const DB = {
 
     // Datos del usuario actual (Inicia como Gratis con 3 créditos)
     user: {
-        plan: 'pro',       // Opciones: 'free', 'pro', 'ultra'
+        plan: 'free',       // Opciones: 'free', 'pro', 'ultra'
         aiCredits: 7        // Saldo de Energía para Auto-SEO
     },
 
