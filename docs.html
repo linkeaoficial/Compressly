@@ -13,9 +13,23 @@
 
 <body class="bg-white dark:bg-[#09090B] text-slate-900 dark:text-slate-200 antialiased">
 
-    <div class="progress-container">
-        <div class="progress-bar" id="readingProgress"></div>
+    <div class="fixed top-0 left-0 w-full h-1 bg-primary-500/20 z-50">
+        <div class="h-full bg-primary-500" id="readingProgress" style="width: 0%;"></div>
     </div>
+
+    <nav class="border-b border-white/5 bg-[#0A0A0F]/80 backdrop-blur-xl sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="imagenes/compressly_logo.png" alt="Logo" class="w-6 h-6">
+                <span class="font-bold text-white tracking-wide">Compressly <span
+                        class="text-primary-500 font-mono text-xs">/ tech-docs</span></span>
+            </div>
+            <a href="index.html"
+                class="text-sm font-medium text-slate-400 hover:text-white transition-colors flex items-center gap-2">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> <span data-i18n="docs_back_nav">Volver</span>
+            </a>
+        </div>
+    </nav>
 
     <main class="max-w-4xl mx-auto px-6 py-20">
         <div class="mb-16">
@@ -96,7 +110,6 @@
             <a href="index.html"
                 class="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-black px-8 py-4 rounded-2xl transition-all hover:scale-105">
                 <span data-i18n="docs_back">Volver al Compresor</span>
-                <img src="imagenes/compressly_logo.png" alt="Logo Compressly" class="w-5 h-5 object-contain">
             </a>
         </div>
     </main>

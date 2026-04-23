@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation | Compressly Engine</title>
+    <link rel="icon" type="image/png" href="imagenes/compressly_favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-[#050508] text-slate-300 antialiased selection:bg-emerald-500/30 selection:text-emerald-200">
+
+    <div class="fixed top-0 left-0 w-full h-1 bg-emerald-500/20 z-50">
+        <div class="h-full bg-emerald-500" id="readingProgress" style="width: 0%;"></div>
+    </div>
+
+    <nav class="border-b border-white/5 bg-[#0A0A0F]/80 backdrop-blur-xl sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="imagenes/compressly_logo.png" alt="Logo" class="w-6 h-6">
+                <span class="font-bold text-white tracking-wide">Compressly <span
+                        class="text-emerald-400 font-mono text-xs">/ docs</span></span>
+            </div>
+            <a href="index.html"
+                class="text-sm font-medium text-slate-400 hover:text-white transition-colors flex items-center gap-2">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver
+            </a>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-6 py-16">
+
+        <header class="mb-16">
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-black uppercase tracking-widest mb-6">
+                <i data-lucide="zap" class="w-3 h-3"></i> API REST v1.0
+            </div>
+            <h1 class="text-4xl md:text-5xl font-black text-white tracking-tight mb-4">Integración Full-Stack</h1>
+            <p class="text-lg text-slate-400 leading-relaxed">Conecta el motor de optimización de grado militar
+                directamente a tu infraestructura. Ideal para procesar catálogos en plataformas SaaS y aplicaciones
+                E-commerce.</p>
+        </header>
+
+        <section class="mb-16 bento-card p-8 bg-white/5 border border-white/10 rounded-[2rem]">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i data-lucide="key" class="text-emerald-400"></i> Autenticación
+            </h2>
+            <p class="text-slate-400 mb-6">Para interactuar con la API, debes incluir tu <strong>API Key</strong> en las
+                cabeceras de cada petición. Puedes copiarla desde tu panel de usuario.</p>
+
+            <div class="bg-black/50 border border-white/5 rounded-xl p-4 font-mono text-sm">
+                <div class="text-slate-500 mb-2">// Petición HTTP (Header)</div>
+                <div class="text-emerald-400">Authorization: <span class="text-white">Bearer CPLY-TU-API-KEY-AQUI</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <i data-lucide="database" class="text-emerald-400"></i> Endpoint R2 Automático
+            </h2>
+            <p class="text-slate-400 mb-8">El flujo <strong class="text-white">Procesar y Olvidar</strong>. Envías la
+                imagen original, nosotros la comprimimos a WebP y la alojamos permanentemente en nuestros servidores
+                Cloudflare R2 (Cero costos de almacenamiento para ti).</p>
+
+            <div class="mb-8 bento-card p-6 border border-emerald-500/20 bg-emerald-500/5 relative overflow-hidden">
+                <div class="absolute right-0 top-0 opacity-10"><i data-lucide="shopping-bag" class="w-32 h-32"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white mb-2 relative z-10">Caso de Uso: Tiendas Online (WhaShopping)
+                </h3>
+                <p class="text-sm text-slate-400 relative z-10">Cuando un cliente sube una foto de producto, envíala a
+                    la API. Devuelve una URL superligera lista para insertar en la base de datos de tu catálogo.</p>
+            </div>
+
+            <div class="bg-[#0D0D12] border border-white/10 rounded-2xl overflow-hidden mb-6 shadow-2xl">
+                <div class="flex items-center justify-between px-4 py-2 bg-white/5 border-b border-white/10">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Ejemplo de Petición
+                        (Node.js)</span>
+                    <span class="px-2 py-1 text-[10px] font-bold bg-emerald-500 text-black rounded uppercase">POST
+                        /v1/optimize</span>
+                </div>
+                <div class="p-6 overflow-x-auto text-sm font-mono leading-relaxed text-slate-300">
+                    <pre><code><span class="text-purple-400">const</span> response = <span class="text-blue-400">await</span> fetch(<span class="text-green-300">'https://api.compressly.com/v1/optimize'</span>, {
+  <span class="text-blue-300">method</span>: <span class="text-green-300">'POST'</span>,
+  <span class="text-blue-300">headers</span>: {
+    <span class="text-green-300">'Authorization'</span>: <span class="text-green-300">'Bearer CPLY-XXXXX'</span>,
+    <span class="text-green-300">'Content-Type'</span>: <span class="text-green-300">'application/json'</span>
+  },
+  <span class="text-blue-300">body</span>: JSON.stringify({
+    <span class="text-blue-300">image_base64</span>: <span class="text-green-300">"data:image/jpeg;base64,/9j/4AAQSkZJR..."</span>,
+    <span class="text-blue-300">target_format</span>: <span class="text-green-300">"webp"</span>,
+    <span class="text-blue-300">max_width</span>: <span class="text-orange-400">1200</span>,
+    <span class="text-blue-300">project_tag</span>: <span class="text-green-300">"whashopping-catalog"</span> <span class="text-slate-500">// Etiqueta de organización</span>
+  })
+});</code></pre>
+                </div>
+            </div>
+
+            <div class="bg-[#0D0D12] border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+                <div class="flex items-center justify-between px-4 py-2 bg-white/5 border-b border-white/10">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Respuesta Exitosa
+                        (JSON)</span>
+                    <span
+                        class="px-2 py-1 text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded">200
+                        OK</span>
+                </div>
+                <div class="p-6 overflow-x-auto text-sm font-mono leading-relaxed text-slate-300">
+                    <pre><code>{
+  <span class="text-blue-300">"status"</span>: <span class="text-green-300">"success"</span>,
+  <span class="text-blue-300">"data"</span>: {
+    <span class="text-blue-300">"hosted_url"</span>: <span class="text-green-300">"https://cdn.compressly.com/r2/whashopping-catalog/img_9821.webp"</span>,
+    <span class="text-blue-300">"original_size_kb"</span>: <span class="text-orange-400">4500</span>,
+    <span class="text-blue-300">"compressed_size_kb"</span>: <span class="text-orange-400">125</span>,
+    <span class="text-blue-300">"savings_percent"</span>: <span class="text-orange-400">97.2</span>
+  }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16 bento-card p-8 bg-white/5 border border-white/10 rounded-[2rem]">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-3">
+                <i data-lucide="users" class="text-emerald-400"></i> Implementación en Portafolios (Linkea)
+            </h2>
+            <p class="text-sm text-slate-400 leading-relaxed mb-4">Si administras perfiles de usuarios (como en el
+                ecosistema <strong>Linkea</strong>), puedes usar el parámetro <code>quality: 80</code> y
+                <code>max_width: 400</code> para avatares. Tu servidor solo recibirá la <code>hosted_url</code>,
+                manteniendo tu base de datos extremadamente limpia y tus páginas cargando en milisegundos.
+            </p>
+        </section>
+
+        <div class="text-center py-12 border-t border-white/5">
+            <h3 class="text-xl font-bold text-white mb-6">¿Dudas con la integración?</h3>
+            <p class="text-sm text-slate-500 mb-8">Nuestros servidores procesan millones de peticiones diarias. Contacta
+                a soporte para una implementación guiada.</p>
+            <a href="index.html"
+                class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-black font-black px-8 py-4 rounded-xl transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(16,185,129,0.4)]">
+                <i data-lucide="code-2" class="w-5 h-5"></i> Volver a mi Panel
+            </a>
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+        window.addEventListener('scroll', () => {
+            const progressBar = document.getElementById("readingProgress");
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            progressBar.style.width = scrolled + "%";
+        });
+    </script>
+</body>
+
+</html>

@@ -1,45 +1,46 @@
 <!DOCTYPE html>
 <html lang="es" class="dark">
 
-<style id="manto-invisibilidad-ia">
-    /* 1. Ocultar el módulo de Auto-SEO en la app principal */
-    #seo-module-container {
-        display: none !important;
-    }
-
-    /* 2. Ocultar la tarjeta del Plan ULTRA en la tabla de precios */
-    .bento-card:has(#btnTablaUltra) {
-        display: none !important;
-    }
-
-    /* 3. Centrar la tabla de precios (Free y PRO) */
-    @media (min-width: 768px) {
-        div.grid:has(#btnTablaUltra) {
-            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-            max-width: 56rem !important;
-            margin-left: auto;
-            margin-right: auto;
+<head>
+    <style id="manto-invisibilidad-ia">
+        /* 1. Ocultar el módulo de Auto-SEO en la app principal */
+        #seo-module-container {
+            display: none !important;
         }
-    }
 
-    /* 4. Ocultar botones de Recarga de Energía y Plan Ultra en toda la web */
-    button[onclick*="openRechargeModal"],
-    button[onclick*="openUltraModal"] {
-        display: none !important;
-    }
+        /* 2. Ocultar la tarjeta del Plan ULTRA y botones de suscripción en toda la web */
+        .bento-card:has(#btnTablaUltra),
+        button[onclick*="openUltraModal"] {
+            display: none !important;
+        }
 
-    /* 5. Ocultar el bloque de "Créditos de Energía" dentro del Perfil del Usuario */
-    div:has(> div > div > #profileAiCredits),
-    div.flex.justify-between:has(#profileAiCredits) {
-        display: none !important;
-    }
+        /* 3. Centrar la tabla de precios (Free y PRO) */
+        @media (min-width: 768px) {
+            div.grid:has(#btnTablaUltra) {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                max-width: 56rem !important;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
 
-    /* 6. CORREGIDO: Ocultar el Aviso Legal (Cubre ambas versiones de diseño que creamos) */
-    div.mt-16.mb-8.max-w-4xl.text-center,
-    div.mt-20.mb-10.max-w-4xl.text-center {
-        display: none !important;
-    }
-</style>
+        /* 4. Ocultar solo botones de Recarga de Energía */
+        button[onclick*="openRechargeModal"] {
+            display: none !important;
+        }
+
+        /* 5. Ocultar el bloque de "Créditos de Energía" dentro del Perfil del Usuario */
+        div:has(> div > div > #profileAiCredits),
+        div.flex.justify-between:has(#profileAiCredits) {
+            display: none !important;
+        }
+
+        /* 6. Ocultar el Aviso Legal para una interfaz 100% limpia */
+        div.mt-16.mb-8.max-w-4xl.text-center,
+        div.mt-20.mb-10.max-w-4xl.text-center {
+            display: none !important;
+        }
+    </style>
 </head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1139,7 +1140,7 @@
                         trabajo.</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
                     <div
                         class="bento-card p-8 flex flex-col transition-all hover:border-slate-300 dark:hover:border-white/20">
@@ -1174,6 +1175,14 @@
                                 <i data-lucide="x" class="w-5 h-5 text-gray-300 dark:text-gray-600 shrink-0"></i> <span
                                     data-i18n="plan_free_f5">Carpetas ZIP y Escudo GPS</span>
                             </li>
+                            <li
+                                class="flex items-start gap-3 mt-4 pt-4 border-t border-slate-200 dark:border-white/10 group cursor-default">
+                                <i data-lucide="cloud"
+                                    class="w-5 h-5 shrink-0 text-purple-500 group-hover:scale-110 transition-transform"></i>
+                                <span data-i18n="plan_free_bonus"
+                                    class="text-sm font-black text-purple-600 dark:text-purple-400 group-hover:text-purple-500 transition-colors">Bono:
+                                    10 Créditos Cloud</span>
+                            </li>
                         </ul>
                         <button id="btnTablaFree" onclick="openProfileModal()"
                             class="w-full bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 text-slate-800 dark:text-white font-extrabold py-4 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2">
@@ -1183,7 +1192,7 @@
                     </div>
 
                     <div
-                        class="bento-card p-8 flex flex-col relative border-primary-500/50 shadow-[0_0_40px_rgba(139,92,246,0.15)] transform md:-translate-y-4">
+                        class="bento-card p-8 flex flex-col relative border-primary-500/50 shadow-[0_0_40px_rgba(139,92,246,0.15)] transform md:-translate-y-4 z-10">
                         <div class="absolute top-0 right-8 transform -translate-y-1/2">
                             <span data-i18n="plan_pro_badge"
                                 class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">Más
@@ -1191,7 +1200,7 @@
                         </div>
                         <h3
                             class="text-xl font-extrabold text-primary-600 dark:text-primary-400 mb-2 flex items-center gap-2">
-                            <i data-lucide="crown" class="w-5 h-5"></i> PRO
+                            <i data-lucide="crown" class="w-5 h-5"></i> <span data-i18n="plan_pro_title">PRO</span>
                         </h3>
                         <p data-i18n="plan_pro_sub" class="text-sm text-gray-500 mb-6">Para agencias, fotógrafos y
                             e-commerce.</p>
@@ -1221,10 +1230,20 @@
                                 <i data-lucide="check" class="w-5 h-5 text-primary-500 shrink-0"></i> <span
                                     data-i18n="plan_pro_f5">Organización automática en ZIP</span>
                             </li>
+
+                            <li
+                                class="flex items-start gap-3 mt-4 pt-4 border-t border-slate-200 dark:border-white/10 group cursor-default">
+                                <i data-lucide="cloud"
+                                    class="w-5 h-5 shrink-0 text-purple-500 group-hover:scale-110 transition-transform"></i>
+                                <span data-i18n="plan_pro_bonus"
+                                    class="text-sm font-black text-purple-600 dark:text-purple-400 group-hover:text-purple-500 transition-colors">Bono:
+                                    25 Créditos Cloud</span>
+                            </li>
                         </ul>
-                        <button id="btnTablaPro" data-i18n="plan_pro_btn" onclick="openPremiumModal(true)"
+                        <button id="btnTablaPro" onclick="openPremiumModal(true)"
                             class="w-full bg-primary-500 hover:bg-primary-600 active:scale-95 text-white font-extrabold py-4 rounded-xl transition-all shadow-lg hover:shadow-primary-500/30 flex justify-center items-center gap-2">
-                            <i data-lucide="crown" class="w-5 h-5 text-yellow-300"></i> Obtener Acceso PRO
+                            <i data-lucide="crown" class="w-5 h-5 text-yellow-300"></i>
+                            <span data-i18n="plan_pro_btn">Obtener Acceso PRO</span>
                         </button>
                     </div>
 
@@ -1236,26 +1255,34 @@
 
                         <h3
                             class="text-xl font-extrabold text-purple-600 dark:text-purple-400 mb-2 flex items-center gap-2">
-                            <i data-lucide="sparkles" class="w-5 h-5"></i> <span data-i18n="plan_ultra_title">ULTRA
-                                IA</span>
+                            <i data-lucide="rocket" class="w-5 h-5"></i> <span data-i18n="plan_ultra_title">ULTRA</span>
                         </h3>
-                        <p data-i18n="plan_ultra_sub" class="text-sm text-gray-500 mb-6">El arma definitiva para
-                            E-commerce.</p>
+                        <p data-i18n="plan_ultra_sub_new" class="text-sm text-gray-500 mb-6">Velocidad Extrema en la
+                            Nube sin gastar tu PC.</p>
 
                         <div class="mb-8 relative z-10">
-                            <span class="text-4xl font-black text-slate-900 dark:text-white">$6.99</span>
-                            <span class="text-gray-500 font-bold text-sm">/ al mes</span>
+                            <span data-i18n="plan_ultra_price"
+                                class="text-4xl font-black text-slate-900 dark:text-white">$9.99</span>
+                            <span data-i18n="plan_ultra_time" class="text-gray-500 font-bold text-sm">/ al mes</span>
                         </div>
 
-                        <ul class="space-y-5 mb-8 flex-grow relative z-10">
+                        <ul class="space-y-4 mb-8 flex-grow relative z-10">
                             <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
-                                <i data-lucide="check-circle-2" class="w-5 h-5 text-purple-500 shrink-0"></i> <span
-                                    data-i18n="plan_ultra_feat1">Todo lo del Plan PRO incluido</span>
+                                <i data-lucide="server" class="w-5 h-5 text-purple-500 shrink-0"></i>
+                                <span data-i18n="plan_ultra_f1_new">500 imágenes procesadas en la nube</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                                <i data-lucide="ban" class="w-5 h-5 text-purple-500 shrink-0"></i>
+                                <span data-i18n="plan_ultra_f2_new">Experiencia 100% sin publicidad</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                                <i data-lucide="download-cloud" class="w-5 h-5 text-purple-500 shrink-0"></i>
+                                <span data-i18n="plan_ultra_f3_new">Descargas en Lote ultrarrápidas</span>
                             </li>
                             <li
-                                class="flex items-start gap-3 text-sm font-bold text-purple-700 dark:text-purple-300 bg-purple-500/10 p-4 rounded-xl border border-purple-500/20 shadow-sm transition-all hover:bg-purple-500/20">
-                                <i data-lucide="zap" class="w-5 h-5 text-purple-500 shrink-0"></i> <span
-                                    data-i18n="plan_ultra_feat5">1,000 Créditos de Auto-SEO cada mes</span>
+                                class="flex items-start gap-3 text-sm font-bold text-purple-700 dark:text-purple-300 bg-purple-500/10 p-3 rounded-xl border border-purple-500/20 shadow-sm opacity-80">
+                                <i data-lucide="sparkles" class="w-5 h-5 text-purple-500 shrink-0"></i>
+                                <span data-i18n="plan_ultra_feat5">(Próximamente: Auto-SEO IA)</span>
                             </li>
                         </ul>
 
@@ -1264,6 +1291,76 @@
                             <i data-lucide="rocket" class="w-5 h-5 !text-white"></i> <span
                                 data-i18n="plan_ultra_btn">Suscribirse a ULTRA</span>
                         </button>
+                    </div>
+
+                    <div
+                        class="bento-card p-8 flex flex-col relative border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.15)] bg-gradient-to-b from-emerald-500/5 to-transparent overflow-hidden">
+                        <div
+                            class="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/20 blur-3xl rounded-full pointer-events-none">
+                        </div>
+
+                        <h3
+                            class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 mb-2 flex items-center gap-2">
+                            <i data-lucide="webhook" class="w-5 h-5"></i> <span data-i18n="plan_api_title">API
+                                Full-Stack</span>
+                        </h3>
+                        <p data-i18n="plan_api_sub" class="text-sm text-gray-500 mb-6">Para Desarrolladores y dueños de
+                            E-commerce.</p>
+
+                        <div class="mb-8 relative z-10 flex flex-col">
+                            <div class="flex items-baseline gap-1">
+                                <span data-i18n="plan_api_from" class="text-xl font-bold text-gray-500">Desde</span>
+                                <span data-i18n="plan_api_price"
+                                    class="text-4xl font-black text-slate-900 dark:text-white">$15.00</span>
+                            </div>
+                            <span data-i18n="plan_api_time" class="text-gray-500 font-bold text-sm">/ al mes</span>
+                        </div>
+
+                        <ul class="space-y-4 mb-8 flex-grow relative z-10">
+                            <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                                <i data-lucide="layers" class="w-5 h-5 text-emerald-500 shrink-0"></i>
+                                <div class="flex flex-col">
+                                    <span>Incluye <b class="text-emerald-600 dark:text-emerald-400">5,000 imágenes</b>
+                                        /mes</span>
+                                    <span
+                                        class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mt-0.5">Luego
+                                        $2.00 por cada 1,000 adicionales</span>
+                                </div>
+                            </li>
+                            <li id="enterpriseUpsell"
+                                class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                                <i data-lucide="building" class="w-5 h-5 text-emerald-500 shrink-0"></i>
+                                <span class="text-slate-500 font-medium">¿Más de 50k imágenes? <a href="#"
+                                        onclick="window.open('https://wa.me/584161356896?text=¡Hola!%20Necesito%20un%20plan%20API%20Enterprise%20(Alto%20volumen)%20para%20mi%20empresa.', '_blank')"
+                                        class="text-emerald-500 hover:text-emerald-400 underline decoration-emerald-500/30 underline-offset-2">Plan
+                                        Enterprise</a></span>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                                <i data-lucide="cpu" class="w-5 h-5 text-emerald-500 shrink-0"></i>
+                                <span data-i18n="plan_api_f2">Procesamiento 100% invisible vía código</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                                <i data-lucide="database" class="w-5 h-5 text-emerald-500 shrink-0"></i>
+                                <span data-i18n="plan_api_f3">Hospedaje Incluido en Cloudflare R2</span>
+                            </li>
+                            <li
+                                class="flex items-start gap-3 text-sm font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/20 shadow-sm">
+                                <i data-lucide="link" class="w-5 h-5 text-emerald-500 shrink-0"></i>
+                                <span data-i18n="plan_api_f4">Entrega inmediata de URLs listas para BD</span>
+                            </li>
+                        </ul>
+
+                        <div class="flex flex-col gap-3 relative z-10">
+                            <button id="btnTablaApi" onclick="openApiModal()"
+                                class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:scale-[1.02] active:scale-95 !text-white font-extrabold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] flex justify-center items-center gap-2">
+                                <i data-lucide="webhook" class="w-5 h-5 !text-white"></i> <span>Adquirir API Key</span>
+                            </button>
+
+                            <a href="Documentación_API.html"
+                                class="w-full border-2 border-emerald-500/20 hover:border-emerald-500 hover:bg-emerald-500/10 active:scale-95 text-emerald-600 dark:text-emerald-400 font-bold py-2.5 rounded-xl transition-all flex justify-center items-center gap-2 cursor-pointer text-xs uppercase tracking-widest">
+                                <i data-lucide="code-2" class="w-4 h-4"></i> <span>Leer Documentación</span>
+                            </a>
+                        </div>
                     </div>
 
                 </div>
@@ -1455,12 +1552,8 @@
                     de lanzamiento limitados!</span>
             </p>
 
-            <form class="flex flex-col gap-3" onsubmit="event.preventDefault(); 
-                const email = this.querySelector('input[type=email]').value;
-                const msg = encodeURIComponent(`¡Hola! Quiero aprovechar la oferta de Compressly PRO por $19.99. Mi correo es: ${email}`);
-                // 🚀 Número actualizado: 584161356896
-                window.open(`https://wa.me/584161356896?text=${msg}`, '_blank');
-                closePremiumModal();">
+            <form class="flex flex-col gap-3"
+                onsubmit="event.preventDefault(); const email = this.querySelector('input[type=email]').value; const msg = encodeURIComponent('¡Hola! Quiero aprovechar la oferta de Compressly PRO por $19.99. Mi correo es: ' + email); window.open('https://wa.me/584161356896?text=' + msg, '_blank'); closePremiumModal();">
 
                 <input type="email" required data-i18n="premium_email_ph" placeholder="Tu correo electrónico"
                     class="w-full bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:border-yellow-500 transition-colors placeholder-gray-500 font-bold">
@@ -1516,6 +1609,50 @@
             <button onclick="closeUltraModal()"
                 class="mt-6 text-sm font-bold text-gray-400 hover:text-slate-700 dark:hover:text-white transition-colors">
                 <span data-i18n="ultra_cancel">Seguir usando el plan actual</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="apiModal" class="fixed inset-0 z-[116] hidden items-center justify-center px-4">
+        <div id="apiOverlay" onclick="closeApiModal()"
+            class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity cursor-pointer"></div>
+        <div class="bento-card relative z-10 w-full max-w-md max-h-[90vh] overflow-y-auto custom-scrollbar flex flex-col shadow-[0_0_50px_rgba(16,185,129,0.2)] border-emerald-500/40 bg-gradient-to-b from-emerald-500/5 to-transparent transform transition-all scale-95 opacity-0 p-8 text-center"
+            id="apiContent">
+
+            <button onclick="closeApiModal()"
+                class="absolute top-4 right-4 text-gray-400 hover:text-white hover:bg-white/10 p-2 rounded-lg transition-colors z-50">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+
+            <div
+                class="w-16 h-16 mx-auto bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(16,185,129,0.5)] !text-white">
+                <i data-lucide="webhook" class="w-8 h-8 !text-white"></i>
+            </div>
+
+            <h2 data-i18n="api_modal_title" class="text-2xl font-extrabold text-slate-900 dark:text-white mb-2">Poder
+                Full-Stack</h2>
+            <p data-i18n="api_modal_desc"
+                class="text-slate-500 dark:text-gray-400 font-medium text-sm mb-6 leading-relaxed">
+                Conecta tu E-commerce o App a nuestro motor. Compresión automática y hospedaje en la nube sin costo
+                adicional.
+            </p>
+
+            <form class="flex flex-col gap-3"
+                onsubmit="event.preventDefault(); window.open('https://wa.me/584161356896?text=¡Hola!%20Quiero%20solicitar%20acceso%20al%20Plan%20API%20Full-Stack%20($15.00)%20en%20Compressly.%20Mi%20correo%20es:%20' + this.querySelector('input[type=email]').value, '_blank'); closeApiModal();">
+
+                <input type="email" required data-i18n="api_email_ph" placeholder="Tu correo electrónico"
+                    class="w-full bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:border-emerald-500 transition-colors placeholder-gray-500 font-bold">
+
+                <button type="submit"
+                    class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:scale-[1.02] active:scale-95 !text-white font-extrabold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.4)] flex items-center justify-center gap-2">
+                    <i data-lucide="webhook" class="w-5 h-5 !text-white"></i> <span data-i18n="api_modal_btn">Activar
+                        API ($15.00/mes)</span>
+                </button>
+            </form>
+
+            <button onclick="closeApiModal()"
+                class="mt-6 text-sm font-bold text-gray-400 hover:text-slate-700 dark:hover:text-white transition-colors">
+                <span data-i18n="api_cancel">Quizás más tarde</span>
             </button>
         </div>
     </div>
@@ -1838,20 +1975,39 @@
                         <h3 class="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white mb-1">Cuenta
                             Sincronizada</h3>
 
-                        <div class="flex flex-col items-center gap-2.5 mb-6 md:mb-8">
+                        <div class="flex flex-col items-center gap-3 mb-6 md:mb-8 w-full max-w-xs mx-auto">
                             <p id="userEmailDisplay"
-                                class="text-sm text-slate-500 dark:text-gray-400 font-medium truncate px-2 leading-none">
+                                class="text-sm text-slate-500 dark:text-gray-400 font-medium truncate px-2 leading-none mb-1">
                                 usuario@ejemplo.com
                             </p>
 
-                            <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 px-2.5 py-1.5 rounded-lg group cursor-pointer hover:border-primary-500 hover:bg-primary-500/5 transition-all shadow-sm active:scale-95"
-                                onclick="navigator.clipboard.writeText(document.getElementById('userIdDisplay').innerText); if(typeof Notify !== 'undefined') Notify.show('ID Copiado', 'ID de usuario guardado en el portapapeles', 'success');"
-                                title="Copiar ID de Usuario">
-                                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">ID:</span>
-                                <span id="userIdDisplay"
-                                    class="text-xs font-bold text-slate-700 dark:text-gray-300 font-mono tracking-wider">CPLY-984A2B</span>
+                            <div class="flex items-center justify-between w-full bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 px-3 py-2 rounded-xl group cursor-pointer hover:bg-slate-100 dark:hover:bg-white/5 transition-all active:scale-95"
+                                onclick="navigator.clipboard.writeText(document.getElementById('userInternalIdDisplay').innerText); if(typeof Notify !== 'undefined') Notify.show('ID Copiado', 'ID de soporte copiado con éxito', 'success');"
+                                title="Copiar ID de Soporte">
+                                <div class="flex flex-col items-start">
+                                    <span
+                                        class="text-[8px] font-black text-slate-400 dark:text-gray-500 uppercase tracking-[0.2em] leading-none mb-1">ID
+                                        Soporte</span>
+                                    <span id="userInternalIdDisplay"
+                                        class="text-[10px] font-medium text-slate-500 dark:text-gray-400 font-mono truncate max-w-[150px]">Cargando...</span>
+                                </div>
                                 <i data-lucide="copy"
-                                    class="w-3.5 h-3.5 text-gray-400 group-hover:text-primary-500 transition-colors ml-1"></i>
+                                    class="w-3.5 h-3.5 text-slate-300 group-hover:text-slate-500 transition-colors"></i>
+                            </div>
+
+                            <div class="flex items-center justify-between w-full bg-violet-500/5 border border-violet-500/20 px-3 py-2.5 rounded-xl group cursor-pointer hover:bg-violet-500/10 hover:border-violet-500/40 transition-all shadow-sm active:scale-95"
+                                onclick="navigator.clipboard.writeText(document.getElementById('userIdDisplay').innerText); if(typeof Notify !== 'undefined') Notify.show('API Key Copiada', 'Llave lista para usar en la API', 'success');"
+                                title="Copiar API Key">
+                                <div class="flex flex-col items-start">
+                                    <span
+                                        class="text-[8px] font-black text-violet-400 uppercase tracking-[0.2em] leading-none mb-1 flex items-center gap-1">
+                                        <i data-lucide="key" class="w-2.5 h-2.5"></i> API Key
+                                    </span>
+                                    <span id="userIdDisplay"
+                                        class="text-xs font-bold text-slate-700 dark:text-white font-mono tracking-widest blur-[3px] group-hover:blur-none transition-all duration-300">CPLY-984A2B</span>
+                                </div>
+                                <i data-lucide="copy"
+                                    class="w-4 h-4 text-violet-300 group-hover:text-violet-500 transition-colors"></i>
                             </div>
                         </div>
 
@@ -2093,7 +2249,7 @@
         </div>
     </div>
 
-    <script src="data_compressly.js"></script>
+
     <script src="notificaciones.js"></script>
     <script src="idioma.js"></script>
     <script src="modales.js"></script>
@@ -2214,7 +2370,7 @@
             if (error) alert('Error Google: ' + error.message);
         }
 
-        // 🚪 FUNCIÓN PARA CERRAR SESIÓN (Esta faltaba)
+        // 🚪 FUNCIÓN PARA CERRAR SESIÓN
         window.logoutUsuario = async function () {
             const splash = document.getElementById('vipSplashOverlay');
             const greeting = document.getElementById('vipSplashGreeting');
@@ -2232,12 +2388,16 @@
             splash.classList.add('opacity-100');
 
             try {
+                // 🧠 EL CANDADO: Obligamos al sistema a olvidar los privilegios de pago
+                window.currentUserPlan = 'free';
+                if (typeof actualizarEstadoPlanes === 'function') actualizarEstadoPlanes();
+
                 await supabaseClient.auth.signOut();
 
                 // ⏱️ EXTENDIDO: Esperamos para que el usuario vea el mensaje
                 setTimeout(() => {
                     greeting.innerText = "¡Vuelve pronto!";
-                    status.innerText = "Compressly te espera";
+                    status.innerText = "Modo Local Restaurado";
 
                     setTimeout(() => {
                         window.location.reload();
@@ -2293,14 +2453,19 @@
                 splash.classList.remove('opacity-0', 'pointer-events-none');
                 splash.classList.add('opacity-100');
 
-                // Cargamos el dashboard en silencio
-                await mostrarPanelPrivado(data.user);
+                // 🛑 EL TRUCO VIP: Esperamos a que la pantalla morada cubra todo (800ms) ANTES de cargar los datos
+                setTimeout(async () => {
 
-                // ⏱️ EXTENDIDO: 3.5 segundos para una experiencia más inmersiva
-                setTimeout(() => {
-                    splash.classList.remove('opacity-100');
-                    splash.classList.add('opacity-0', 'pointer-events-none');
-                }, 3500);
+                    // Ahora sí, cambiamos la interfaz detrás del telón de forma invisible
+                    await mostrarPanelPrivado(data.user);
+
+                    // ⏱️ Dejamos la pantalla 3 segundos para que lea el mensaje
+                    setTimeout(() => {
+                        splash.classList.remove('opacity-100');
+                        splash.classList.add('opacity-0', 'pointer-events-none');
+                    }, 3000);
+
+                }, 800);
 
             } catch (error) {
                 if (typeof Notify !== 'undefined') Notify.show('Error', error.message, 'error');
@@ -2337,12 +2502,163 @@
             }
 
             if (clienteInfo) {
+                const planActual = clienteInfo.plan_type.toLowerCase();
+                window.currentUserPlan = planActual; // 🧠 Sincronización Global
+
+                // 1. Inyectamos llaves e ID
                 document.getElementById('userIdDisplay').innerText = clienteInfo.api_key;
-                document.getElementById('accountPlanName').innerText = `Plan ${clienteInfo.plan_type.toUpperCase()}`;
+                document.getElementById('userInternalIdDisplay').innerText = user.id;
+
+                // 2. LÓGICA DE JERARQUÍA (El Poder del Usuario)
+                const niveles = { 'free': 0, 'pro': 1, 'ultra': 2, 'api_fullstack': 3, 'enterprise': 4 };
+                const miNivel = niveles[planActual] || 0;
+
+                // 3. Sincronización de Textos y Badge de Header
+                let nombreLimpio = planActual.toUpperCase();
+                if (planActual === 'api_fullstack') nombreLimpio = 'API Full-Stack';
+                if (planActual === 'enterprise') nombreLimpio = 'Enterprise 💎';
+                document.getElementById('accountPlanName').innerText = `Plan ${nombreLimpio}`;
+
+                const headerBadge = document.querySelector('.plan-badge-header');
+                const planLabel = document.getElementById('planLabel'); // 👤 El texto del perfil
+
+                if (headerBadge) headerBadge.innerText = nombreLimpio;
+                if (planLabel) planLabel.innerText = `Plan ${nombreLimpio}`;
+
+                if (headerBadge) {
+                    headerBadge.className = `plan-badge-header hidden md:flex items-center text-[10px] font-black px-3 py-1 rounded-full shadow-sm tracking-widest ${planActual === 'free' ? 'bg-slate-200 text-slate-600 dark:bg-white/10 dark:text-slate-400' :
+                        planActual === 'enterprise' ? 'bg-blue-500 text-white shadow-blue-500/20' :
+                            planActual === 'pro' ? 'bg-primary-500 text-white shadow-primary-500/20' :
+                                'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-emerald-500/20'
+                        }`;
+                }
+
+                // 🚀 4. EL BOTÓN DEL HEADER (Medalla de Estatus)
+                const btnGoPro = document.getElementById('btnGoPro');
+                const btnGoProMobile = document.getElementById('btnGoProMobile');
+
+                if (planActual === 'free') {
+                    if (btnGoPro) {
+                        btnGoPro.classList.remove('hidden', 'pointer-events-none');
+                        btnGoPro.className = "bg-white/10 hover:bg-white/20 text-white px-3 lg:px-6 py-2.5 rounded-full text-[11px] lg:text-sm font-black backdrop-blur-md transition-all border border-white/10 hover:border-white/30 flex items-center gap-2 shrink-0 hover:scale-105 cursor-pointer";
+                        btnGoPro.innerHTML = '<i data-lucide="crown" class="w-3.5 h-3.5 lg:w-4 lg:h-4 text-yellow-400"></i> <span class="whitespace-nowrap">Go Pro</span>';
+                    }
+                    if (btnGoProMobile) btnGoProMobile.classList.remove('hidden');
+                    document.querySelectorAll('.promo-banner, .upgrade-invitation').forEach(a => a.classList.remove('hidden'));
+                } else {
+                    if (btnGoPro) {
+                        btnGoPro.classList.remove('hidden');
+                        btnGoPro.className = "px-4 py-2 rounded-full text-[11px] lg:text-xs font-black backdrop-blur-md border flex items-center gap-2 shrink-0 pointer-events-none uppercase tracking-widest";
+
+                        // 💎 CASO ENTERPRISE PRIORITARIO
+                        if (planActual === 'enterprise') {
+                            btnGoPro.classList.add('bg-blue-500/10', 'border-blue-500/30', 'text-blue-600', 'dark:text-blue-400');
+                            btnGoPro.innerHTML = `<i data-lucide="building-2" class="w-3.5 h-3.5"></i> <span class="whitespace-nowrap">Enterprise Activo</span>`;
+                        } else if (planActual === 'api_fullstack') {
+                            btnGoPro.classList.add('bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-600', 'dark:text-emerald-400');
+                            btnGoPro.innerHTML = `<i data-lucide="webhook" class="w-3.5 h-3.5"></i> <span class="whitespace-nowrap">API Activa</span>`;
+                        } else if (planActual === 'ultra') {
+                            btnGoPro.classList.add('bg-purple-500/10', 'border-purple-500/30', 'text-purple-600', 'dark:text-purple-400');
+                            btnGoPro.innerHTML = `<i data-lucide="rocket" class="w-3.5 h-3.5"></i> <span class="whitespace-nowrap">Ultra Activo</span>`;
+                        } else if (planActual === 'pro') {
+                            btnGoPro.classList.add('bg-yellow-500/10', 'border-yellow-500/30', 'text-yellow-600', 'dark:text-yellow-500');
+                            btnGoPro.innerHTML = `<i data-lucide="crown" class="w-3.5 h-3.5"></i> <span class="whitespace-nowrap">Pro Activo</span>`;
+                        }
+                    }
+                    if (btnGoProMobile) btnGoProMobile.classList.add('hidden');
+                    document.querySelectorAll('.promo-banner, .upgrade-invitation').forEach(a => a.classList.add('hidden'));
+                }
+
+                // Créditos
                 const apiCreditsDisplay = document.getElementById('apiCreditsDisplay');
                 if (apiCreditsDisplay) apiCreditsDisplay.innerText = clienteInfo.creditos_restantes;
+
+                // 🚀 5. LÓGICA DE CASCADA EN TABLA DE PRECIOS
+                const tablaBotones = {
+                    'free': { el: document.getElementById('btnTablaFree'), txtActivo: 'Tu Plan Actual', txtIncluido: 'Incluido en tu Plan' },
+                    'pro': { el: document.getElementById('btnTablaPro'), txtActivo: 'Tu Plan Actual', txtIncluido: 'Incluido en tu Plan' },
+                    'ultra': { el: document.getElementById('btnTablaUltra'), txtActivo: 'Suscripción Activa', txtIncluido: 'Incluido en tu Plan' },
+                    'api_fullstack': { el: document.getElementById('btnTablaApi'), txtActivo: 'API Activa', txtIncluido: 'Incluido en tu Plan' }
+                };
+
+                Object.keys(tablaBotones).forEach(key => {
+                    const btn = tablaBotones[key].el;
+                    if (!btn) return;
+
+                    const nivelBoton = niveles[key];
+
+                    // 🛡️ 1. ESTADO BLOQUEADO (Cuando ya posees el plan o uno superior)
+                    if (miNivel >= nivelBoton) {
+                        // 🚀 AQUÍ SE ELIMINARON LAS SOMBRAS Y GRADIENTES VERDES DEL PLAN API
+                        btn.classList.remove('bg-primary-500', 'bg-gradient-to-r', 'from-purple-600', 'to-indigo-600', 'from-emerald-500', 'to-teal-500', 'border-emerald-500', 'bg-slate-200', 'dark:bg-white/10', 'hover:bg-slate-300', 'hover:bg-primary-600', 'text-emerald-600', 'text-slate-800', 'text-slate-600', 'text-white', 'shadow-lg', 'shadow-purple-500/30', 'shadow-[0_0_20px_rgba(16,185,129,0.3)]');
+
+                        // Forzamos visibilidad sólida (SIN DESENFOQUE Y SIN GRADIENTE DE FONDO)
+                        btn.style.backgroundColor = '#1e293b';
+                        btn.style.backgroundImage = 'none';
+                        btn.style.color = '#ffffff';
+                        btn.classList.add('cursor-default', 'border-none', 'pointer-events-none');
+
+                        const texto = (miNivel === nivelBoton) ? tablaBotones[key].txtActivo : tablaBotones[key].txtIncluido;
+                        const icono = (miNivel === nivelBoton) ? 'check-circle' : 'check';
+                        const colorIcono = (miNivel === nivelBoton) ? '#34d399' : '#94a3b8';
+
+                        btn.innerHTML = `<i data-lucide="${icono}" class="w-5 h-5" style="color: ${colorIcono};"></i> <span class="font-bold !text-white">${texto}</span>`;
+                        btn.onclick = (e) => { e.preventDefault(); };
+                        if (btn.tagName === 'A') { btn.href = "javascript:void(0)"; btn.style.display = "flex"; }
+
+                        // 🔄 2. ESTADO DISPONIBLE (Cuando el plan es superior a tu nivel actual)
+                    } else {
+                        btn.style.backgroundColor = '';
+                        btn.style.color = '';
+                        btn.classList.remove('cursor-default', 'border-none', 'pointer-events-none', 'opacity-90');
+
+                        if (key === 'free') {
+                            btn.className = "w-full bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 text-slate-800 dark:text-white font-extrabold py-4 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2";
+                            btn.innerHTML = `<span>Comenzar Gratis</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+                            btn.onclick = () => { openProfileModal(); };
+
+                        } else if (key === 'pro') {
+                            btn.className = "w-full bg-primary-500 hover:bg-primary-600 active:scale-95 text-white font-extrabold py-4 rounded-xl transition-all shadow-lg hover:shadow-primary-500/30 flex justify-center items-center gap-2";
+                            btn.innerHTML = `<i data-lucide="crown" class="w-5 h-5 text-yellow-300"></i> <span>Obtener Acceso PRO</span>`;
+                            btn.onclick = () => { if (typeof openPremiumModal === 'function') openPremiumModal(true); };
+
+                        } else if (key === 'ultra') {
+                            // 🚀 RESTAURACIÓN DEL BOTÓN ULTRA
+                            btn.className = "w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-[1.02] active:scale-95 !text-white font-extrabold py-4 rounded-xl transition-all shadow-lg shadow-purple-500/30 flex justify-center items-center gap-2 relative z-10";
+                            btn.innerHTML = `<i data-lucide="rocket" class="w-5 h-5 !text-white"></i> <span>Suscribirse a ULTRA</span>`;
+                            btn.onclick = () => { if (typeof openUltraModal === 'function') openUltraModal(); };
+
+                        } else if (key === 'api_fullstack') {
+                            btn.className = "w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:scale-[1.02] active:scale-95 !text-white font-extrabold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] flex justify-center items-center gap-2";
+                            btn.innerHTML = `<i data-lucide="webhook" class="w-5 h-5 !text-white"></i> <span>Adquirir API Key</span>`;
+                            btn.onclick = () => { if (typeof openApiModal === 'function') openApiModal(); };
+                        }
+                    }
+                });
+
+                // 6. Lanzar actualización del Modal de Perfil
+                if (typeof actualizarEstadoPlanes === 'function') actualizarEstadoPlanes();
+
+                // 🛡️ 7. ESCUDO ENTERPRISE: Forzar la interfaz VIP por si interfaz.js la borró
+                if (planActual === 'enterprise') {
+                    // Restaurar el texto del perfil
+                    const planLabel = document.getElementById('planLabel');
+                    if (planLabel) planLabel.innerText = 'Plan ENTERPRISE';
+
+                    // Restaurar la medalla azul del Header
+                    const btnGoPro = document.getElementById('btnGoPro');
+                    if (btnGoPro) {
+                        btnGoPro.className = "px-4 py-2 rounded-full text-[11px] lg:text-xs font-black backdrop-blur-md border flex items-center gap-2 shrink-0 pointer-events-none uppercase tracking-widest bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400";
+                        btnGoPro.innerHTML = `<i data-lucide="building-2" class="w-3.5 h-3.5"></i> <span class="whitespace-nowrap">Enterprise Activo</span>`;
+                    }
+
+                    // Destruir el botón "MEJORAR MI PLAN" que inyectó el otro archivo
+                    const actionContainer = document.getElementById('profileActionContainer');
+                    if (actionContainer) actionContainer.innerHTML = '';
+                }
+
             } else {
-                alert("⚠️ Logueado con éxito, pero la Base de Datos bloqueó la lectura de tu API Key. Verifica las reglas RLS en Supabase.");
+                if (typeof Notify !== 'undefined') Notify.show('Error', 'Sincronización de plan fallida.', 'error');
             }
             lucide.createIcons();
         }
@@ -2360,6 +2676,38 @@
                 console.log("👋 No hay sesión activa, mostrando modo invitado");
             }
         });
+
+        // 🟢 ANIMACIONES DEL MODAL DE API
+        window.openApiModal = function () {
+            const modal = document.getElementById('apiModal');
+            const content = document.getElementById('apiContent');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            // Autocompletar correo si ya inició sesión
+            const emailElement = document.getElementById('userEmailDisplay');
+            const emailInput = modal.querySelector('input[type="email"]');
+            if (emailElement && emailElement.innerText !== 'usuario@ejemplo.com' && emailInput) {
+                emailInput.value = emailElement.innerText;
+            }
+
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+            lucide.createIcons();
+        };
+
+        window.closeApiModal = function () {
+            const modal = document.getElementById('apiModal');
+            const content = document.getElementById('apiContent');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        };
 
     </script>
 

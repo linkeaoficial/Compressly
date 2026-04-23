@@ -1,7 +1,17 @@
 // 🗄️ LA VARIABLE GLOBAL FUE REEMPLAZADA POR 'DB' en data_compressly.js
-// 🔄 Mantenemos la compatibilidad del código viejo así:
+// 🧠 NUEVA LÓGICA DE SUSCRIPCIÓN (Conectada a Supabase)
 Object.defineProperty(window, 'isPremiumUser', {
-    get: function () { return DB.isPro(); }
+    get: function () {
+        // Leemos el plan que Supabase inyectó en index.html. Si no hay, asumimos 'free'.
+        const plan = window.currentUserPlan || 'free';
+        // Eres Premium si tienes cualquier plan que no sea 'free'
+        return plan !== 'free';
+    }
+});
+
+// Agregamos comprobaciones extras por si en el futuro bloqueamos herramientas por nivel
+Object.defineProperty(window, 'isApiUser', {
+    get: function () { return (window.currentUserPlan || 'free') === 'api_fullstack'; }
 });
 
 lucide.createIcons();
