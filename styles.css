@@ -81,6 +81,56 @@ body {
     font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
+/* ========================================================================================== */
+/* 🛑🛑🛑 INICIO DEL MANTO DE INVISIBILIDAD IA (BORRAR PARA REVELAR MÓDULOS DE PAGO) 🛑🛑🛑 */
+/* ========================================================================================== */
+
+.ia-feature-oculta {
+    display: none !important;
+}
+
+/* 1. Ocultar el módulo de Auto-SEO en la app principal */
+#seo-module-container {
+    display: none !important;
+}
+
+/* 2. Ocultar la tarjeta del Plan ULTRA y botones de suscripción en toda la web */
+.bento-card:has(#btnTablaUltra),
+button[onclick*="openUltraModal"] {
+    display: none !important;
+}
+
+/* 3. Centrar la tabla de precios (Free y PRO) */
+@media (min-width: 768px) {
+    div.grid:has(#btnTablaUltra) {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        max-width: 56rem !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/* 4. Ocultar solo botones de Recarga de Energía */
+button[onclick*="openRechargeModal"] {
+    display: none !important;
+}
+
+/* 5. Ocultar el bloque de "Créditos de Energía" dentro del Perfil del Usuario */
+div:has(> div > div > #profileAiCredits),
+div.flex.justify-between:has(#profileAiCredits) {
+    display: none !important;
+}
+
+/* 6. Ocultar el Aviso Legal para una interfaz 100% limpia */
+div.mt-16.mb-8.max-w-4xl.text-center,
+div.mt-20.mb-10.max-w-4xl.text-center {
+    display: none !important;
+}
+
+/* ========================================================================================== */
+/* 🛑🛑🛑 FIN DEL MANTO DE INVISIBILIDAD 🛑🛑🛑 */
+/* ========================================================================================== */
+
 /* =========================================
    EFECTOS VISUALES & BENTO GRID
    ========================================= */

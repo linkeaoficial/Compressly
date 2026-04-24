@@ -51,22 +51,49 @@ function applyPremiumUI() {
     const btnGoPro = document.getElementById('btnGoPro');
     const btnGoProMobile = document.getElementById('btnGoProMobile');
 
-    // 🚀 PRIORIDAD ULTRA (Morado)
-    if (typeof DB !== 'undefined' && DB.isUltra()) {
-        if (btnGoPro) {
-            btnGoPro.className = 'bg-purple-500/10 text-purple-500 px-6 py-2.5 rounded-full text-sm font-black backdrop-blur-md border border-purple-500/20 flex items-center gap-2 pointer-events-none whitespace-nowrap shrink-0';
-            btnGoPro.innerHTML = '<i data-lucide="sparkles" class="w-4 h-4 fill-current"></i> ULTRA Activo';
-        }
-        if (btnGoProMobile) btnGoProMobile.style.display = 'none';
-
+    // 🧠 Leemos el plan global de forma segura
+    let plan = 'free';
+    if (typeof DB !== 'undefined' && DB.user && DB.user.plan) {
+        plan = DB.user.plan;
+    } else if (typeof window.currentUserPlan !== 'undefined') {
+        plan = window.currentUserPlan;
     }
-    // 👑 SEGUNDO NIVEL PRO (Amarillo)
-    else if (typeof DB !== 'undefined' && DB.isPro()) {
+
+    // 💎 ENTERPRISE
+    if (plan === 'enterprise') {
         if (btnGoPro) {
-            btnGoPro.className = 'bg-yellow-500/10 text-yellow-500 px-6 py-2.5 rounded-full text-sm font-black backdrop-blur-md border border-yellow-500/20 flex items-center gap-2 pointer-events-none whitespace-nowrap shrink-0';
-            btnGoPro.innerHTML = '<i data-lucide="crown" class="w-4 h-4 fill-current"></i> PRO Activo';
+            btnGoPro.className = 'px-4 py-2 rounded-full text-[11px] lg:text-xs font-black border flex items-center gap-2 shrink-0 pointer-events-none uppercase tracking-widest bg-gradient-to-r from-blue-500 to-blue-600 border-white/20 !text-white shadow-lg shadow-blue-500/20';
+            btnGoPro.innerHTML = '<i data-lucide="building-2" class="w-3.5 h-3.5 fill-white/20"></i> <span class="whitespace-nowrap !text-white">Enterprise Activo</span>';
+            btnGoPro.classList.remove('hidden');
         }
-        if (btnGoProMobile) btnGoProMobile.style.display = 'none';
+        if (btnGoProMobile) btnGoProMobile.classList.add('hidden');
+    }
+    // 🔌 API FULL STACK
+    else if (plan === 'api_fullstack') {
+        if (btnGoPro) {
+            btnGoPro.className = 'px-4 py-2 rounded-full text-[11px] lg:text-xs font-black border flex items-center gap-2 shrink-0 pointer-events-none uppercase tracking-widest bg-gradient-to-r from-emerald-500 to-teal-500 border-white/20 !text-white shadow-lg shadow-emerald-500/20';
+            btnGoPro.innerHTML = '<i data-lucide="webhook" class="w-3.5 h-3.5 fill-white/20"></i> <span class="whitespace-nowrap !text-white">API Activa</span>';
+            btnGoPro.classList.remove('hidden');
+        }
+        if (btnGoProMobile) btnGoProMobile.classList.add('hidden');
+    }
+    // 🚀 PRIORIDAD ULTRA
+    else if (plan === 'ultra') {
+        if (btnGoPro) {
+            btnGoPro.className = 'px-4 py-2 rounded-full text-[11px] lg:text-xs font-black border flex items-center gap-2 shrink-0 pointer-events-none uppercase tracking-widest bg-gradient-to-r from-purple-600 to-indigo-600 border-white/20 !text-white shadow-lg shadow-purple-500/20';
+            btnGoPro.innerHTML = '<i data-lucide="rocket" class="w-3.5 h-3.5 fill-white/20"></i> <span class="whitespace-nowrap !text-white">Ultra Activo</span>';
+            btnGoPro.classList.remove('hidden');
+        }
+        if (btnGoProMobile) btnGoProMobile.classList.add('hidden');
+    }
+    // 👑 SEGUNDO NIVEL PRO
+    else if (plan === 'pro') {
+        if (btnGoPro) {
+            btnGoPro.className = 'px-4 py-2 rounded-full text-[11px] lg:text-xs font-black border flex items-center gap-2 shrink-0 pointer-events-none uppercase tracking-widest bg-gradient-to-r from-yellow-400 to-yellow-600 border-white/20 text-slate-900 dark:text-white shadow-lg shadow-yellow-500/20';
+            btnGoPro.innerHTML = '<i data-lucide="crown" class="w-3.5 h-3.5 fill-current opacity-80"></i> <span class="whitespace-nowrap">Pro Activo</span>';
+            btnGoPro.classList.remove('hidden');
+        }
+        if (btnGoProMobile) btnGoProMobile.classList.add('hidden');
     }
 
     if (typeof lucide !== 'undefined') lucide.createIcons();

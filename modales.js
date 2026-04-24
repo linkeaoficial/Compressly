@@ -79,6 +79,13 @@ window.openPremiumModal = function (force = false) {
     premiumModal.classList.add('flex');
     document.body.style.overflow = 'hidden'; // 🚀 Bloquear Scroll del Fondo
 
+    // 🚀 Autocompletar correo si ya inició sesión (Editable)
+    const emailElement = document.getElementById('userEmailDisplay');
+    const emailInput = premiumModal.querySelector('input[type="email"]');
+    if (emailElement && emailElement.innerText !== 'usuario@ejemplo.com' && emailInput) {
+        emailInput.value = emailElement.innerText;
+    }
+
     // 🚀 Ocultar bot en TODAS las pantallas (PC y Móvil)
     const botBtn = document.getElementById('aiToggler');
     if (botBtn) botBtn.style.display = 'none';
@@ -354,6 +361,13 @@ window.openUltraModal = function () {
         modal.classList.add('flex');
         document.body.style.overflow = 'hidden'; // 🚀 Bloqueo de scroll profesional
 
+        // 🚀 Autocompletar correo si ya inició sesión (Editable)
+        const emailElement = document.getElementById('userEmailDisplay');
+        const emailInput = modal.querySelector('input[type="email"]');
+        if (emailElement && emailElement.innerText !== 'usuario@ejemplo.com' && emailInput) {
+            emailInput.value = emailElement.innerText;
+        }
+
         // 🤖 OCULTAR CHATBOT IA
         const botBtn = document.getElementById('aiToggler');
         if (botBtn) botBtn.style.display = 'none';
@@ -525,4 +539,80 @@ window.solicitarCambioPassword = function (btn) {
         lucide.createIcons();
 
     }, 2000); // 2000 milisegundos = 2 segundos
+};
+
+// 🟢 ANIMACIONES DEL MODAL DE API
+window.openApiModal = function () {
+    const modal = document.getElementById('apiModal');
+    const content = document.getElementById('apiContent');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+
+    // Autocompletar correo si ya inició sesión
+    const emailElement = document.getElementById('userEmailDisplay');
+    const emailInput = modal.querySelector('input[type="email"]');
+    if (emailElement && emailElement.innerText !== 'usuario@ejemplo.com' && emailInput) {
+        emailInput.value = emailElement.innerText;
+    }
+
+    setTimeout(() => {
+        content.classList.remove('scale-95', 'opacity-0');
+        content.classList.add('scale-100', 'opacity-100');
+    }, 10);
+    lucide.createIcons();
+};
+
+window.closeApiModal = function () {
+    const modal = document.getElementById('apiModal');
+    const content = document.getElementById('apiContent');
+    content.classList.remove('scale-100', 'opacity-100');
+    content.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }, 300);
+};
+
+// 🚪 ==========================================
+// LÓGICA DEL MODAL DE CIERRE DE SESIÓN
+// ==========================================
+window.openLogoutModal = function () {
+    const modal = document.getElementById('logoutModal');
+    const content = document.getElementById('logoutContent');
+
+    if (modal && content) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+
+        // 🚀 Ocultamos el modal de perfil por debajo para que el desenfoque sea limpio
+        const profileModal = document.getElementById('profileModal');
+        if (profileModal) profileModal.classList.add('opacity-0');
+
+        setTimeout(() => {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }, 10);
+
+        lucide.createIcons();
+        if (navigator.vibrate) navigator.vibrate(30);
+    }
+};
+
+window.closeLogoutModal = function () {
+    const modal = document.getElementById('logoutModal');
+    const content = document.getElementById('logoutContent');
+
+    if (modal && content) {
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+
+            // 🔓 Restauramos visibilidad del perfil si el usuario canceló
+            const profileModal = document.getElementById('profileModal');
+            if (profileModal) profileModal.classList.remove('opacity-0');
+        }, 200);
+    }
 };

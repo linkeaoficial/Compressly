@@ -315,27 +315,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 🎨 LÓGICA DE ESTILOS POR PLAN EN EL MENÚ Y PERFIL
         const baseMenuBtnClass = "px-3 lg:px-6 py-2.5 rounded-full text-[11px] lg:text-sm font-black transition-all flex items-center gap-2 shrink-0 ";
+
         if (planActual === 'api_fullstack') {
-            if (planLabel) planLabel.innerText = 'API FULL-STACK';
+            if (planLabel) { planLabel.innerText = 'API FULL-STACK'; planLabel.className = '!text-white'; }
             if (accountPlanName) accountPlanName.innerText = 'API Full-Stack';
             if (planIcon) planIcon.setAttribute('data-lucide', 'webhook');
-            if (planBadge) planBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border transition-all duration-500 bg-emerald-500/10 border-emerald-500/30 text-emerald-500";
+
+            // ✨ BADGE API PREMIUM (Verde Esmeralda Degradado)
+            if (planBadge) planBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border border-emerald-400/30 !text-white bg-gradient-to-r from-emerald-500 to-teal-500 shadow-[0_0_15px_rgba(16,185,129,0.4)] transition-all duration-500";
 
             // Nivel Máximo: Etiqueta de estatus final
             if (actionContainer) actionContainer.innerHTML = '<div class="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3 text-center w-full"><span class="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Sincronización Empresarial Activa</span></div>';
 
             if (btnNavPc) {
                 btnNavPc.classList.remove('hidden');
-                btnNavPc.className = "px-4 py-2 rounded-full text-[11px] lg:text-xs font-black backdrop-blur-md border flex items-center gap-2 shrink-0 pointer-events-none uppercase tracking-widest bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400";
-                btnNavPc.innerHTML = '<i data-lucide="webhook" class="w-3.5 h-3.5"></i> <span class="whitespace-nowrap">API Activa</span>';
+                btnNavPc.className = "px-4 py-2 rounded-full text-[11px] lg:text-xs font-black border flex items-center gap-2 shrink-0 pointer-events-none uppercase tracking-widest bg-gradient-to-r from-emerald-500 to-teal-500 border-white/20 !text-white shadow-lg shadow-emerald-500/20";
+                btnNavPc.innerHTML = '<i data-lucide="webhook" class="w-3.5 h-3.5 fill-white/20"></i> <span class="whitespace-nowrap !text-white">API Activa</span>';
             }
             if (btnNavMovil) btnNavMovil.classList.add('hidden');
 
         } else if (planActual === 'ultra') {
-            if (planLabel) planLabel.innerText = 'PLAN ULTRA IA';
+            if (planLabel) { planLabel.innerText = 'PLAN ULTRA IA'; planLabel.className = '!text-white'; }
             if (accountPlanName) accountPlanName.innerText = 'Plan ULTRA IA';
             if (planIcon) planIcon.setAttribute('data-lucide', 'rocket');
-            if (planBadge) planBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border transition-all duration-500 bg-purple-500/10 border-purple-500/30 text-purple-400";
+
+            // ✨ BADGE ULTRA PREMIUM (Púrpura Degradado)
+            if (planBadge) planBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border border-purple-400/30 !text-white bg-gradient-to-r from-purple-600 to-indigo-600 shadow-[0_0_15px_rgba(139,92,246,0.4)] transition-all duration-500";
 
             // 🚀 MEJORA: Botón para descubrir el siguiente nivel (API)
             if (actionContainer) {
@@ -344,37 +349,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (btnNavPc) {
                 btnNavPc.classList.remove('hidden');
-                btnNavPc.className = "px-4 py-2 rounded-full text-[11px] lg:text-xs font-black backdrop-blur-md border flex items-center gap-2 shrink-0 pointer-events-none uppercase tracking-widest bg-purple-500/10 border-purple-500/30 text-purple-600 dark:text-purple-400";
-                btnNavPc.innerHTML = '<i data-lucide="rocket" class="w-3.5 h-3.5"></i> <span class="whitespace-nowrap">Ultra Activo</span>';
+                btnNavPc.className = "px-4 py-2 rounded-full text-[11px] lg:text-xs font-black border flex items-center gap-2 shrink-0 pointer-events-none uppercase tracking-widest bg-gradient-to-r from-purple-600 to-indigo-600 border-white/20 !text-white shadow-lg shadow-purple-500/20";
+                btnNavPc.innerHTML = '<i data-lucide="rocket" class="w-3.5 h-3.5 fill-white/20"></i> <span class="whitespace-nowrap !text-white">Ultra Activo</span>';
             }
             if (btnNavMovil) btnNavMovil.classList.add('hidden');
 
         } else if (planActual === 'pro') {
-            if (planLabel) planLabel.innerText = 'PLAN PRO ACCESO';
+            // Se mantiene la letra negra en modo claro para PRO
+            if (planLabel) { planLabel.innerText = 'PLAN PRO ACCESO'; planLabel.className = 'text-slate-900 dark:text-white'; }
             if (accountPlanName) accountPlanName.innerText = 'Plan PRO Acceso';
             if (planIcon) planIcon.setAttribute('data-lucide', 'crown');
-            if (planBadge) planBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border transition-all duration-500 bg-yellow-500/10 border-yellow-500/30 text-yellow-500";
+
+            // ✨ BADGE PRO PREMIUM (Amarillo Exacto de "Más Popular")
+            if (planBadge) planBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border border-yellow-400/30 text-white bg-gradient-to-r from-yellow-400 to-yellow-600 shadow-[0_0_15px_rgba(250,204,21,0.4)] transition-all duration-500";
 
             // 🚀 MEJORA: Botón para subir al siguiente nivel (ULTRA)
             if (actionContainer) {
-                actionContainer.innerHTML = `<button onclick="closeProfileModal(); openUltraModal();" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95"><i data-lucide="rocket" class="w-4 h-4"></i> SUBIR A ULTRA IA</button>`;
+                actionContainer.innerHTML = `<button onclick="closeProfileModal(); openUltraModal();" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95 border border-white/10 hover:scale-[1.02]"><i data-lucide="rocket" class="w-4 h-4"></i> SUBIR A ULTRA IA</button>`;
             }
 
             if (btnNavPc) {
                 btnNavPc.classList.remove('hidden');
-                btnNavPc.className = "px-4 py-2 rounded-full text-[11px] lg:text-xs font-black backdrop-blur-md border flex items-center gap-2 shrink-0 pointer-events-none uppercase tracking-widest bg-yellow-500/10 border-yellow-500/30 text-yellow-600 dark:text-yellow-500";
-                btnNavPc.innerHTML = '<i data-lucide="crown" class="w-3.5 h-3.5"></i> <span class="whitespace-nowrap">Pro Activo</span>';
+                btnNavPc.className = "px-4 py-2 rounded-full text-[11px] lg:text-xs font-black border flex items-center gap-2 shrink-0 pointer-events-none uppercase tracking-widest bg-gradient-to-r from-yellow-400 to-yellow-600 border-white/20 text-slate-900 dark:text-white shadow-lg shadow-yellow-500/20";
+                btnNavPc.innerHTML = '<i data-lucide="crown" class="w-3.5 h-3.5 fill-current opacity-80"></i> <span class="whitespace-nowrap">Pro Activo</span>';
             }
             if (btnNavMovil) btnNavMovil.classList.add('hidden');
 
         } else if (planActual === 'enterprise') {
             // 💎 NUEVA LÓGICA EXCLUSIVA PARA ENTERPRISE
-            if (planLabel) planLabel.innerText = 'PLAN ENTERPRISE';
+            if (planLabel) { planLabel.innerText = 'PLAN ENTERPRISE'; planLabel.className = '!text-white'; }
             if (accountPlanName) accountPlanName.innerText = 'Plan Enterprise';
             if (planIcon) planIcon.setAttribute('data-lucide', 'building-2');
 
-            // Etiqueta con colores azules únicos
-            if (planBadge) planBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border transition-all duration-500 bg-blue-500/10 border-blue-500/30 text-blue-500";
+            // ✨ BADGE ENTERPRISE PREMIUM (Azul Degradado)
+            if (planBadge) planBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border border-blue-400/30 !text-white bg-gradient-to-r from-blue-500 to-blue-600 shadow-[0_0_15px_rgba(59,130,246,0.4)] transition-all duration-500";
 
             if (actionContainer) {
                 actionContainer.innerHTML = '<div class="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 text-center w-full"><span class="text-[10px] font-black text-blue-500 uppercase tracking-widest">Sincronización Enterprise Activa</span></div>';
@@ -382,10 +390,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (btnNavPc) {
                 btnNavPc.classList.remove('hidden');
-                btnNavPc.className = "px-4 py-2 rounded-full text-[11px] lg:text-xs font-black backdrop-blur-md border flex items-center gap-2 shrink-0 pointer-events-none uppercase tracking-widest bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400";
-                btnNavPc.innerHTML = '<i data-lucide="building-2" class="w-3.5 h-3.5"></i> <span class="whitespace-nowrap">Enterprise Activo</span>';
+                btnNavPc.className = "px-4 py-2 rounded-full text-[11px] lg:text-xs font-black border flex items-center gap-2 shrink-0 pointer-events-none uppercase tracking-widest bg-gradient-to-r from-blue-500 to-blue-600 border-white/20 !text-white shadow-lg shadow-blue-500/20";
+                btnNavPc.innerHTML = '<i data-lucide="building-2" class="w-3.5 h-3.5 fill-white/20"></i> <span class="whitespace-nowrap !text-white">Enterprise Activo</span>';
             }
             if (btnNavMovil) btnNavMovil.classList.add('hidden');
+
 
         } else {
             // PLAN FREE (Local)
@@ -459,3 +468,78 @@ document.addEventListener('DOMContentLoaded', () => {
         actualizarCreditosUI(); // 🚀 Disparamos la lectura de créditos
     }, 100);
 });
+
+// 🧮 FUNCIÓN DE CALIDAD ÓPTIMA (Análisis de peso en tiempo real)
+window.calcularCalidadOptima = function (event) {
+    // 🛑 Aislar el clic: Evita que pulsar cerca active otras cosas
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    // 🛡️ ESCUDO INFALIBLE: Miramos directamente la pantalla (DOM)
+    const previewIndividual = document.getElementById('origPreview');
+    const panelLotes = document.getElementById('batchDashboard');
+
+    const hayFotoIndividual = previewIndividual && !previewIndividual.classList.contains('hidden');
+    const hayFotoLote = panelLotes && !panelLotes.classList.contains('hidden');
+
+    if (!hayFotoIndividual && !hayFotoLote) {
+        if (typeof Notify !== 'undefined') {
+            Notify.show('Falta Imagen', 'Sube una foto primero para analizarla.', 'warning');
+        }
+        return; // Cortamos la función
+    }
+
+    // Usamos los IDs exactos de tu proyecto
+    const slider = document.getElementById('qualityRange');
+    const display = document.getElementById('qualityVal');
+
+    // 🧮 ALGORITMO MATEMÁTICO REAL (Heurística basada en el peso de la imagen)
+    let optimalQuality = 75; // Calidad universal de respaldo
+
+    try {
+        if (hayFotoIndividual) {
+            // ¡Somos hackers! Leemos el peso exacto que Compressly ya calculó en la pantalla
+            const sizeText = document.getElementById('origSize').innerText || "0";
+            let sizeInKB = parseFloat(sizeText.replace(/[^0-9.]/g, '')) || 0; // Extrae solo los números
+
+            if (sizeText.includes('MB')) {
+                sizeInKB *= 1024; // Convertimos MB a KB
+            }
+
+            // 🧠 El Cerebro Matemático:
+            if (sizeInKB > 5000) { // Si pesa más de 5MB
+                optimalQuality = 68; // Aguanta mucha compresión sin perder calidad visual
+            } else if (sizeInKB > 2000) { // Más de 2MB
+                optimalQuality = 72;
+            } else if (sizeInKB > 500) { // Más de 500KB
+                optimalQuality = 75;
+            } else { // Menos de 500KB (Es una imagen pequeñita)
+                optimalQuality = 82; // Protegemos los píxeles porque ya pesa poco
+            }
+        } else if (hayFotoLote) {
+            // Valor seguro y optimizado para múltiples archivos
+            optimalQuality = 73;
+        }
+    } catch (e) {
+        optimalQuality = 75;
+    }
+
+    let currentVal = parseInt(slider.value);
+    if (currentVal === optimalQuality) return;
+
+    let step = currentVal < optimalQuality ? 1 : -1;
+
+    let interval = setInterval(() => {
+        if (currentVal === optimalQuality) {
+            clearInterval(interval);
+            slider.dispatchEvent(new Event('input'));
+            slider.dispatchEvent(new Event('change'));
+        } else {
+            currentVal += step;
+            slider.value = currentVal;
+            display.textContent = currentVal + '%';
+        }
+    }, 15);
+};
