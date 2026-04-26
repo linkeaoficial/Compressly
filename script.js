@@ -1024,35 +1024,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (seoToggle) {
         // 🛡️ 1. Validamos el permiso ANTES de que el interruptor cambie de posición
-        seoToggle.addEventListener('click', (e) => {
+        seoToggle.addEventListener('click', async (e) => {
             if (typeof DB !== 'undefined') {
+                // 🔍 Verificamos si realmente hay una sesión activa en Supabase
+                const { data: { session } } = await supabaseClient.auth.getSession();
 
-                // 🛑 PASO 1 (FUTURO SUPABASE): ¿Está logueado?
-                // Como aún no tienes Supabase, usaremos el plan 'free' simulando que no está logueado,
-                // y asumiremos que cuando se loguee le darás un estado interno de autenticado.
-                // Por ahora, simularemos que si tiene el plan 'free' y 0 créditos, nunca se registró.
-
-                const isLoggedIn = false; // 👈 En el futuro esto será: supabase.auth.getSession() !== null
-
-                // Si NO está logueado, le pedimos que cree su cuenta para darle el regalo
-                if (!isLoggedIn && DB.user.plan === 'free') {
+                // ☁️ CASO A: Es un invitado (No ha iniciado sesión)
+                if (!session) {
                     e.preventDefault();
                     seoToggle.checked = false;
-                    Notify.show('Requiere Cuenta Gratis ☁️', 'Regístrate o Inicia Sesión para reclamar tus 3 créditos de IA.', 'info');
-                    if (typeof openProfileModal === 'function') openProfileModal();
-                    return; // Cortamos la ejecución aquí
+                    Notify.show('Regalo de Bienvenida ☁️', 'Crea tu cuenta gratis para reclamar 10 créditos de IA.', 'info');
+                    if (typeof openProfileModal === 'function') openProfileModal(); // Abrimos login
+                    return;
                 }
 
-                // 🚀 PASO 2: Si ya está logueado pero NO tiene créditos (Se le acabaron)
+                // 🚀 CASO B: Ya es usuario pero NO tiene créditos (Se le acabaron)
                 if (!DB.hasCredits()) {
                     e.preventDefault();
                     seoToggle.checked = false;
 
-                    // Estrategia de Venta
-                    if (!DB.isUltra()) {
+                    if (DB.user.plan === 'free') {
+                        Notify.show('Energía Agotada ⚡', 'Has agotado tus 10 créditos gratuitos. Mejora tu plan para seguir.', 'warning');
+                        if (typeof openUltraModal === 'function') openUltraModal();
+                    }
+                    else if (!DB.isUltra()) {
                         Notify.show('Créditos Agotados ⚡', 'Sube al Plan ULTRA para desbloquear el poder total.', 'warning');
                         if (typeof openUltraModal === 'function') openUltraModal();
-                    } else {
+                    }
+                    else {
                         Notify.show('Créditos Agotados ⚡', 'Recarga energía IA para seguir optimizando.', 'error');
                         if (typeof openRechargeModal === 'function') openRechargeModal();
                     }

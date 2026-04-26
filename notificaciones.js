@@ -7,8 +7,8 @@ const Notify = {
         if (!this.container) {
             this.container = document.createElement('div');
             this.container.id = 'toast-container';
-            // Lo posicionamos arriba a la derecha, por encima de todo (z-[200])
-            this.container.className = 'fixed top-24 right-4 sm:top-5 sm:right-5 z-[200] flex flex-col gap-3 pointer-events-none';
+            // 💎 NUEVO: Centrado en móvil, alineado a la derecha en PC. Z-index muy alto.
+            this.container.className = 'fixed top-4 left-0 right-0 sm:left-auto sm:right-6 z-[300] flex flex-col items-center sm:items-end gap-3 pointer-events-none px-4 sm:px-0';
             document.body.appendChild(this.container);
         }
     },
@@ -16,68 +16,68 @@ const Notify = {
     show(title, message, type = 'success') {
         this.init();
 
-        // Configuraciones de colores e iconos SVG de alta resolución según el tipo de alerta
+        // 💎 NUEVO: Iconos con gradientes sólidos y sombras tipo "Glow" adaptativas
         const types = {
             success: {
-                border: 'border-green-500/30 dark:border-green-400/20',
-                bgIcon: 'bg-green-500/20 text-green-600 dark:text-green-400',
-                icon: `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`
+                glow: 'shadow-[0_10px_40px_rgba(34,197,94,0.25)]',
+                bgIcon: 'bg-gradient-to-br from-green-400 to-green-600 shadow-lg text-white',
+                icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>`
             },
             error: {
-                border: 'border-red-500/30 dark:border-red-400/20',
-                bgIcon: 'bg-red-500/20 text-red-600 dark:text-red-400',
-                icon: `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`
+                glow: 'shadow-[0_10px_40px_rgba(239,68,68,0.25)]',
+                bgIcon: 'bg-gradient-to-br from-red-400 to-red-600 shadow-lg text-white',
+                icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>`
             },
             info: {
-                border: 'border-primary-500/30 dark:border-primary-400/20',
-                bgIcon: 'bg-primary-500/20 text-primary-600 dark:text-primary-400',
-                icon: `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`
+                glow: 'shadow-[0_10px_40px_rgba(139,92,246,0.25)]', // Púrpura Compressly
+                bgIcon: 'bg-gradient-to-br from-primary-400 to-primary-600 shadow-lg text-white',
+                icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`
             },
             warning: {
-                border: 'border-yellow-500/30 dark:border-yellow-400/20',
-                bgIcon: 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400',
-                icon: `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`
+                glow: 'shadow-[0_10px_40px_rgba(234,179,8,0.25)]',
+                bgIcon: 'bg-gradient-to-br from-yellow-400 to-yellow-600 shadow-lg text-white',
+                icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`
             }
         };
 
-        const config = types[type];
+        const config = types[type] || types['info'];
 
         // Crear la tarjeta visual
         const toast = document.createElement('div');
-        // Clases Tailwind para efecto Glassmorphism y animación
-        toast.className = `flex items-start gap-4 p-4 w-[calc(100vw-2rem)] sm:w-80 bg-white/90 dark:bg-[#18181b]/90 backdrop-blur-xl border ${config.border} shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl transform translate-x-[120%] opacity-0 transition-all duration-500 ease-out pointer-events-auto`;
+        // 💎 NUEVO: Bordes invisibles, fondo blur premium y animación "Pop-in"
+        toast.className = `flex items-center gap-4 p-4 w-full sm:w-96 bg-white/80 dark:bg-black/60 backdrop-blur-2xl border border-slate-200/50 dark:border-white/10 ${config.glow} rounded-2xl transform scale-95 opacity-0 -translate-y-4 transition-all duration-400 ease-out pointer-events-auto`;
 
         toast.innerHTML = `
-            <div class="flex-shrink-0 ${config.bgIcon} p-2 rounded-xl shadow-inner">
+            <div class="flex-shrink-0 ${config.bgIcon} w-10 h-10 flex items-center justify-center rounded-xl">
                 ${config.icon}
             </div>
-            <div class="flex-1 pt-0.5">
-                <h4 class="text-sm font-extrabold text-slate-900 dark:text-white tracking-tight">${title}</h4>
-                <p class="text-xs font-medium text-slate-500 dark:text-gray-400 mt-1 leading-relaxed">${message}</p>
+            <div class="flex-1">
+                <h4 class="text-sm font-extrabold text-slate-900 dark:text-white tracking-tight leading-none">${title}</h4>
+                <p class="text-xs font-bold text-slate-500 dark:text-gray-400 mt-1.5 leading-tight">${message}</p>
             </div>
-            <button class="flex-shrink-0 text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors p-1" onclick="this.parentElement.style.opacity='0'; setTimeout(() => this.parentElement.remove(), 500);">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            <button class="flex-shrink-0 text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10" onclick="this.parentElement.classList.remove('scale-100', 'opacity-100', 'translate-y-0'); this.parentElement.classList.add('scale-95', 'opacity-0', '-translate-y-4'); setTimeout(() => this.parentElement.remove(), 400);">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
         `;
 
         this.container.appendChild(toast);
 
-        // Desatar la animación de entrada
+        // Desatar la animación de entrada (Pop-in)
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
-                toast.classList.remove('translate-x-[120%]', 'opacity-0');
-                toast.classList.add('translate-x-0', 'opacity-100');
+                toast.classList.remove('scale-95', 'opacity-0', '-translate-y-4');
+                toast.classList.add('scale-100', 'opacity-100', 'translate-y-0');
             });
         });
 
-        // Desatar animación de salida y destruir después de 4 segundos
+        // Desatar animación de salida
         setTimeout(() => {
             if (toast.parentElement) {
-                toast.classList.remove('translate-x-0', 'opacity-100');
-                toast.classList.add('translate-x-[120%]', 'opacity-0');
+                toast.classList.remove('scale-100', 'opacity-100', 'translate-y-0');
+                toast.classList.add('scale-95', 'opacity-0', '-translate-y-4');
                 setTimeout(() => {
                     if (toast.parentElement) toast.remove();
-                }, 500); // Tiempo que dura la animación CSS
+                }, 400); // Tiempo exacto de la transición Tailwind
             }
         }, 4000);
     }

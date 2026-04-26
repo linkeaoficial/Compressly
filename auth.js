@@ -4,12 +4,6 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 // 🛠️ CAMBIO CLAVE: Renombramos a supabaseClient para no chocar con la librería global
 const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-// 🔄 1.5 VERIFICAR SESIÓN
-window.addEventListener('DOMContentLoaded', async () => {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (session) mostrarPanelPrivado(session.user);
-});
-
 // 🔑 FUNCIÓN PARA GOOGLE (Protegida)
 async function loginConGoogle(event) {
     event.preventDefault();
@@ -138,14 +132,33 @@ async function mostrarPanelPrivado(user) {
     let clienteInfo = null;
 
     while (intentos < 5 && !clienteInfo) {
-        const { data, error } = await supabaseClient
+        // 📡 1. Consulta Segura: Buscamos al cliente primero sin "Joins" para evitar el Error 400
+        const { data: clientData, error: clientErr } = await supabaseClient
             .from('api_clients')
-            .select('api_key, plan_type, creditos_restantes')
+            .select('*') // Traemos todo de forma segura
             .eq('id', user.id)
             .single();
 
-        if (data) {
-            clienteInfo = data;
+        // 🛡️ Respaldo por si el ID se guardó en la columna 'user_id'
+        let dataSegura = clientData;
+        if (!dataSegura) {
+            const { data: fallbackData } = await supabaseClient.from('api_clients').select('*').eq('user_id', user.id).single();
+            dataSegura = fallbackData;
+        }
+
+        if (dataSegura) {
+            // 📡 2. Buscamos los beneficios y créditos directos en la tabla 'planes'
+            const { data: planData } = await supabaseClient
+                .from('planes')
+                .select('features, creditos_ia')
+                .eq('name', dataSegura.plan_type)
+                .single();
+
+            // 🧬 Fusionamos ambas respuestas para que el sistema funcione perfecto
+            clienteInfo = {
+                ...dataSegura,
+                planes: planData || { features: { api_access: false }, creditos_ia: 0 }
+            };
         } else {
             await new Promise(res => setTimeout(res, 800));
             intentos++;
@@ -156,8 +169,21 @@ async function mostrarPanelPrivado(user) {
         const planActual = clienteInfo.plan_type.toLowerCase();
         window.currentUserPlan = planActual; // 🧠 Sincronización Global
 
+        // 🔄 SINCRONIZACIÓN CON EL GESTOR DE ESTADO (data_compressly.js)
+        if (typeof DB !== 'undefined') {
+            DB.user.plan = planActual;
+            // 🧠 Ahora toma los créditos definidos en tu SQL de planes (creditos_ia)
+            DB.user.aiCredits = clienteInfo.ai_creditos || clienteInfo.planes?.creditos_ia || 0;
+            DB.user.features = clienteInfo.planes?.features || { api_access: false };
+            DB.user.apiKey = clienteInfo.api_key;
+
+            // 🎨 Disparamos la actualización (Candado 🔒 o Llave 🔑 en el perfil)
+            DB.updateUI();
+        }
+
         // 1. Inyectamos llaves e ID
-        document.getElementById('userIdDisplay').innerText = clienteInfo.api_key;
+        const userIdDisplay = document.getElementById('userIdDisplay');
+        if (userIdDisplay) userIdDisplay.innerText = clienteInfo.api_key || 'Bloqueado';
         document.getElementById('userInternalIdDisplay').innerText = user.id;
 
         // 2. LÓGICA DE JERARQUÍA (El Poder del Usuario)
@@ -219,10 +245,31 @@ async function mostrarPanelPrivado(user) {
             document.querySelectorAll('.promo-banner, .upgrade-invitation').forEach(a => a.classList.add('hidden'));
         }
 
-        // Créditos (Con diseño de Bono Profesional)
+        // 🔌 ACTUALIZACIÓN DE CRÉDITOS DINÁMICA (API vs Energía)
         const apiCreditsDisplay = document.getElementById('apiCreditsDisplay');
-        if (apiCreditsDisplay) {
-            apiCreditsDisplay.innerHTML = `${clienteInfo.creditos_restantes} <span class="text-[9px] text-primary-500/70 font-black ml-0.5 tracking-widest uppercase">Créditos</span>`;
+        const apiBonusLabel = document.getElementById('apiBonusLabel');
+        const aiCreditsDisplay = document.getElementById('aiCreditsDisplay');
+        const profileAiCredits = document.getElementById('profileAiCredits');
+
+        // 1. Lógica para la API (Sincronía total con el diseño del candado)
+        if (apiCreditsDisplay && apiBonusLabel) {
+            if (miNivel >= 2) {
+                apiBonusLabel.innerText = "Potencia de API:";
+                apiCreditsDisplay.innerHTML = `<span class="text-emerald-500">${clienteInfo.creditos_restantes}</span> <span class="text-[9px] text-emerald-500 font-black ml-0.5 tracking-widest uppercase">Créditos Disponibles</span>`;
+            } else {
+                // 🔴 Para planes Free/Pro, ocultamos el "0" y mostramos el estatus real
+                apiBonusLabel.innerText = "Acceso a la API:";
+                apiCreditsDisplay.innerHTML = `<span class="text-[11px] text-slate-400 font-black uppercase tracking-widest italic opacity-60">No Habilitado</span>`;
+            }
+        }
+
+        // 2. Inyectar Energía para la IA (Auto-SEO)
+        const energiaIA = clienteInfo.ai_creditos || clienteInfo.planes?.creditos_ia || 0;
+        if (aiCreditsDisplay) {
+            aiCreditsDisplay.innerHTML = `${energiaIA} <span class="text-[9px] text-purple-500/70 font-black ml-0.5 tracking-widest uppercase">Energía IA</span>`;
+        }
+        if (profileAiCredits) {
+            profileAiCredits.innerHTML = `${energiaIA} <span class="text-[9px] text-purple-500/70 font-black ml-0.5 tracking-widest uppercase">Energía IA</span>`;
         }
 
         // 🚀 5. LÓGICA DE CASCADA EN TABLA DE PRECIOS
@@ -315,20 +362,6 @@ async function mostrarPanelPrivado(user) {
     }
     lucide.createIcons();
 }
-
-// Este bloque es el que "recuerda" al usuario al refrescar
-window.addEventListener('DOMContentLoaded', async () => {
-    // 1. Pedimos a Supabase la sesión actual
-    const { data: { session }, error } = await supabaseClient.auth.getSession();
-
-    // 2. Si hay una sesión activa, saltamos directo al panel
-    if (session && session.user) {
-        console.log("⚡ Sesión recuperada automáticamente");
-        mostrarPanelPrivado(session.user);
-    } else {
-        console.log("👋 No hay sesión activa, mostrando modo invitado");
-    }
-});
 
 // --- FUNCIONES DE ELIMINACIÓN DE CUENTA ---
 
@@ -426,5 +459,203 @@ window.ejecutarBorradoTotal = async function () {
         btn.disabled = false;
         btn.innerHTML = originalHTML;
         lucide.createIcons();
+    }
+};
+
+// =====================================================================
+// 🔐 FUNCIÓN PARA CAMBIAR CONTRASEÑA (MODERN MAGIC LINK)
+// =====================================================================
+
+window.solicitarCambioPassword = async function (boton) {
+    // 1. Extraemos el correo que ya está en la pantalla
+    const emailElement = document.getElementById('settingsEmailDisplay');
+    const email = emailElement ? emailElement.innerText : null;
+
+    if (!email || email === 'usuario@ejemplo.com') {
+        if (typeof Notify !== 'undefined') Notify.show('Error', 'No se detectó una cuenta válida.', 'error');
+        return;
+    }
+
+    // 2. Efecto visual de carga en el botón (Bloquea spam)
+    const textoOriginal = boton.innerHTML;
+    boton.innerHTML = '<div class="flex items-center justify-center gap-3"><i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i><span>Enviando enlace...</span></div>';
+    boton.disabled = true;
+
+    try {
+        // 3. 🚀 LA MAGIA DE SUPABASE
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + '/?reset=true',
+        });
+
+        //
+        if (error) throw error;
+
+        // 4. Transformamos el Contenido (Buscamos el contenedor de perfil o bento)
+        const modalContent = boton.closest('.bento-card') || document.getElementById('profileContent') || document.getElementById('settingsContent');
+
+        if (modalContent) {
+            modalContent.innerHTML = `
+                <div class="text-center py-12 animate-in fade-in zoom-in duration-300">
+                    <div class="w-20 h-20 bg-green-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6 text-green-500 border border-green-500/20 shadow-[0_0_30px_rgba(34,197,94,0.2)]">
+                        <i data-lucide="mail-check" class="w-10 h-10"></i>
+                    </div>
+                    <h2 class="text-2xl font-black text-white mb-3">¡Correo Enviado!</h2>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-8">
+                        Hemos enviado las instrucciones a:<br>
+                        <b class="text-primary-400 mt-1 inline-block">${email}</b>
+                    </p>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold animate-pulse">Finalizando sesión de seguridad...</p>
+                </div>
+            `;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // 5. Cierre automático y silencioso después de 4 segundos
+        setTimeout(() => {
+            if (typeof closeSettingsModal === 'function') closeSettingsModal();
+            if (typeof closeProfileModal === 'function') closeProfileModal();
+        }, 4000);
+
+    } catch (error) {
+        // Si hay error, regresamos el botón a la normalidad para que intente de nuevo
+        if (typeof Notify !== 'undefined') {
+            Notify.show('Ups...', error.message, 'error');
+        }
+        boton.innerHTML = textoOriginal;
+        boton.disabled = false;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+};
+
+// =====================================================================
+// 🔑 FUNCIÓN PARA RECUPERAR CONTRASEÑA (DESDE EL LOGIN / MODO INVITADO)
+// =====================================================================
+window.enviarRecuperacion = async function (event) {
+    if (event) event.preventDefault();
+
+    const emailInput = document.getElementById('forgotEmail');
+    if (!emailInput) return;
+    const email = emailInput.value.trim();
+
+    const modalContent = document.getElementById('forgotPasswordContent');
+
+    // Atrapamos el botón que disparó el evento para bloquearlo
+    let btn = null;
+    if (event && event.target) {
+        btn = event.target.tagName === 'BUTTON' ? event.target : event.target.querySelector('button[type="submit"]');
+    }
+
+    let originalBtnText = "Enviar Enlace";
+    if (btn) {
+        originalBtnText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Enviando...';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    try {
+        // 🚀 Mandamos a Supabase la orden con la redirección correcta
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + '/?reset=true',
+        });
+
+        if (error) throw error;
+
+        // Transformamos el modal en el mensaje de Éxito Gigante
+        if (modalContent) {
+            modalContent.innerHTML = `
+                <div class="text-center py-8 animate-in fade-in zoom-in duration-300">
+                    <div class="w-20 h-20 bg-green-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6 text-green-500 border border-green-500/20">
+                        <i data-lucide="mail-check" class="w-10 h-10"></i>
+                    </div>
+                    <h2 class="text-2xl font-black text-white mb-3 text-center">¡Revisa tu correo!</h2>
+                    <p class="text-gray-400 text-sm leading-relaxed text-center">
+                        Hemos enviado un enlace mágico a:<br>
+                        <b class="text-primary-400 mt-2 inline-block">${email}</b>
+                    </p>
+                    <button onclick="if(typeof closeForgotPasswordModal === 'function') closeForgotPasswordModal()" class="mt-8 w-full py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl font-bold transition-all border border-white/10">Entendido</button>
+                </div>
+            `;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+    } catch (error) {
+        if (typeof Notify !== 'undefined') {
+            Notify.show('Error', error.message, 'error');
+        }
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalBtnText;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+    }
+};
+
+// =====================================================================
+// 🚀 EVENTO MAESTRO AL CARGAR LA PÁGINA (SESIONES Y RECUPERACIÓN)
+// =====================================================================
+window.addEventListener('DOMContentLoaded', async () => {
+
+    // 1. Verificar si viene de un correo de recuperación de contraseña
+    if (window.location.hash.includes('type=recovery') || window.location.search.includes('reset=true')) {
+        setTimeout(() => {
+            const modal = document.getElementById('resetPasswordModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+        }, 1500); // Damos tiempo a que se oculte el Splash Screen
+
+        return; // 🛑 Detenemos la función aquí para que NO intente cargar el panel normal
+    }
+
+    // 2. Si NO es recuperación, verificamos si el usuario ya tenía sesión iniciada
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
+
+    if (session && session.user) {
+        console.log("⚡ Sesión recuperada automáticamente");
+        mostrarPanelPrivado(session.user);
+    } else {
+        console.log("👋 No hay sesión activa, mostrando modo invitado");
+    }
+});
+
+// =====================================================================
+// 🔐 FUNCIÓN PARA GUARDAR LA CONTRASEÑA DEFINITIVAMENTE
+// =====================================================================
+window.actualizarPasswordFinal = async function (e) {
+    e.preventDefault();
+    const nuevaPass = document.getElementById('newPasswordInput').value;
+    const btn = document.getElementById('btnUpdatePass');
+
+    btn.disabled = true;
+    btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Guardando...';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    try {
+        // 🚀 LLAMADA REAL A SUPABASE
+        const { error } = await supabaseClient.auth.updateUser({ password: nuevaPass });
+
+        if (error) throw error;
+
+        if (typeof Notify !== 'undefined') {
+            Notify.show('¡Éxito!', 'Tu contraseña ha sido actualizada. Ya puedes entrar.', 'success');
+        }
+
+        // Cerramos el modal y limpiamos la URL
+        const modal = document.getElementById('resetPasswordModal');
+        if (modal) modal.classList.add('hidden');
+
+        window.history.replaceState({}, document.title, "/");
+
+    } catch (error) {
+        if (typeof Notify !== 'undefined') {
+            Notify.show('Error', error.message, 'error');
+        }
+        btn.disabled = false;
+        btn.innerText = 'Guardar Cambios';
+    } finally {
+        if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 };

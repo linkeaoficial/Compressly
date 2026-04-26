@@ -1122,16 +1122,9 @@
                                     class="w-5 h-5 shrink-0 text-purple-500 group-hover:scale-110 transition-transform"></i>
                                 <span data-i18n="plan_free_bonus"
                                     class="text-sm font-black text-purple-600 dark:text-purple-400 group-hover:text-purple-500 transition-colors">Bono:
-                                    10 Créditos Cloud (IA)</span>
+                                    10 Créditos IA</span>
                             </li>
-                            <li
-                                class="flex items-start gap-3 mt-4 pt-4 border-t border-slate-200 dark:border-white/10 group cursor-default">
-                                <i data-lucide="gift"
-                                    class="w-5 h-5 shrink-0 text-primary-500 group-hover:scale-110 transition-transform"></i>
-                                <span
-                                    class="text-sm font-black text-primary-600 dark:text-primary-400 group-hover:text-primary-500 transition-colors">Bono:
-                                    30 Créditos API</span>
-                            </li>
+
                         </ul>
                         <button id="btnTablaFree" onclick="openProfileModal()"
                             class="w-full bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/20 text-slate-800 dark:text-white font-extrabold py-4 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2">
@@ -1186,16 +1179,9 @@
                                     class="w-5 h-5 shrink-0 text-purple-500 group-hover:scale-110 transition-transform"></i>
                                 <span data-i18n="plan_pro_bonus"
                                     class="text-sm font-black text-purple-600 dark:text-purple-400 group-hover:text-purple-500 transition-colors">Bono:
-                                    25 Créditos Cloud (IA)</span>
+                                    25 Créditos IA</span>
                             </li>
-                            <li
-                                class="flex items-start gap-3 mt-4 pt-4 border-t border-slate-200 dark:border-white/10 group cursor-default">
-                                <i data-lucide="gift"
-                                    class="w-5 h-5 shrink-0 text-primary-500 group-hover:scale-110 transition-transform"></i>
-                                <span
-                                    class="text-sm font-black text-primary-600 dark:text-primary-400 group-hover:text-primary-500 transition-colors">Bono:
-                                    50 Créditos API</span>
-                            </li>
+
                         </ul>
                         <button id="btnTablaPro" onclick="openPremiumModal(true)"
                             class="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 hover:scale-[1.02] active:scale-95 text-white font-extrabold py-4 rounded-xl transition-all shadow-[0_10px_20px_rgba(250,204,21,0.3)] flex justify-center items-center gap-2 border border-white/10">
@@ -1219,14 +1205,14 @@
 
                         <div class="mb-8 relative z-10">
                             <span data-i18n="plan_ultra_price"
-                                class="text-4xl font-black text-slate-900 dark:text-white">$9.99</span>
+                                class="text-4xl font-black text-slate-900 dark:text-white">$6.99</span>
                             <span data-i18n="plan_ultra_time" class="text-gray-500 font-bold text-sm">/ al mes</span>
                         </div>
 
                         <ul class="space-y-4 mb-8 flex-grow relative z-10">
                             <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
                                 <i data-lucide="server" class="w-5 h-5 text-purple-500 shrink-0"></i>
-                                <span data-i18n="plan_ultra_f1_new">500 imágenes procesadas en la nube</span>
+                                <span data-i18n="plan_ultra_f1_new">100 imágenes API</b> /mes</span>
                             </li>
                             <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
                                 <i data-lucide="ban" class="w-5 h-5 text-purple-500 shrink-0"></i>
@@ -1257,7 +1243,7 @@
                     </div>
 
                     <div
-                        class="bento-card p-8 flex flex-col relative border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.15)] bg-gradient-to-b from-emerald-500/5 to-transparent overflow-hidden">
+                        class="bento-card p-8 flex flex-col relative border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.15)] bg-gradient-to-b from-emerald-500/5 to-transparent overflow-hidden transition-all hover:border-emerald-500 hover:shadow-[0_0_40px_rgba(16,185,129,0.25)]">
                         <div
                             class="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/20 blur-3xl rounded-full pointer-events-none">
                         </div>
@@ -1283,11 +1269,11 @@
                             <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
                                 <i data-lucide="layers" class="w-5 h-5 text-emerald-500 shrink-0"></i>
                                 <div class="flex flex-col">
-                                    <span>Incluye <b class="text-emerald-600 dark:text-emerald-400">5,000 imágenes</b>
+                                    <span>Incluye <b class="text-emerald-600 dark:text-emerald-400">3,000 imágenes</b>
                                         /mes</span>
                                     <span
                                         class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mt-0.5">Luego
-                                        $2.00 por cada 1,000 adicionales</span>
+                                        $2.00 por cada 1,200 adicionales</span>
                                 </div>
                             </li>
                             <li id="enterpriseUpsell"
@@ -1462,6 +1448,7 @@
     <script src="interfaz.js"></script>
     <script src="motor-lotes.js"></script>
     <script src="chatbot-Compressly.js"></script>
+    <script src="data_compressly.js"></script>
     <script src="auth.js"></script>
     <script src="script.js"></script>
 

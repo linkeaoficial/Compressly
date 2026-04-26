@@ -1,8 +1,8 @@
 const htmlModales = `
-    <div id="legalModal" class="fixed inset-0 z-[100] hidden items-center justify-center px-4">
+    <div id="legalModal" class="fixed inset-0 z-[100] hidden items-center justify-center px-0 md:px-4">
         <div id="modalOverlay" class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"></div>
 
-        <div class="bento-card relative z-10 w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl border-primary-500/30 transform transition-all scale-95 opacity-0 p-8 md:p-10"
+        <div class="bento-card relative z-10 w-full max-w-2xl h-[100dvh] max-h-[100dvh] md:h-auto md:max-h-[85vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] flex flex-col shadow-2xl border-none md:border md:border-primary-500/30 transform transition-all scale-95 opacity-0 p-8 md:p-10 rounded-none md:rounded-3xl"
             id="modalContent">
 
             <div class="flex justify-between items-center border-b border-white/10 pb-5 mb-5 shrink-0">
@@ -22,137 +22,310 @@ const htmlModales = `
         </div>
     </div>
 
-    <div id="premiumModal" class="fixed inset-0 z-[110] hidden items-center justify-center px-4">
-        <div id="premiumOverlay"
+    <div id="premiumModal" class="fixed inset-0 z-[125] hidden items-center justify-center px-0 md:px-8">
+        <div id="premiumOverlay" onclick="closePremiumModal()"
             class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity cursor-pointer"></div>
-        <div class="bento-card relative z-10 w-full max-w-md max-h-[90vh] overflow-y-auto custom-scrollbar flex flex-col shadow-[0_0_50px_rgba(250,204,21,0.15)] border-yellow-500/30 hover:border-yellow-500/50 transform transition-all scale-95 opacity-0 p-8 text-center"
+
+        <div class="bento-card relative z-10 w-full h-[100dvh] max-h-[100dvh] md:max-w-5xl md:h-[85vh] md:max-h-[85vh] rounded-none md:rounded-3xl border-none md:border md:border-yellow-500/30 overflow-y-auto no-scrollbar md:overflow-hidden block md:flex md:flex-row shadow-[0_0_50px_rgba(250,204,21,0.15)] transform transition-all scale-95 opacity-0 p-8 md:p-0"
             id="premiumContent">
 
-            <button onclick="closePremiumModal()"
-                class="absolute top-4 right-4 text-gray-400 hover:text-white hover:bg-white/10 p-2 rounded-lg transition-colors z-50">
-                <i data-lucide="x" class="w-6 h-6"></i>
-            </button>
+            <div class="w-full md:w-[55%] md:p-12 flex flex-col relative text-left">
+                
+                <div class="flex justify-between items-start border-b border-slate-200 dark:border-white/10 pb-5 mb-6 md:pb-6 md:mb-8">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl flex items-center justify-center shadow-lg shrink-0">
+                            <i data-lucide="crown" class="w-7 h-7 text-white"></i>
+                        </div>
+                        <div>
+                            <h2 data-i18n="premium_title" class="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white leading-tight">Dominio Profesional</h2>
+                            <p class="text-sm font-medium text-yellow-600 flex items-center gap-2 mt-1">
+                                <i data-lucide="award" class="w-4 h-4"></i>
+                                Acceso de por vida
+                            </p>
+                        </div>
+                    </div>
+                    <button onclick="closePremiumModal()" class="md:hidden text-gray-400 hover:text-white p-2 rounded-lg transition-colors">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
 
-            <div
-                class="w-16 h-16 mx-auto bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(250,204,21,0.4)]">
-                <i data-lucide="crown" class="w-8 h-8 text-white"></i>
+                <p class="text-slate-500 dark:text-gray-400 font-medium text-sm mb-8 leading-relaxed">
+    Desbloquea el poder total de Compressly. Sin mensualidades, sin límites y con herramientas de grado profesional para tu flujo de trabajo<span class="hidden md:inline"> diario</span>.
+</p>
+
+                <div class="grid grid-cols-1 gap-4 mb-8">
+                    <div class="bg-yellow-500/5 border border-yellow-500/10 rounded-2xl p-4 flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-yellow-500/20 flex items-center justify-center text-yellow-600">
+                            <i data-lucide="layers" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900 dark:text-white">Lotes Ilimitados</h4>
+                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Procesa cientos de fotos a la vez</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 rounded-2xl p-3 md:p-4 flex items-center gap-3 md:gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-slate-200 dark:bg-white/10 flex items-center justify-center text-slate-500 shrink-0">
+                            <i data-lucide="shield-check" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900 dark:text-white">Escudo Anti-Rastreo</h4>
+                            <p class="text-[9px] md:text-[10px] text-gray-500 font-bold uppercase tracking-tight md:tracking-wider">Limpieza automática de metadatos GPS</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-auto p-4 rounded-xl bg-yellow-500/5 border border-yellow-500/10 hidden md:block">
+                    <p class="text-xs font-bold text-yellow-700 dark:text-yellow-500 flex items-center gap-2">
+                        <i data-lucide="info" class="w-4 h-4"></i>
+                        Incluye 25 Créditos de IA para Auto-SEO como bono de bienvenida.
+                    </p>
+                </div>
             </div>
 
-            <h2 data-i18n="premium_title" class="text-2xl font-extrabold text-slate-900 dark:text-white mb-3">Dominio Profesional</h2>
-            <p class="text-slate-500 dark:text-gray-400 font-medium text-sm mb-8 leading-relaxed">
-                Desbloquea lotes ilimitados, archivos gigantes (+10MB) y el escudo anti-rastreo. Obtén <b class="text-slate-700 dark:text-gray-300">acceso de por vida (Sin mensualidades)</b>.
-            </p>
-
-            <form class="flex flex-col gap-3"
-                onsubmit="event.preventDefault(); const email = this.querySelector('input[type=email]').value; const msg = encodeURIComponent('¡Hola! Quiero aprovechar la oferta de Compressly PRO por $19.99. Mi correo es: ' + email); window.open('https://wa.me/584161356896?text=' + msg, '_blank'); closePremiumModal();">
-
-                <input type="email" required data-i18n="premium_email_ph" placeholder="Tu correo electrónico"
-                    class="w-full bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:border-yellow-500 transition-colors placeholder-gray-500 font-bold">
-                <button type="submit"
-                    class="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 hover:scale-[1.02] active:scale-95 text-white font-extrabold py-3.5 rounded-xl transition-all shadow-[0_10px_20px_rgba(250,204,21,0.3)] flex items-center justify-center gap-2 border border-white/10">
-                    <i data-lucide="crown" class="w-5 h-5 text-white"></i> <span data-i18n="premium_btn" class="tracking-tight">Obtener Acceso PRO por $19.99</span>
+            <div class="w-full md:w-[45%] md:p-12 bg-transparent md:bg-gradient-to-br md:from-yellow-50/50 md:to-orange-50/50 dark:md:from-yellow-500/5 dark:md:to-orange-500/5 border-t md:border-t-0 md:border-l border-slate-200 dark:border-white/10 flex flex-col justify-center relative overflow-hidden">
+                
+                <button onclick="closePremiumModal()" class="hidden md:block absolute top-4 right-4 text-gray-400 hover:text-slate-900 dark:hover:text-white p-2 rounded-lg transition-colors z-50">
+                    <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
-            </form>
+                
+                <div class="text-center relative z-10 w-full">
+                    <div class="mb-6 hidden md:block">
+    <span class="px-4 py-1.5 rounded-full bg-yellow-500 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-yellow-500/20">Pago Único</span>
+</div>
 
-            <button id="closePremiumBtn" data-i18n="premium_cancel"
-                class="mt-6 text-sm font-bold text-gray-400 hover:text-slate-700 dark:hover:text-white transition-colors">
-                Quizás más tarde
-            </button>
+                    <h3 class="text-lg md:text-2xl font-extrabold text-slate-900 dark:text-white mb-2">Activar Acceso PRO</h3>
+                    <p class="text-sm text-slate-500 dark:text-gray-400 font-medium mb-8">Potencia tu flujo de trabajo sin límites.</p>
+
+                    <form class="flex flex-col gap-4 text-left"
+                        onsubmit="event.preventDefault(); const email = this.querySelector('input[type=email]').value; const msg = encodeURIComponent('¡Hola! Quiero aprovechar la oferta de Compressly PRO por $19.99. Mi correo es: ' + email); window.open('https://wa.me/584161356896?text=' + msg, '_blank'); closePremiumModal();">
+                        
+                        <div>
+                            <label class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest mb-2 block">Tu correo electrónico</label>
+                            <input type="email" required data-i18n="premium_email_ph" placeholder="usuario@ejemplo.com"
+                                class="w-full bg-white dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3.5 text-slate-800 dark:text-white focus:outline-none focus:border-yellow-500 transition-colors placeholder-gray-500 font-bold text-sm">
+                        </div>
+
+                        <button type="submit"
+                            class="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 hover:scale-[1.02] active:scale-95 text-white font-extrabold py-4 rounded-xl transition-all shadow-[0_15px_30px_rgba(250,204,21,0.3)] flex items-center justify-center gap-2 text-sm mt-2 border border-white/10">
+                            <i data-lucide="crown" class="w-5 h-5 text-white"></i> <span data-i18n="premium_btn">Obtener Acceso PRO ($19.99)</span>
+                        </button>
+                    </form>
+                    
+                    <button onclick="closePremiumModal()" class="mt-8 text-[10px] font-bold text-gray-400 hover:text-slate-600 dark:hover:text-white transition-colors uppercase tracking-widest">
+                        <span data-i18n="premium_cancel">Quizás más tarde</span>
+                    </button>
+                </div>
+
+                <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-yellow-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+            </div>
         </div>
     </div>
 
-    <div id="ultraModal" class="fixed inset-0 z-[115] hidden items-center justify-center px-4">
+    <div id="ultraModal" class="fixed inset-0 z-[125] hidden items-center justify-center px-0 md:px-8">
         <div id="ultraOverlay" onclick="closeUltraModal()"
             class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity cursor-pointer"></div>
-        <div class="bento-card relative z-10 w-full max-w-md max-h-[90vh] overflow-y-auto custom-scrollbar flex flex-col shadow-[0_0_50px_rgba(168,85,247,0.2)] border-purple-500/40 bg-gradient-to-b from-purple-500/5 to-transparent transform transition-all scale-95 opacity-0 p-8 text-center"
+
+        <div class="bento-card relative z-10 w-full h-[100dvh] max-h-[100dvh] md:max-w-5xl md:h-[85vh] md:max-h-[85vh] rounded-none md:rounded-3xl border-none md:border md:border-purple-500/30 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] md:overflow-hidden block md:flex md:flex-row shadow-[0_0_50px_rgba(168,85,247,0.15)] transform transition-all scale-95 opacity-0 px-6 py-10 md:p-0"
             id="ultraContent">
 
-            <button onclick="closeUltraModal()"
-                class="absolute top-4 right-4 text-gray-400 hover:text-white hover:bg-white/10 p-2 rounded-lg transition-colors z-50">
-                <i data-lucide="x" class="w-6 h-6"></i>
-            </button>
+            <div class="w-full md:w-[55%] md:p-12 flex flex-col relative text-left">
+                
+                <div class="flex justify-between items-start border-b border-slate-200 dark:border-white/10 pb-5 mb-6 md:pb-6 md:mb-8">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shrink-0">
+                            <i data-lucide="sparkles" class="w-7 h-7 text-white"></i>
+                        </div>
+                        <div>
+                            <h2 data-i18n="ultra_title" class="text-lg md:text-2xl font-extrabold text-slate-900 dark:text-white leading-tight tracking-tight md:tracking-normal">Desbloquea <span class="hidden md:inline">el Poder</span> IA</h2>
+                            <p class="text-sm font-medium text-purple-500 flex items-center gap-2 mt-1">
+                                <i data-lucide="rocket" class="w-4 h-4"></i>
+                                Velocidad Extrema
+                            </p>
+                        </div>
+                    </div>
+                    <button onclick="closeUltraModal()" class="md:hidden text-gray-400 hover:text-white p-2 rounded-lg transition-colors">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
 
-            <div
-                class="w-16 h-16 mx-auto bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(168,85,247,0.5)] !text-white">
-                <i data-lucide="sparkles" class="w-8 h-8 !text-white"></i>
+                <p class="text-slate-500 dark:text-gray-400 font-medium text-sm mb-8 leading-relaxed">
+                    Genera descripciones y nombres optimizados automáticamente. Ahorra horas de trabajo en tu E-commerce<span class="hidden md:inline"> y mejora tu posicionamiento web con inteligencia artificial</span>.
+                </p>
+
+                <div class="grid grid-cols-1 gap-4 mb-8">
+                    <div class="bg-purple-500/5 border border-purple-500/10 rounded-2xl p-4 flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center text-purple-500 shrink-0">
+                            <i data-lucide="bot" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900 dark:text-white">Módulo Auto-SEO</h4>
+                            <p class="text-[9px] md:text-[10px] text-gray-500 font-bold uppercase tracking-tight md:tracking-wider">Generación de nombres y etiquetas ALT</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 rounded-2xl p-4 flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-slate-200 dark:bg-white/10 flex items-center justify-center text-slate-500 shrink-0">
+                            <i data-lucide="zap" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900 dark:text-white">Cero Publicidad</h4>
+                            <p class="text-[9px] md:text-[10px] text-gray-500 font-bold uppercase tracking-tight md:tracking-wider">Experiencia limpia y descargas rápidas</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-auto p-4 rounded-xl bg-purple-500/5 border border-purple-500/10 hidden md:block">
+                    <p class="text-xs font-bold text-purple-700 dark:text-purple-400 flex items-center gap-2">
+                        <i data-lucide="gift" class="w-4 h-4"></i>
+                        Bono exclusivo: 100 Créditos API incluidos en tu plan mensual.
+                    </p>
+                </div>
             </div>
 
-            <h2 data-i18n="ultra_title" class="text-2xl font-extrabold text-slate-900 dark:text-white mb-2">Desbloquea
-                el Poder IA</h2>
-            <p data-i18n="ultra_desc"
-                class="text-slate-500 dark:text-gray-400 font-medium text-sm mb-6 leading-relaxed">
-                Genera descripciones y nombres optimizados automáticamente. Ahorra horas de trabajo en tu E-commerce.
-            </p>
-
-            <form class="flex flex-col gap-3"
-                onsubmit="event.preventDefault(); window.open('https://wa.me/584161356896?text=¡Hola!%20Quiero%20activar%20el%20Plan%20ULTRA%20IA%20($6.99)%20en%20Compressly.%20Mi%20correo%20es:%20' + this.querySelector('input[type=email]').value, '_blank'); closeUltraModal();">
-
-                <input type="email" required data-i18n="ultra_email_ph" placeholder="Tu correo electrónico"
-                    class="w-full bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:border-purple-500 transition-colors placeholder-gray-500 font-bold">
-
-                <button type="submit"
-                    class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-[1.02] active:scale-95 !text-white font-extrabold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(168,85,247,0.4)] flex items-center justify-center gap-2">
-                    <i data-lucide="rocket" class="w-5 h-5 !text-white"></i> <span data-i18n="ultra_btn">Activar Plan
-                        ULTRA ($6.99)</span>
+            <div class="w-full md:w-[45%] md:p-12 bg-transparent md:bg-gradient-to-br md:from-purple-50/50 md:to-indigo-50/50 dark:md:from-purple-500/5 dark:md:to-indigo-500/5 border-t md:border-t-0 md:border-l border-slate-200 dark:border-white/10 flex flex-col justify-center relative overflow-hidden">
+                
+                <button onclick="closeUltraModal()" class="hidden md:block absolute top-4 right-4 text-gray-400 hover:text-slate-900 dark:hover:text-white p-2 rounded-lg transition-colors z-50">
+                    <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
-            </form>
+                
+                <div class="text-center relative z-10 w-full">
+                    <div class="mb-6 hidden md:block">
+                        <span class="px-4 py-1.5 rounded-full bg-purple-500 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-purple-500/20">Suscripción Mensual</span>
+                    </div>
 
-            <button onclick="closeUltraModal()"
-                class="mt-6 text-sm font-bold text-gray-400 hover:text-slate-700 dark:hover:text-white transition-colors">
-                <span data-i18n="ultra_cancel">Seguir usando el plan actual</span>
-            </button>
+                    <h3 class="text-lg md:text-2xl font-extrabold text-slate-900 dark:text-white mb-2">Activar Acceso ULTRA</h3>
+                    <p class="text-sm text-slate-500 dark:text-gray-400 font-medium mb-8">Automatiza tu trabajo hoy mismo.</p>
+
+                    <form class="flex flex-col gap-4 text-left"
+                        onsubmit="event.preventDefault(); window.open('https://wa.me/584161356896?text=¡Hola!%20Quiero%20activar%20el%20Plan%20ULTRA%20IA%20($6.99)%20en%20Compressly.%20Mi%20correo%20es:%20' + this.querySelector('input[type=email]').value, '_blank'); closeUltraModal();">
+                        
+                        <div>
+                            <label class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest mb-2 block">Tu correo electrónico</label>
+                            <input type="email" required data-i18n="ultra_email_ph" placeholder="usuario@ejemplo.com"
+                                class="w-full bg-white dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3.5 text-slate-800 dark:text-white focus:outline-none focus:border-purple-500 transition-colors placeholder-gray-500 font-bold text-sm">
+                        </div>
+
+                        <button type="submit"
+                            class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-[1.02] active:scale-95 !text-white font-extrabold py-4 rounded-xl transition-all shadow-[0_15px_30px_rgba(168,85,247,0.3)] flex items-center justify-center gap-2 text-sm mt-2 border border-white/10">
+                            <i data-lucide="rocket" class="w-5 h-5 !text-white"></i> <span data-i18n="ultra_btn">Activar Plan ULTRA ($6.99)</span>
+                        </button>
+                    </form>
+                    
+                    <button onclick="closeUltraModal()" class="mt-8 text-[10px] font-bold text-gray-400 hover:text-slate-600 dark:hover:text-white transition-colors uppercase tracking-widest">
+                        <span data-i18n="ultra_cancel">Seguir usando el plan actual</span>
+                    </button>
+                </div>
+
+                <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-purple-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+            </div>
         </div>
     </div>
 
-    <div id="apiModal" class="fixed inset-0 z-[116] hidden items-center justify-center px-4">
+    <div id="apiModal" class="fixed inset-0 z-[125] hidden items-center justify-center px-0 md:px-8">
         <div id="apiOverlay" onclick="closeApiModal()"
             class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity cursor-pointer"></div>
-        <div class="bento-card relative z-10 w-full max-w-md max-h-[90vh] overflow-y-auto custom-scrollbar flex flex-col shadow-[0_0_50px_rgba(16,185,129,0.2)] border-emerald-500/40 hover:border-emerald-500/60 bg-gradient-to-b from-emerald-500/5 to-transparent transform transition-all scale-95 opacity-0 p-8 text-center"
-            id="apiContent">
 
-            <button onclick="closeApiModal()"
-                class="absolute top-4 right-4 text-gray-400 hover:text-white hover:bg-white/10 p-2 rounded-lg transition-colors z-50">
-                <i data-lucide="x" class="w-6 h-6"></i>
-            </button>
+       <div class="bento-card relative z-10 w-full h-[100dvh] max-h-[100dvh] md:max-w-5xl md:h-[85vh] md:max-h-[85vh] rounded-none md:rounded-3xl border-none md:border md:border-emerald-500/30 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] md:overflow-hidden block md:flex md:flex-row shadow-[0_0_50px_rgba(16,185,129,0.15)] transform transition-all scale-95 opacity-0 px-6 py-10 md:p-0"
+    id="apiContent">
 
-            <div
-                class="w-16 h-16 mx-auto bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(16,185,129,0.5)] !text-white">
-                <i data-lucide="webhook" class="w-8 h-8 !text-white"></i>
+            <div class="w-full md:w-[55%] md:p-12 flex flex-col relative text-left">
+                
+                <div class="flex justify-between items-start border-b border-slate-200 dark:border-white/10 pb-5 mb-6 md:pb-6 md:mb-8">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shrink-0">
+                            <i data-lucide="webhook" class="w-7 h-7 text-white"></i>
+                        </div>
+                        <div>
+                            <h2 data-i18n="api_modal_title" class="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white leading-tight">Poder Full-Stack</h2>
+                            <p class="text-sm font-medium text-emerald-500 flex items-center gap-2 mt-1">
+                                <span class="relative flex h-2 w-2 items-center justify-center">
+                                    <span class="animate-ping absolute h-full w-full rounded-full bg-emerald-500 opacity-40"></span>
+                                    <span class="relative rounded-full h-2 w-2 bg-emerald-500"></span>
+                                </span>
+                                Acceso Desarrollador
+                            </p>
+                        </div>
+                    </div>
+                    <button onclick="closeApiModal()" class="md:hidden text-gray-400 hover:text-white p-2 rounded-lg transition-colors">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+
+                <p data-i18n="api_modal_desc" class="text-slate-500 dark:text-gray-400 font-medium text-sm mb-8 leading-relaxed">
+                    Conecta tu E-commerce o App a nuestro motor. Compresión automática y hospedaje en la nube sin costo adicional.
+                </p>
+
+                <div class="grid grid-cols-1 gap-4 mb-8">
+                    <div class="bg-emerald-500/5 border border-emerald-500/10 rounded-2xl p-4 flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-500">
+                            <i data-lucide="layers" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900 dark:text-white">3,000 Imágenes / mes</h4>
+                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Escalabilidad inmediata</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 rounded-2xl p-4 flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-slate-200 dark:bg-white/10 flex items-center justify-center text-slate-500">
+                            <i data-lucide="database" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900 dark:text-white">Hospedaje R2 Incluido</h4>
+                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Cloudflare Infrastructure</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <a href="Documentación_API.html" class="mt-auto group hidden md:flex items-center justify-between p-4 rounded-xl border border-dashed border-emerald-500/30 hover:border-emerald-500/60 transition-all">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="code-2" class="w-5 h-5 text-emerald-500"></i>
+                        <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Ver Documentación Técnica</span>
+                    </div>
+                    <i data-lucide="external-link" class="w-4 h-4 text-emerald-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
+                </a>
             </div>
 
-            <h2 data-i18n="api_modal_title" class="text-2xl font-extrabold text-slate-900 dark:text-white mb-2">Poder
-                Full-Stack</h2>
-            <p data-i18n="api_modal_desc"
-                class="text-slate-500 dark:text-gray-400 font-medium text-sm mb-6 leading-relaxed">
-                Conecta tu E-commerce o App a nuestro motor. Compresión automática y hospedaje en la nube sin costo
-                adicional.
-            </p>
-
-            <form class="flex flex-col gap-3"
-                onsubmit="event.preventDefault(); window.open('https://wa.me/584161356896?text=¡Hola!%20Quiero%20solicitar%20acceso%20al%20Plan%20API%20Full-Stack%20($14.99)%20en%20Compressly.%20Mi%20correo%20es:%20' + this.querySelector('input[type=email]').value, '_blank'); closeApiModal();">
-
-                <input type="email" required data-i18n="api_email_ph" placeholder="Tu correo electrónico"
-                    class="w-full bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:border-emerald-500 transition-colors placeholder-gray-500 font-bold">
-
-                <button type="submit"
-                    class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:scale-[1.02] active:scale-95 !text-white font-extrabold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.4)] flex items-center justify-center gap-2">
-                    <i data-lucide="webhook" class="w-5 h-5 !text-white"></i> <span data-i18n="api_modal_btn">Activar
-                        API ($14.99/mes)</span>
+            <div class="w-full md:w-[45%] md:p-12 bg-transparent md:bg-gradient-to-br md:from-emerald-50/50 md:to-teal-50/50 dark:md:from-emerald-500/5 dark:md:to-teal-500/5 border-t md:border-t-0 md:border-l border-slate-200 dark:border-white/10 flex flex-col justify-center relative overflow-hidden">
+                
+                <button onclick="closeApiModal()" class="hidden md:block absolute top-4 right-4 text-gray-400 hover:text-slate-900 dark:hover:text-white p-2 rounded-lg transition-colors z-50">
+                    <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
-            </form>
+                
+                <div class="text-center relative z-10 w-full">
+                    <div class="mb-6 hidden md:block">
+                        <span class="px-4 py-1.5 rounded-full bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-500/20">Uso Profesional</span>
+                    </div>
 
-            <button onclick="closeApiModal()"
-                class="mt-6 text-sm font-bold text-gray-400 hover:text-slate-700 dark:hover:text-white transition-colors">
-                <span data-i18n="api_cancel">Quizás más tarde</span>
-            </button>
+                    <h3 class="text-lg md:text-2xl font-extrabold text-slate-900 dark:text-white mb-2">Activar Acceso API</h3>
+                    <p class="text-sm text-slate-500 dark:text-gray-400 font-medium mb-8">Comienza a automatizar hoy mismo.</p>
+
+                    <form class="flex flex-col gap-4 text-left"
+                        onsubmit="event.preventDefault(); window.open('https://wa.me/584161356896?text=¡Hola!%20Quiero%20solicitar%20acceso%20al%20Plan%20API%20Full-Stack%20($14.99)%20en%20Compressly.%20Mi%20correo%20es:%20' + this.querySelector('input[type=email]').value, '_blank'); closeApiModal();">
+                        
+                        <div>
+                            <label class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest mb-2 block">Tu correo de cuenta</label>
+                            <input type="email" required data-i18n="api_email_ph" placeholder="usuario@ejemplo.com"
+                                class="w-full bg-white dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3.5 text-slate-800 dark:text-white focus:outline-none focus:border-emerald-500 transition-colors placeholder-gray-500 font-bold text-sm">
+                        </div>
+
+                        <button type="submit"
+                            class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:scale-[1.02] active:scale-95 !text-white font-extrabold py-4 rounded-xl transition-all shadow-[0_15px_30px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 text-sm mt-2">
+                            <i data-lucide="zap" class="w-5 h-5 !text-white"></i> <span data-i18n="api_modal_btn">Activar API ($14.99/mes)</span>
+                        </button>
+                    </form>
+                    
+                    <p class="mt-8 text-[10px] text-gray-400 font-medium italic">Suscripción gestionada vía WhatsApp para soporte directo.</p>
+                </div>
+
+                <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-emerald-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+            </div>
         </div>
     </div>
 
-    <div id="rechargeModal" class="fixed inset-0 z-[140] hidden items-center justify-center px-4">
+    <div id="rechargeModal" class="fixed inset-0 z-[140] hidden items-center justify-center px-0 md:px-8">
         <div id="rechargeOverlay" onclick="closeRechargeModal()"
             class="absolute inset-0 bg-black/80 backdrop-blur-md cursor-pointer transition-opacity"></div>
-        <div class="bento-card custom-scrollbar relative z-10 w-full max-w-md max-h-[90vh] overflow-y-auto flex flex-col shadow-[0_0_50px_rgba(168,85,247,0.2)] border-purple-500/40 bg-gradient-to-b from-purple-500/5 to-transparent p-8 text-center transform transition-all scale-95 opacity-0"
-            id="rechargeContent">
+        <div class="bento-card relative z-10 w-full max-w-md h-[100dvh] max-h-[100dvh] md:max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] flex flex-col shadow-[0_0_50px_rgba(168,85,247,0.2)] border-none md:border md:border-purple-500/40 bg-gradient-to-b from-purple-500/5 to-transparent p-8 text-center transform transition-all scale-95 opacity-0 rounded-none md:rounded-3xl"
+    id="rechargeContent">
 
             <button onclick="closeRechargeModal()"
                 class="absolute top-4 right-4 text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10 p-2 rounded-lg transition-colors z-50">
@@ -243,14 +416,14 @@ const htmlModales = `
         </div>
     </div>
 
-    <div id="profileModal" class="fixed inset-0 z-[120] hidden items-center justify-center px-4 md:px-8">
+    <div id="profileModal" class="fixed inset-0 z-[120] hidden items-center justify-center px-0 md:px-8">
         <div id="profileOverlay"
             class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity cursor-pointer"></div>
 
 
 
-        <div class="bento-card relative z-10 w-full max-w-md md:max-w-5xl max-h-[90vh] md:h-[85vh] overflow-y-auto md:overflow-hidden flex flex-col md:flex-row shadow-[0_0_50px_rgba(139,92,246,0.15)] border-primary-500/30 transform transition-all scale-95 opacity-0 p-8 md:p-0"
-            id="profileContent">
+        <div class="bento-card relative z-10 w-full h-[100dvh] max-h-[100dvh] md:max-w-5xl md:h-[85vh] md:max-h-[85vh] rounded-none md:rounded-3xl border-none md:border md:border-primary-500/30 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] md:overflow-hidden block md:flex md:flex-row shadow-[0_0_50px_rgba(139,92,246,0.15)] transform transition-all scale-95 opacity-0 p-8 md:p-0"
+    id="profileContent">
 
             <div class="w-full md:w-[55%] md:p-12 flex flex-col md:overflow-y-auto custom-scrollbar relative">
 
@@ -486,19 +659,7 @@ const htmlModales = `
                                     class="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors shrink-0"></i>
                             </div>
 
-                            <div class="flex items-center justify-between w-full bg-violet-500/5 border border-violet-500/20 px-3 py-2.5 rounded-xl group cursor-pointer hover:bg-violet-500/10 hover:border-violet-500/40 transition-all shadow-sm active:scale-95 overflow-hidden"
-                                onclick="navigator.clipboard.writeText(document.getElementById('userIdDisplay').innerText); if(typeof Notify !== 'undefined') Notify.show('API Key Copiada', 'Llave lista para usar en la API', 'success');"
-                                title="Copiar API Key">
-                                <div class="flex flex-col items-start w-full pr-3 min-w-0">
-                                    <span
-                                        class="text-[8px] font-black text-violet-400 uppercase tracking-[0.2em] leading-none mb-1 flex items-center gap-1">
-                                        <i data-lucide="key" class="w-2.5 h-2.5"></i> API Key
-                                    </span>
-                                    <span id="userIdDisplay"
-                                        class="text-xs font-bold text-slate-700 dark:text-white font-mono tracking-widest blur-[3px] group-hover:blur-none transition-all duration-300 break-all w-full select-all">CPLY-984A2B</span>
-                                </div>
-                                <i data-lucide="copy"
-                                    class="w-4 h-4 text-violet-300 group-hover:text-violet-500 transition-colors shrink-0"></i>
+                            <div id="apiAccessContainer" class="w-full transition-all duration-300">
                             </div>
                         </div>
 
@@ -513,10 +674,12 @@ const htmlModales = `
                                 <span id="accountPlanStatus"
                                     class="text-[10px] font-black bg-green-500/20 text-green-600 dark:text-green-400 px-2 py-1 rounded-md uppercase tracking-wider border border-green-500/20">Activo</span>
                             </div>
-                            <div
+                            <div id="apiBonusLine"
                                 class="pt-3 border-t border-slate-200 dark:border-white/5 flex justify-between items-center">
-                                <span class="text-xs font-bold text-slate-600 dark:text-gray-400"><i data-lucide="gift"
-                                        class="w-3 h-3 inline-block text-primary-500 mb-0.5"></i> Bono de API:</span>
+                                <span class="text-xs font-bold text-slate-600 dark:text-gray-400">
+                                    <i id="apiBonusIcon" data-lucide="zap" class="w-3 h-3 inline-block text-primary-500 mb-0.5"></i> 
+                                    <span id="apiBonusLabel">Créditos de Compresión:</span>
+                                </span>
                                 <span id="apiCreditsDisplay" class="text-sm font-black text-primary-500">0</span>
                             </div>
                         </div>
@@ -539,10 +702,10 @@ const htmlModales = `
         </div>
     </div>
 
-    <div id="logoutModal" class="fixed inset-0 z-[150] hidden items-center justify-center px-4">
+    <div id="logoutModal" class="fixed inset-0 z-[150] hidden items-center justify-center px-0 md:px-4">
         <div id="logoutOverlay" onclick="closeLogoutModal()"
             class="absolute inset-0 bg-black/80 backdrop-blur-md cursor-pointer transition-opacity"></div>
-        <div class="bento-card relative z-10 w-full max-w-md flex flex-col shadow-[0_0_50px_rgba(239,68,68,0.1)] border-red-500/30 hover:!border-red-500/60 hover:!shadow-[0_0_30px_rgba(239,68,68,0.3)] transform transition-all scale-95 opacity-0 p-8 text-center"
+        <div class="bento-card relative z-10 w-full max-w-md h-[100dvh] max-h-[100dvh] md:h-auto md:max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] flex flex-col justify-center md:justify-start shadow-[0_0_50px_rgba(239,68,68,0.1)] border-none md:border md:border-red-500/30 hover:md:!border-red-500/60 hover:!shadow-[0_0_30px_rgba(239,68,68,0.3)] transform transition-all scale-95 opacity-0 p-8 text-center rounded-none md:rounded-3xl"
             id="logoutContent">
 
             <div class="w-16 h-16 mx-auto bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center justify-center mb-6 text-red-500 shadow-sm">
@@ -567,11 +730,11 @@ const htmlModales = `
         </div>
     </div>
 
-    <div id="settingsModal" class="fixed inset-0 z-[135] hidden items-center justify-center px-4">
+    <div id="settingsModal" class="fixed inset-0 z-[135] hidden items-center justify-center px-0 md:px-4">
         <div id="settingsOverlay" onclick="closeSettingsModal()"
             class="absolute inset-0 bg-black/80 backdrop-blur-md cursor-pointer transition-opacity"></div>
 
-        <div class="bento-card relative z-10 w-full max-w-md shadow-2xl border-slate-200 dark:border-white/10 transform transition-all scale-95 opacity-0 p-8"
+        <div class="bento-card relative z-10 w-full max-w-md h-[100dvh] max-h-[100dvh] md:h-auto md:max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] flex flex-col justify-center md:justify-start shadow-2xl border-none md:border md:border-slate-200 dark:md:border-white/10 transform transition-all scale-95 opacity-0 p-8 rounded-none md:rounded-3xl"
             id="settingsContent">
 
             <button onclick="closeSettingsModal()"
@@ -626,10 +789,10 @@ const htmlModales = `
         </div>
     </div>
 
-    <div id="feedbackModal" class="fixed inset-0 z-[130] hidden items-center justify-center px-4">
+    <div id="feedbackModal" class="fixed inset-0 z-[130] hidden items-center justify-center px-0 md:px-4">
         <div id="feedbackOverlay"
             class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity cursor-pointer"></div>
-        <div class="bento-card relative z-10 w-full max-w-md max-h-[90vh] overflow-y-auto custom-scrollbar flex flex-col p-8 shadow-[0_0_50px_rgba(139,92,246,0.15)] border-primary-500/30 transform transition-all scale-95 opacity-0 text-center"
+        <div class="bento-card relative z-10 w-full max-w-md h-[100dvh] max-h-[100dvh] md:h-auto md:max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] flex flex-col justify-center md:justify-start p-8 shadow-[0_0_50px_rgba(139,92,246,0.15)] border-none md:border md:border-primary-500/30 transform transition-all scale-95 opacity-0 text-center rounded-none md:rounded-3xl"
             id="feedbackContent">
 
             <button onclick="closeFeedbackModal()"
@@ -767,9 +930,9 @@ const htmlModales = `
         </div>
     </div>
 
-    <div id="deleteAccountModal" class="fixed inset-0 z-[200] hidden items-center justify-center px-4">
+    <div id="deleteAccountModal" class="fixed inset-0 z-[200] hidden items-center justify-center px-0 md:px-4">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-xl transition-opacity cursor-pointer" onclick="closeDeleteAccountModal()"></div>
-        <div class="bento-card relative z-10 w-full max-w-md flex flex-col shadow-[0_0_50px_rgba(239,68,68,0.2)] border-red-500/40 p-8 text-center transform transition-all scale-95 opacity-0" id="deleteAccountContent">
+        <div class="bento-card relative z-10 w-full max-w-md h-[100dvh] max-h-[100dvh] md:h-auto md:max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] flex flex-col justify-center md:justify-start shadow-[0_0_50px_rgba(239,68,68,0.2)] border-none md:border md:border-red-500/40 p-8 text-center transform transition-all scale-95 opacity-0 rounded-none md:rounded-3xl" id="deleteAccountContent">
             
             <div class="w-20 h-20 mx-auto bg-red-500/10 border border-red-500/20 rounded-3xl flex items-center justify-center mb-6 text-red-500">
                 <i data-lucide="alert-triangle" class="w-10 h-10 animate-pulse"></i>
@@ -798,6 +961,26 @@ const htmlModales = `
                 </button>
             </div>
             <p class="mt-6 text-[9px] text-gray-600 uppercase tracking-widest font-black">Cumplimiento Estricto GDPR / CCPA</p>
+        </div>
+    </div>
+
+    <div id="resetPasswordModal" class="fixed inset-0 z-[150] hidden items-center justify-center px-0 md:px-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md"></div>
+        <div class="bento-card relative z-10 w-full max-w-md h-[100dvh] max-h-[100dvh] md:h-auto md:max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] flex flex-col justify-center md:justify-start p-8 text-center shadow-2xl border-none md:border md:border-primary-500/30 rounded-none md:rounded-3xl">
+            <div class="w-16 h-16 mx-auto bg-primary-500/20 rounded-full flex items-center justify-center mb-6 text-primary-400">
+                <i data-lucide="shield-check" class="w-8 h-8"></i>
+            </div>
+            <h2 class="text-2xl font-extrabold text-white mb-2">Nueva Contraseña</h2>
+            <p class="text-gray-400 text-sm mb-6">Escribe tu nueva clave de acceso para <b>Compressly</b>.</p>
+            
+            <form id="resetPasswordForm" class="space-y-4" onsubmit="actualizarPasswordFinal(event)">
+                <input type="password" id="newPasswordInput" required placeholder="Mínimo 6 caracteres" minlength="6"
+                    class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary-500 transition-colors font-bold text-sm">
+                <button type="submit" id="btnUpdatePass"
+                    class="w-full bg-primary-500 hover:bg-primary-600 text-white font-black py-3.5 rounded-xl transition-all active:scale-95 shadow-lg flex items-center justify-center gap-2">
+                    <i data-lucide="save" class="w-5 h-5"></i> Guardar Cambios
+                </button>
+            </form>
         </div>
     </div>
 `;

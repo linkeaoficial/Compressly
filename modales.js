@@ -161,7 +161,10 @@ window.closeProfileModal = function () {
     setTimeout(() => {
         profileModal.classList.add('hidden');
         profileModal.classList.remove('flex');
-        document.body.style.overflow = ''; // 🚀 Restaurar Scroll
+
+        // 🔓 RESTAURACIÓN TOTAL (Doble liberación para evitar bloqueos)
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
 
         // 🚀 Mostrar bot nuevamente al cerrar en TODAS las pantallas
         const botBtn = document.getElementById('aiToggler');
@@ -411,19 +414,30 @@ window.openRechargeModal = function () {
     if (modal && content) {
         modal.classList.remove('hidden');
         modal.classList.add('flex');
+
+        // 🔒 BLOQUEO TOTAL DE SCROLL (Body y HTML)
         document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+
+        // 💡 TRUCO UX: Si el perfil está abierto detrás, lo ocultamos visualmente
+        const profileModal = document.getElementById('profileModal');
+        if (profileModal && !profileModal.classList.contains('hidden')) {
+            profileModal.classList.add('opacity-0');
+        }
 
         // 🤖 OCULTAR CHATBOT IA
         const botBtn = document.getElementById('aiToggler');
-        if (botBtn) botBtn.style.display = 'none';
+        if (botBtn) {
+            botBtn.style.display = 'none';
+            botBtn.classList.remove('show-bot');
+        }
 
         setTimeout(() => {
-            // 🚀 Cambiamos a escala para que sea igual al modal PRO
             content.classList.remove('scale-95', 'opacity-0');
             content.classList.add('scale-100', 'opacity-100');
         }, 10);
 
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
         if (navigator.vibrate) navigator.vibrate([50, 50]);
     }
 };
@@ -439,12 +453,25 @@ window.closeRechargeModal = function () {
         setTimeout(() => {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
-            document.body.style.overflow = '';
 
-            // 🤖 MOSTRAR CHATBOT IA
-            const botBtn = document.getElementById('aiToggler');
-            if (botBtn) botBtn.style.display = '';
+            const profileModal = document.getElementById('profileModal');
+
+            // 🔓 RESTAURAR SCROLL solo si el modal de perfil NO está en uso
+            if (!profileModal || profileModal.classList.contains('hidden')) {
+                document.body.style.overflow = '';
+                document.documentElement.style.overflow = ''; // 🚀 ESTO LIBERA LA PÁGINA PRINCIPAL
+
+                // 🤖 MOSTRAR CHATBOT IA
+                const botBtn = document.getElementById('aiToggler');
+                if (botBtn) botBtn.style.display = '';
+            } else {
+                // 💡 TRUCO UX: El perfil estaba abierto, lo volvemos a mostrar y mantenemos el bloqueo
+                profileModal.classList.remove('opacity-0');
+                document.body.style.overflow = 'hidden';
+                document.documentElement.style.overflow = 'hidden';
+            }
         }, 200);
+
         if (navigator.vibrate) navigator.vibrate(20);
     }
 };
@@ -502,75 +529,72 @@ window.closeSettingsModal = function () {
     }
 };
 
-// 🛡️ LÓGICA ANTI-SPAM PARA CAMBIO DE CONTRASEÑA
-window.solicitarCambioPassword = function (btn) {
-    // 1. Si el botón ya está desactivado (cargando), no hacemos nada (Escudo Anti-Doble Clic)
-    if (btn.disabled) return;
-
-    // 2. Desactivamos el botón y lo ponemos un poco transparente
-    btn.disabled = true;
-    btn.classList.add('opacity-70', 'pointer-events-none');
-
-    // Guardamos el contenido original para restaurarlo después
-    const contenidoOriginal = btn.innerHTML;
-
-    // 3. Cambiamos el contenido a un estado de "Cargando..."
-    btn.innerHTML = `
-        <div class="flex items-center justify-center w-full gap-3">
-            <i data-lucide="loader-2" class="w-5 h-5 text-primary-500 animate-spin"></i>
-            <span class="text-primary-500">Enviando enlace seguro...</span>
-        </div>
-    `;
-    lucide.createIcons(); // Refrescamos los iconos para que gire
-
-    // 4. Simulamos la llamada a Supabase (Demora 2 segundos)
-    setTimeout(() => {
-        // En el futuro aquí irá: await supabase.auth.resetPasswordForEmail(...)
-
-        // Lanzamos la notificación
-        if (typeof Notify !== 'undefined') {
-            Notify.show('Enlace de Recuperación', 'Te hemos enviado un correo para cambiar tu contraseña de forma segura.', 'success');
-        }
-
-        // 5. Restauramos el botón a su estado original
-        btn.innerHTML = contenidoOriginal;
-        btn.disabled = false;
-        btn.classList.remove('opacity-70', 'pointer-events-none');
-        lucide.createIcons();
-
-    }, 2000); // 2000 milisegundos = 2 segundos
-};
 
 // 🟢 ANIMACIONES DEL MODAL DE API
 window.openApiModal = function () {
     const modal = document.getElementById('apiModal');
     const content = document.getElementById('apiContent');
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
 
-    // Autocompletar correo si ya inició sesión
-    const emailElement = document.getElementById('userEmailDisplay');
-    const emailInput = modal.querySelector('input[type="email"]');
-    if (emailElement && emailElement.innerText !== 'usuario@ejemplo.com' && emailInput) {
-        emailInput.value = emailElement.innerText;
+    if (modal && content) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+
+        // 💡 TRUCO UX: Si el perfil está abierto detrás, lo ocultamos visualmente
+        const profileModal = document.getElementById('profileModal');
+        if (profileModal && !profileModal.classList.contains('hidden')) {
+            profileModal.classList.add('opacity-0');
+        }
+
+        // Autocompletar correo
+        const emailElement = document.getElementById('userEmailDisplay');
+        const emailInput = modal.querySelector('input[type="email"]');
+        if (emailElement && emailElement.innerText !== 'usuario@ejemplo.com' && emailInput) {
+            emailInput.value = emailElement.innerText;
+        }
+
+        // 🤖 OCULTAR CHATBOT IA
+        const botBtn = document.getElementById('aiToggler');
+        if (botBtn) botBtn.style.display = 'none';
+
+        setTimeout(() => {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }, 10);
+
+        lucide.createIcons();
+        if (navigator.vibrate) navigator.vibrate([50, 50]);
     }
-
-    setTimeout(() => {
-        content.classList.remove('scale-95', 'opacity-0');
-        content.classList.add('scale-100', 'opacity-100');
-    }, 10);
-    lucide.createIcons();
 };
 
 window.closeApiModal = function () {
     const modal = document.getElementById('apiModal');
     const content = document.getElementById('apiContent');
-    content.classList.remove('scale-100', 'opacity-100');
-    content.classList.add('scale-95', 'opacity-0');
-    setTimeout(() => {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-    }, 300);
+
+    if (modal && content) {
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+
+            const profileModal = document.getElementById('profileModal');
+            // 🔓 RESTAURAR SCROLL solo si el modal de perfil está realmente cerrado
+            if (!profileModal || profileModal.classList.contains('hidden')) {
+                document.body.style.overflow = '';
+
+                // 🤖 MOSTRAR CHATBOT IA solo si volvemos a la landing
+                const botBtn = document.getElementById('aiToggler');
+                if (botBtn) botBtn.style.display = '';
+            } else {
+                // Si el perfil estaba abierto, le devolvemos su visibilidad
+                profileModal.classList.remove('opacity-0');
+            }
+        }, 200);
+
+        if (navigator.vibrate) navigator.vibrate(20);
+    }
 };
 
 // 🚪 ==========================================
@@ -616,3 +640,4 @@ window.closeLogoutModal = function () {
         }, 200);
     }
 };
+

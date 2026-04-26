@@ -1,52 +1,43 @@
-// 🗄️ BASE DE DATOS SIMULADA DE COMPRESSLY (data_compressly.js)
-// Aquí controlamos la sesión, el plan y el saldo de la IA.
+// 🗄️ GESTOR DE ESTADO GLOBAL (Sincronizado con Supabase)
+// Este archivo está 100% limpio. No tiene datos falsos.
 
 const DB = {
-    // ⚙️ CONFIGURACIÓN DE NEGOCIO (¡Fácil de cambiar para el CEO!)
-    config: {
-        creditosGratis: 3,  // Regalo diario para plan Esencial
-        creditosPro: 10     // Regalo diario para plan PRO
-    },
-
-    // Datos del usuario actual (Inicia como Gratis con 3 créditos)
+    // Estado inicial (Usuario Invitado / Free por defecto)
     user: {
-        plan: 'pro',       // Opciones: 'free', 'pro', 'ultra'
-        aiCredits: 7        // Saldo de Energía para Auto-SEO
+        plan: 'free',
+        aiCredits: 0,
+        features: {
+            seo: true,
+            batch: false,
+            api_access: false,
+            r2_hosting: false
+        },
+        apiKey: null
     },
 
-    // Funciones de validación
+    // Funciones de validación usadas por script.js
     isPro: function () {
-        return this.user.plan === 'pro' || this.user.plan === 'ultra';
+        return this.user.plan === 'pro' || this.user.plan === 'ultra' || this.user.plan === 'api_fullstack';
     },
     isUltra: function () {
-        return this.user.plan === 'ultra';
+        return this.user.plan === 'ultra' || this.user.plan === 'api_fullstack';
     },
     hasCredits: function () {
-        return this.user.aiCredits > 0; // 🚀 Ahora la única regla es TENER SALDO
+        return this.user.aiCredits > 0;
     },
 
-    // Función para descontar un crédito cuando se usa la IA
-    consumeCredit: function () {
-        if (this.hasCredits()) {
-            this.user.aiCredits--;
-            this.updateUI();
-            return true;
-        }
-        return false;
-    },
-
-    // Actualiza visualmente toda la App (Contadores, Perfil, Colores)
+    // 🎨 MOTOR DE INTERFAZ DINÁMICA
     updateUI: function () {
         // 1. Actualizar Contadores de Energía
         const display = document.getElementById('aiCreditsDisplay');
         const profileDisplay = document.getElementById('profileAiCredits');
-        if (display) display.innerText = this.user.aiCredits;
-        if (profileDisplay) profileDisplay.innerText = this.user.aiCredits;
+        if (display) display.innerText = this.user.aiCredits || 0;
+        if (profileDisplay) profileDisplay.innerText = this.user.aiCredits || 0;
 
         // 2. Estilo del Badge de Energía
         const badge = document.getElementById('aiCreditBadge');
         if (badge) {
-            if (this.user.aiCredits <= 2) { // 🚨 Alerta en rojo si quedan 2 o menos
+            if (this.user.aiCredits <= 2) {
                 badge.classList.replace('text-purple-600', 'text-red-500');
                 badge.classList.add('animate-pulse');
             } else {
@@ -55,97 +46,71 @@ const DB = {
             }
         }
 
-        // 3. ACTUALIZAR PERFIL SEGÚN EL PLAN
+        // 🔒 3. PROTECCIÓN DE API (Muro de Pago Inteligente - Dinámico 🧠)
+        const apiAccessContainer = document.getElementById('apiAccessContainer');
+
+        if (apiAccessContainer) {
+            // 🕵️‍♂️ LÓGICA BLINDADA: Verificamos por nombre de plan explícito o por el permiso SQL
+            const planesConApi = ['ultra', 'api_fullstack', 'enterprise'];
+            const tienePermisoAPI = planesConApi.includes(this.user.plan) || (this.user.features && this.user.features.api_access === true);
+
+            if (!tienePermisoAPI) {
+                // 🔴 Bloqueado: Plan Free o Pro (Cofre Cerrado)
+                apiAccessContainer.innerHTML = `
+    <div onclick="event.preventDefault(); event.stopPropagation(); openApiModal();" class="flex items-center justify-between w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 px-3 py-2.5 rounded-xl group overflow-hidden cursor-pointer hover:border-emerald-500/50 transition-all active:scale-[0.98]">
+        <div class="flex flex-col items-start w-full pr-3 min-w-0">
+            <span class="text-[8px] font-black text-slate-400 dark:text-gray-500 uppercase tracking-[0.2em] leading-none mb-1 flex items-center gap-1">
+                <i data-lucide="lock" class="w-2.5 h-2.5"></i> API Key Bloqueada
+            </span>
+            <span class="text-[10px] font-bold text-slate-500 dark:text-gray-400 tracking-wide break-all w-full select-none">
+                Exclusivo en planes ULTRA / API
+            </span>
+        </div>
+        <div class="bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white p-2 rounded-lg transition-all shrink-0">
+            <i data-lucide="zap" class="w-4 h-4"></i>
+        </div>
+    </div>
+`;
+            } else {
+                // 🟢 Desbloqueado: Muestra la llave CPLY-XXXX real de la tabla
+                apiAccessContainer.innerHTML = `
+                    <div class="flex items-center justify-between w-full bg-violet-500/5 border border-violet-500/20 px-3 py-2.5 rounded-xl group cursor-pointer hover:bg-violet-500/10 hover:border-violet-500/40 transition-all shadow-sm active:scale-95 overflow-hidden"
+                        onclick="navigator.clipboard.writeText('${this.user.apiKey || ''}'); if(typeof Notify !== 'undefined') Notify.show('API Key Copiada', 'Llave lista para usar', 'success');"
+                        title="Copiar API Key">
+                        <div class="flex flex-col items-start w-full pr-3 min-w-0">
+                            <span class="text-[8px] font-black text-violet-400 uppercase tracking-[0.2em] leading-none mb-1 flex items-center gap-1">
+                                <i data-lucide="key" class="w-2.5 h-2.5"></i> Tu API Key
+                            </span>
+                            <span id="userIdDisplay" class="text-xs font-bold text-slate-700 dark:text-white font-mono tracking-widest blur-[3px] group-hover:blur-none transition-all duration-300 break-all w-full select-all">
+                                ${this.user.apiKey || 'Generando llave...'}
+                            </span>
+                        </div>
+                        <i data-lucide="copy" class="w-4 h-4 text-violet-300 group-hover:text-slate-500 transition-colors shrink-0"></i>
+                    </div>
+                `;
+            }
+        }
+
+        // 4. ACTUALIZAR TEXTOS DEL PERFIL SEGÚN EL PLAN
         const planLabel = document.getElementById('planLabel');
         const planBadge = document.getElementById('planBadge');
         const planIcon = document.getElementById('planIcon');
-        const aiStat = document.getElementById('profileAiStat');
-        const actionContainer = document.getElementById('profileActionContainer');
 
         if (planLabel && planBadge) {
-            // 🚀 MOSTRAR LA CAJA DE CRÉDITOS PARA TODOS
-            if (aiStat) aiStat.classList.remove('hidden');
-
-            // 💎 Elementos de la tabla de precios
-            const btnTablaFree = document.getElementById('btnTablaFree');
-            const btnTablaPro = document.getElementById('btnTablaPro');
-            const btnTablaUltra = document.getElementById('btnTablaUltra');
-
             if (this.isUltra()) {
-                planLabel.innerText = 'Plan ULTRA IA';
+                planLabel.innerText = 'Plan ULTRA / API';
                 planBadge.className = 'inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-6 border bg-purple-500/10 text-purple-600 border-purple-500/30';
                 if (planIcon) planIcon.setAttribute('data-lucide', 'sparkles');
-
-                if (actionContainer) actionContainer.innerHTML = `
-                    <button onclick="closeProfileModal(); openRechargeModal();" 
-                        class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 !text-white font-black py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95 border border-white/10">
-                        <i data-lucide="battery-charging" class="w-4 h-4 !text-white"></i> RECARGAR ENERGÍA IA
-                    </button>`;
-
-                // 🔒 Tabla de Precios: Usuario Ultra
-                if (btnTablaFree) {
-                    btnTablaFree.innerHTML = `<i data-lucide="check" class="w-5 h-5"></i> Plan Base`;
-                    btnTablaFree.className = `w-full bg-slate-200 dark:bg-white/5 text-slate-500 dark:text-gray-400 font-extrabold py-4 rounded-xl flex justify-center items-center gap-2 cursor-default border border-transparent`;
-                    btnTablaFree.onclick = null;
-                }
-                if (btnTablaPro) {
-                    btnTablaPro.innerHTML = `<i data-lucide="check" class="w-5 h-5"></i> Incluido en ULTRA`;
-                    btnTablaPro.className = `w-full bg-slate-200 dark:bg-white/5 text-slate-500 dark:text-gray-400 font-extrabold py-4 rounded-xl flex justify-center items-center gap-2 cursor-default border border-transparent`;
-                    btnTablaPro.onclick = null;
-                }
-                if (btnTablaUltra) {
-                    btnTablaUltra.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5"></i> Tu Plan Actual`;
-                    btnTablaUltra.className = `w-full bg-purple-500/20 text-purple-600 dark:text-purple-400 border border-purple-500/30 font-extrabold py-4 rounded-xl flex justify-center items-center gap-2 cursor-default relative z-10`;
-                    btnTablaUltra.onclick = null;
-                }
             }
             else if (this.isPro()) {
-                planLabel.innerText = 'Plan PRO Acceso';
+                planLabel.innerText = 'Plan PRO';
                 planBadge.className = 'inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-6 border bg-yellow-500/10 text-yellow-600 border-yellow-500/30';
                 if (planIcon) planIcon.setAttribute('data-lucide', 'crown');
-
-                if (actionContainer) actionContainer.innerHTML = `<button onclick="closeProfileModal(); openUltraModal();" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95"><i data-lucide="rocket" class="w-4 h-4"></i> SUBIR A ULTRA IA</button>`;
-
-                // 🔒 Tabla de Precios: Usuario PRO
-                if (btnTablaFree) {
-                    btnTablaFree.innerHTML = `<i data-lucide="check" class="w-5 h-5"></i> Plan Base`;
-                    btnTablaFree.className = `w-full bg-slate-200 dark:bg-white/5 text-slate-500 dark:text-gray-400 font-extrabold py-4 rounded-xl flex justify-center items-center gap-2 cursor-default border border-transparent`;
-                    btnTablaFree.onclick = null;
-                }
-                if (btnTablaPro) {
-                    btnTablaPro.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5"></i> Tu Plan Actual`;
-                    btnTablaPro.className = `w-full bg-primary-500/20 text-primary-600 dark:text-primary-400 border border-primary-500/30 font-extrabold py-4 rounded-xl flex justify-center items-center gap-2 cursor-default`;
-                    btnTablaPro.onclick = null;
-                }
-                if (btnTablaUltra) {
-                    btnTablaUltra.innerHTML = `<i data-lucide="rocket" class="w-5 h-5 !text-white"></i> Mejorar a ULTRA`;
-                    btnTablaUltra.className = `w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-[1.02] active:scale-95 !text-white font-extrabold py-4 rounded-xl transition-all shadow-lg shadow-purple-500/30 flex justify-center items-center gap-2 relative z-10`;
-                    btnTablaUltra.onclick = () => { if (typeof openUltraModal === 'function') openUltraModal(); };
-                }
             }
             else {
                 planLabel.innerText = 'Plan Esencial';
                 planBadge.className = 'inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-6 border bg-slate-100 dark:bg-white/5 text-gray-500 border-slate-200 dark:border-white/10';
                 if (planIcon) planIcon.setAttribute('data-lucide', 'award');
-
-                if (actionContainer) actionContainer.innerHTML = `<button onclick="closeProfileModal(); window.scrollTo({top: document.getElementById('precios').offsetTop, behavior: 'smooth'});" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-black py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95">VER PLANES PREMIUM</button>`;
-
-                // 🔓 Tabla de Precios: Usuario Gratis
-                if (btnTablaFree) {
-                    btnTablaFree.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5"></i> Tu Plan Actual`;
-                    btnTablaFree.className = `w-full bg-slate-200 dark:bg-white/10 text-slate-600 dark:text-gray-400 font-extrabold py-4 rounded-xl flex justify-center items-center gap-2 cursor-default border border-transparent`;
-                    btnTablaFree.onclick = null;
-                }
-                if (btnTablaPro) {
-                    btnTablaPro.innerHTML = `<i data-lucide="crown" class="w-5 h-5 text-yellow-300"></i> Obtener Acceso PRO`;
-                    btnTablaPro.className = `w-full bg-primary-500 hover:bg-primary-600 active:scale-95 text-white font-extrabold py-4 rounded-xl transition-all shadow-lg hover:shadow-primary-500/30 flex justify-center items-center gap-2`;
-                    btnTablaPro.onclick = () => { if (typeof openPremiumModal === 'function') openPremiumModal(true); };
-                }
-                if (btnTablaUltra) {
-                    btnTablaUltra.innerHTML = `<i data-lucide="rocket" class="w-5 h-5 !text-white"></i> Suscribirse a ULTRA`;
-                    btnTablaUltra.className = `w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-[1.02] active:scale-95 !text-white font-extrabold py-4 rounded-xl transition-all shadow-lg shadow-purple-500/30 flex justify-center items-center gap-2 relative z-10`;
-                    btnTablaUltra.onclick = () => { if (typeof openUltraModal === 'function') openUltraModal(); };
-                }
             }
         }
 
@@ -154,40 +119,8 @@ const DB = {
     }
 };
 
-// 🎮 TRUCO DE DESARROLLADOR: Asigna créditos automáticamente al cambiar de plan
+// Exponemos la función setPlan por si la necesitas forzar manualmente
 window.setPlan = function (nuevoPlan) {
     DB.user.plan = nuevoPlan;
-
-    // Ajuste de créditos por plan
-    if (nuevoPlan === 'free') DB.user.aiCredits = DB.config.creditosGratis;
-    else if (nuevoPlan === 'pro') DB.user.aiCredits = DB.config.creditosPro;
-    else if (nuevoPlan === 'ultra') DB.user.aiCredits = 100;
-
-    // 🚀 DISPARADOR MAESTRO: Actualiza absolutamente toda la interfaz
-    if (typeof actualizarEstadoPlanes === 'function') {
-        actualizarEstadoPlanes();
-    }
-
-    // También actualizamos los contadores de créditos específicos
     DB.updateUI();
-
-    console.log(`UI INTEGRADA -> Estado: ${nuevoPlan === 'free' ? 'Local' : 'Sincronizado'} | Plan: ${nuevoPlan.toUpperCase()}`);
-};
-
-// 🔐 FUNCIÓN DE LOGOUT (Lista para Supabase)
-window.logoutUsuario = function () {
-    // 1. En el futuro aquí irá: await supabase.auth.signOut();
-
-    // 2. Reseteamos el plan a free (Esto disparará actualizarEstadoPlanes automáticamente)
-    setPlan('free');
-
-    // 3. Notificación y limpieza visual
-    if (typeof Notify !== 'undefined') {
-        Notify.show('Sesión Cerrada', 'Has vuelto al perfil local con éxito.', 'info');
-    }
-
-    // 4. Opcional: Cerramos el modal para que el usuario vea el cambio en la app
-    if (typeof closeProfileModal === 'function') {
-        setTimeout(closeProfileModal, 500);
-    }
 };

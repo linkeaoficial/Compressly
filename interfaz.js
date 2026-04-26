@@ -344,7 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 🚀 MEJORA: Botón para descubrir el siguiente nivel (API)
             if (actionContainer) {
-                actionContainer.innerHTML = `<a href="Documentación_API.html" class="w-full border-2 border-emerald-500 hover:bg-emerald-500 hover:text-white text-emerald-500 dark:text-emerald-400 dark:hover:text-white font-black py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer no-underline"><i data-lucide="webhook" class="w-4 h-4"></i> DESCUBRIR API FULL-STACK</a>`;
+                actionContainer.innerHTML = `<button type="button" onclick="event.preventDefault(); event.stopPropagation(); openApiModal();" class="w-full border-2 border-emerald-500 hover:bg-emerald-500 hover:text-white text-emerald-500 dark:text-emerald-400 dark:hover:text-white font-black py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"><i data-lucide="zap" class="w-4 h-4"></i> DESCUBRIR API FULL-STACK</button>`;
             }
 
             if (btnNavPc) {
