@@ -889,6 +889,11 @@ compressBtn.addEventListener('click', () => {
             // 📊 DASHBOARD: Registrar el formato usado en el perfil del usuario
             if (typeof updateDashboardStats === 'function') updateDashboardStats(extension);
 
+            // ☁️ GUARDAR ESTADÍSTICAS EN SUPABASE (El Tercer Paso 🚀)
+            if (typeof registrarCompresionEnNube === 'function' && savedBytes > 0) {
+                registrarCompresionEnNube(extension, savedBytes, currentFile.name);
+            }
+
             // 🚀 MÓDULO AUTO-SEO: Validación Inteligente Freemium (DB)
             const seoToggle = document.getElementById('seoToggle');
             const canUseSEO = DB.hasCredits(); // 🟢 Ahora la ÚNICA regla es tener saldo
@@ -1023,24 +1028,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 150);
 
     if (seoToggle) {
-        // 🛡️ 1. Validamos el permiso ANTES de que el interruptor cambie de posición
-        seoToggle.addEventListener('click', async (e) => {
+        // 🛡️ 1. Validamos el permiso de forma SÍNCRONA (Instantánea)
+        seoToggle.addEventListener('click', (e) => {
             if (typeof DB !== 'undefined') {
-                // 🔍 Verificamos si realmente hay una sesión activa en Supabase
-                const { data: { session } } = await supabaseClient.auth.getSession();
+                // 🔍 Verificamos si es invitado leyendo la interfaz en tiempo real (0 milisegundos)
+                const loggedInView = document.getElementById('loggedInStateView');
+                const isGuest = !loggedInView || loggedInView.classList.contains('hidden');
 
                 // ☁️ CASO A: Es un invitado (No ha iniciado sesión)
-                if (!session) {
-                    e.preventDefault();
+                if (isGuest) {
+                    e.preventDefault(); // Bloquea el cambio al instante
                     seoToggle.checked = false;
                     Notify.show('Regalo de Bienvenida ☁️', 'Crea tu cuenta gratis para reclamar 10 créditos de IA.', 'info');
-                    if (typeof openProfileModal === 'function') openProfileModal(); // Abrimos login
+                    if (typeof openProfileModal === 'function') openProfileModal();
                     return;
                 }
 
                 // 🚀 CASO B: Ya es usuario pero NO tiene créditos (Se le acabaron)
                 if (!DB.hasCredits()) {
-                    e.preventDefault();
+                    e.preventDefault(); // Bloquea el cambio al instante
                     seoToggle.checked = false;
 
                     if (DB.user.plan === 'free') {
@@ -1059,7 +1065,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // 🔔 2. Mostramos la notificación CUANDO el cambio es exitoso
+        // 🔔 2. Mostramos la notificación SOLO si el clic pasó las barreras
         seoToggle.addEventListener('change', () => {
             // 💾 Guardamos la decisión del usuario en el disco duro de su navegador
             localStorage.setItem('auto_seo_enabled', seoToggle.checked);

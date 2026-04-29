@@ -21,8 +21,8 @@ export default {
     if (request.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
     try {
-      // 🚀 Atrapamos targetExtension y LANG que nos manda el frontend
-      const { prompt, isPremium, isBlog, articleText, isSEO, imageBase64, targetExtension, lang } = await request.json();
+      // 🚀 Atrapamos los datos, INCLUYENDO el userId que nos mandará el frontend
+      const { prompt, isPremium, isBlog, articleText, isSEO, imageBase64, targetExtension, lang, userId } = await request.json();
 
       // 🛍️ ==========================================
       // INICIO MÓDULO AUTO-SEO PARA E-COMMERCE (Visión IA)
@@ -89,6 +89,22 @@ export default {
         // Limpiamos el Markdown por si la IA es rebelde
         let jsonLimpio = data.candidates[0].content.parts[0].text;
         jsonLimpio = jsonLimpio.replace(/```json/g, "").replace(/```/g, "").trim();
+
+        // 🚀 COBRO E HISTORIAL PARA AUTO-SEO
+        if (userId && env.SUPABASE_URL && env.SUPABASE_KEY) {
+          try {
+            await fetch(`${env.SUPABASE_URL}/rest/v1/rpc/registrar_uso`, {
+              method: 'POST',
+              headers: { 'apikey': env.SUPABASE_KEY, 'Authorization': `Bearer ${env.SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ u_id: userId, tipo: 'IA SEO', info: `Análisis Auto-SEO (${extIA})` })
+            });
+            await fetch(`${env.SUPABASE_URL}/rest/v1/rpc/descontar_energia_ia`, {
+              method: 'POST',
+              headers: { 'apikey': env.SUPABASE_KEY, 'Authorization': `Bearer ${env.SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ usuario_id: userId })
+            });
+          } catch (err) { console.error("Error cobrando SEO:", err); }
+        }
 
         return new Response(jsonLimpio, {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -211,6 +227,32 @@ export default {
             { role: "user", content: prompt }
           ],
         });
+
+        if (userId && env.SUPABASE_URL && env.SUPABASE_KEY) {
+          try {
+            // 1. Guardamos en el historial de la bitácora
+            await fetch(`${env.SUPABASE_URL}/rest/v1/rpc/registrar_uso`, {
+              method: 'POST',
+              headers: {
+                'apikey': env.SUPABASE_KEY,
+                'Authorization': `Bearer ${env.SUPABASE_KEY}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ u_id: userId, tipo: 'IA SEO', info: `Optimización generada con Auto-SEO` })
+            });
+
+            // 2. Descontamos la energía IA
+            await fetch(`${env.SUPABASE_URL}/rest/v1/rpc/descontar_energia_ia`, {
+              method: 'POST',
+              headers: {
+                'apikey': env.SUPABASE_KEY,
+                'Authorization': `Bearer ${env.SUPABASE_KEY}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ usuario_id: userId })
+            });
+          } catch (err) { console.error("Error cobrando crédito o guardando historial:", err); }
+        }
 
         return new Response(JSON.stringify(response), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },

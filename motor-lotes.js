@@ -177,6 +177,29 @@ async function processBatchEngine() {
     const batchSavedBytes = totalOriginalSize - totalCompressedSize;
     if (batchSavedBytes > 0) {
         updateGlobalImpact(batchSavedBytes);
+
+        // 🌐 SINCRONIZACIÓN EN LA NUBE: Guardamos las estadísticas del usuario en Supabase
+        const userIdElement = document.getElementById('userInternalIdDisplay');
+        // 🛡️ Extraemos el UUID real del atributo oculto que creamos en auth.js
+        const userId = userIdElement ? userIdElement.getAttribute('data-uuid') : null;
+
+        if (userId && typeof supabaseClient !== 'undefined') {
+            // Calculamos qué formato eligió el usuario para el lote
+            let c_webp = selectedFormat === 'image/webp' ? batchFiles.length : 0;
+            let c_jpg = (selectedFormat === 'image/jpeg' || selectedFormat === 'image/jpg') ? batchFiles.length : 0;
+            let c_png = selectedFormat === 'image/png' ? batchFiles.length : 0;
+            if (selectedFormat === 'auto') { c_webp = batchFiles.length; } // Por defecto a webp si es auto
+
+            supabaseClient.rpc('registrar_compresion_exitosa', {
+                u_id: userId,
+                tipo_proceso: 'Compresión Lote Web',
+                info_archivo: `Lote de ${batchFiles.length} imágenes`,
+                bytes_ahorrados: batchSavedBytes,
+                cant_webp: c_webp,
+                cant_jpg: c_jpg,
+                cant_png: c_png
+            }).catch(err => console.error("Error sincronizando impacto:", err));
+        }
     }
 
     document.getElementById('batchSavePercent').className = "text-xl font-black text-primary-500 drop-shadow-md";
@@ -235,6 +258,12 @@ async function generarAutoSEO(blob, index, currentExtension, skeletonId) {
 
         // 2. Llamada al Agente Cloud
         const WORKER_URL = "https://agente-compressly-ia.linkeaoficial2025.workers.dev";
+
+        // 🕵️‍♂️ Capturamos o ID do usuário de forma segura na interface
+        const userIdElement = document.getElementById('userInternalIdDisplay');
+        // 🛡️ Obtenemos el UUID técnico para que la IA pueda cobrar correctamente en Supabase
+        const currentUserId = userIdElement ? userIdElement.getAttribute('data-uuid') : null;
+
         const response = await fetch(WORKER_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -242,7 +271,8 @@ async function generarAutoSEO(blob, index, currentExtension, skeletonId) {
                 isSEO: true,
                 imageBase64: base64data,
                 targetExtension: currentExtension,
-                lang: typeof currentLanguage !== 'undefined' ? currentLanguage : 'es'
+                lang: typeof currentLanguage !== 'undefined' ? currentLanguage : 'es',
+                userId: currentUserId // 🚀 INJETAMOS O ID AQUI PARA COBRAR O CRÉDITO!
             })
         });
 

@@ -417,106 +417,84 @@ const htmlModales = `
     </div>
 
     <div id="profileModal" class="fixed inset-0 z-[120] hidden items-center justify-center px-0 md:px-8">
-        <div id="profileOverlay"
-            class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity cursor-pointer"></div>
+        <div id="profileOverlay" class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity cursor-pointer"></div>
 
+        <div class="bento-card relative z-10 w-full h-[100dvh] max-h-[100dvh] md:max-w-6xl md:h-[85vh] md:max-h-[85vh] rounded-none md:rounded-3xl border-none md:border md:border-primary-500/30 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] md:overflow-hidden block md:flex md:flex-row shadow-[0_0_60px_rgba(139,92,246,0.2)] transform transition-all scale-95 opacity-0 p-8 md:p-0" id="profileContent">
 
-
-        <div class="bento-card relative z-10 w-full h-[100dvh] max-h-[100dvh] md:max-w-5xl md:h-[85vh] md:max-h-[85vh] rounded-none md:rounded-3xl border-none md:border md:border-primary-500/30 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] md:overflow-hidden block md:flex md:flex-row shadow-[0_0_50px_rgba(139,92,246,0.15)] transform transition-all scale-95 opacity-0 p-8 md:p-0"
-    id="profileContent">
-
-            <div class="w-full md:w-[55%] md:p-12 flex flex-col md:overflow-y-auto custom-scrollbar relative">
-
-                <div
-                    class="flex justify-between items-start border-b border-slate-200 dark:border-white/10 pb-5 mb-6 md:pb-6 md:mb-8">
+            <div id="profileStatsColumn" class="w-full md:w-[55%] md:p-12 flex flex-col md:overflow-y-auto custom-scrollbar relative border-b md:border-b-0 md:border-r border-slate-200 dark:border-white/10 transition-all duration-300">
+                
+                <div class="flex justify-between items-start border-b border-slate-200 dark:border-white/10 pb-5 mb-6 md:pb-6 md:mb-8">
                     <div class="flex items-center gap-4">
-                        <div
-                            class="w-14 h-14 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl flex items-center justify-center shadow-lg shrink-0">
+                        <div class="w-14 h-14 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl flex items-center justify-center shadow-lg shrink-0">
                             <i data-lucide="user" class="w-7 h-7 text-white"></i>
                         </div>
                         <div class="flex flex-col justify-center">
-                            <h2 id="profileNameDisplay" data-i18n="profile_greeting"
-                                class="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white leading-tight">
-                                Hola, Creador
-                            </h2>
-                            <p
-                                class="text-sm font-medium text-slate-500 dark:text-gray-400 flex items-center gap-2 mt-1">
+                            <h2 id="profileNameDisplay" data-i18n="profile_greeting" class="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white leading-tight">Hola, Creador</h2>
+                            <p class="text-sm font-medium text-slate-500 dark:text-gray-400 flex items-center gap-2 mt-1">
                                 <span class="relative flex h-3 w-3 md:h-3 md:w-3 items-center justify-center shrink-0">
-                                    <span id="profileStatusPing"
-                                        class="animate-ping absolute h-full w-full rounded-full bg-green-500 opacity-40"></span>
-                                    <span id="profileStatusDot"
-                                        class="relative rounded-full h-2 w-2 md:h-2.5 md:w-2.5 bg-green-500"></span>
+                                    <span id="profileStatusPing" class="animate-ping absolute h-full w-full rounded-full bg-green-500 opacity-40"></span>
+                                    <span id="profileStatusDot" class="relative rounded-full h-2 w-2 md:h-2.5 md:w-2.5 bg-green-500"></span>
                                 </span>
                                 <span id="profileStatusText" data-i18n="profile_status">Perfil Local Activo</span>
                             </p>
                         </div>
                     </div>
-
-                    <button id="closeProfileBtn"
-                        class="text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10 p-2 rounded-lg transition-colors z-50">
+                    <button id="closeProfileBtn" class="md:hidden text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10 p-2 rounded-lg transition-colors z-50">
                         <i data-lucide="x" class="w-6 h-6"></i>
                     </button>
                 </div>
 
-                <div
-                    class="bg-green-500/10 border border-green-500/20 rounded-2xl p-4 md:p-5 mb-4 flex items-center justify-between gap-2">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center shrink-0">
-                            <i data-lucide="leaf" class="w-5 h-5 text-green-500"></i>
-                        </div>
-                        <div class="text-left">
-                            <h3 data-i18n="profile_impact_title"
-                                class="text-slate-900 dark:text-white font-extrabold text-sm md:text-base leading-tight">
-                                Impacto Global</h3>
-                            <p data-i18n="profile_impact_sub"
-                                class="text-[10px] md:text-xs text-slate-500 dark:text-gray-400 font-medium mt-0.5">
-                                Planeta salvado:</p>
-                        </div>
+                <div id="compresslyStatsContainer" class="mb-0"></div>
+
+                    <div class="grid grid-cols-2 gap-3 mb-6">
+                        
+<div id="profileAiStat" class="bg-purple-500/5 border border-purple-500/10 rounded-2xl p-3 flex flex-col justify-between h-32 md:h-32 group hover:border-purple-500/30 transition-all">
+    <div class="flex items-center justify-between mb-1">
+        <div class="w-8 h-8 rounded-xl bg-purple-500/20 flex items-center justify-center text-purple-500">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+        </div>
+        <button onclick="openRechargeModal()" class="bg-purple-500 hover:bg-purple-600 text-white p-1 rounded-lg transition-all active:scale-95 shadow-md shadow-purple-500/20">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+        </button>
+    </div>
+    <div class="flex flex-col">
+        <h3 class="text-slate-900 dark:text-white font-black text-[10px] md:text-sm leading-tight">Auto-SEO IA</h3>
+        <span class="text-[7px] md:text-[10px] text-purple-500 font-extrabold tracking-widest uppercase leading-none mt-1 opacity-70">Créditos Disponibles</span>
+        <span id="profileAiCredits" class="text-sm md:text-lg font-black text-purple-500 uppercase tracking-widest mt-1">0</span>
+    </div>
+</div>
+
+<div class="bg-emerald-500/5 border border-emerald-500/10 rounded-2xl p-3 flex flex-col justify-between h-32 md:h-32 group hover:border-emerald-500/30 transition-all">
+    <div class="flex items-center justify-between mb-1">
+        <div class="w-8 h-8 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-500">
+            <i data-lucide="terminal" class="w-4 h-4"></i>
+        </div>
+        <button onclick="window.location.href='Documentación_API.html'" class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 p-1 rounded-lg transition-all active:scale-95" title="Ver Documentación Técnica">
+            <i data-lucide="book-open" class="w-4 h-4"></i>
+        </button>
+    </div>
+    <div class="flex flex-col">
+        <h3 id="apiBonusLabel" class="text-slate-900 dark:text-white font-black text-[10px] md:text-sm leading-tight">Potencia de API</h3>
+        <div id="apiCreditsDisplay" class="flex flex-col mt-1">
+            <span id="apiLabelSub" class="text-[7px] md:text-[10px] text-emerald-500 font-extrabold tracking-widest uppercase leading-none opacity-70">Créditos Disponibles</span>
+            <span id="apiCreditsCount" class="text-sm md:text-lg font-black text-emerald-500 tracking-widest uppercase mt-1">Verificando...</span>
+        </div>
+    </div>
+</div>
+
                     </div>
-                    <span id="profileTotalSaved" class="text-xl md:text-2xl font-black text-green-500 shrink-0">0
-                        MB</span>
-                </div>
 
-                <div id="profileAiStat"
-                    class="flex items-center justify-between bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border border-purple-500/20 rounded-2xl p-5 mb-5 gap-2">
-                    <div class="flex items-center gap-3">
-                        <div
-                            class="bg-gradient-to-br from-purple-500 to-indigo-600 w-10 h-10 rounded-xl flex items-center justify-center !text-white shadow-md shrink-0">
-                            <i data-lucide="sparkles" class="w-5 h-5 !text-white"></i>
-                        </div>
-                        <div class="text-left">
-                            <h3 class="text-slate-900 dark:text-white font-black text-sm md:text-base leading-tight">
-                                Auto-SEO IA</h3>
-                            <p
-                                class="text-[10px] md:text-xs text-purple-600 dark:text-purple-400 font-extrabold tracking-widest mt-0.5 flex items-center gap-1">
-                                <span id="profileAiCredits" class="text-sm font-black">0</span> CRÉDITOS
-                            </p>
-                        </div>
-                    </div>
-                    <button onclick="openRechargeModal()"
-                        class="bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 !text-white text-[10px] md:text-xs font-black px-3 md:px-4 py-2 rounded-xl shadow-sm transition-all active:scale-95 flex items-center gap-1.5 uppercase shrink-0">
-                        <i data-lucide="zap" class="w-3 h-3 md:w-4 md:h-4 !text-white"></i> <span
-                            class="hidden sm:inline !text-white">Recargar</span><span
-                            class="sm:hidden !text-white">Más</span>
-                    </button>
-                </div>
-
-                <div
-                    class="bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-2xl p-5 mb-8 text-left flex-grow">
-
-                    <div id="planBadge"
-                        class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border transition-all duration-500">
+                <div class="bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-2xl p-5 mb-8 text-left flex-grow">
+                    <div id="planBadge" class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border transition-all duration-500">
                         <i id="planIcon" data-lucide="award" class="w-3 h-3"></i>
                         <span id="planLabel">Plan Esencial</span>
                     </div>
 
                     <h3 class="text-sm font-extrabold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                        <i data-lucide="pie-chart" class="w-4 h-4 text-primary-500"></i> <span
-                            data-i18n="stat_title">Estadísticas de Uso</span>
+                        <i data-lucide="pie-chart" class="w-4 h-4 text-primary-500"></i> <span data-i18n="stat_title">Estadísticas de Uso</span>
                     </h3>
 
-                    <div
-                        class="flex justify-between items-center text-xs font-bold text-gray-500 mb-4 border-b border-slate-200 dark:border-white/10 pb-3">
+                    <div class="flex justify-between items-center text-xs font-bold text-gray-500 mb-4 border-b border-slate-200 dark:border-white/10 pb-3">
                         <span data-i18n="stat_processed">Imágenes Procesadas:</span>
                         <span id="statTotalImages" class="text-primary-500 font-black text-sm">0</span>
                     </div>
@@ -526,13 +504,11 @@ const htmlModales = `
                     <div class="space-y-4">
                         <div>
                             <div class="flex justify-between text-xs font-bold mb-1.5">
-                                <span data-i18n="stat_webp" class="text-slate-700 dark:text-gray-300">WebP
-                                    (Recomendado)</span>
+                                <span data-i18n="stat_webp" class="text-slate-700 dark:text-gray-300">WebP (Recomendado)</span>
                                 <span id="statWebpPct" class="text-primary-500">0%</span>
                             </div>
                             <div class="w-full bg-slate-200 dark:bg-white/10 rounded-full h-2">
-                                <div id="barWebp" class="bg-primary-500 h-2 rounded-full transition-all duration-1000"
-                                    style="width: 0%"></div>
+                                <div id="barWebp" class="bg-primary-500 h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
                             </div>
                         </div>
                         <div>
@@ -541,8 +517,7 @@ const htmlModales = `
                                 <span id="statJpgPct" class="text-blue-500">0%</span>
                             </div>
                             <div class="w-full bg-slate-200 dark:bg-white/10 rounded-full h-2">
-                                <div id="barJpg" class="bg-blue-500 h-2 rounded-full transition-all duration-1000"
-                                    style="width: 0%"></div>
+                                <div id="barJpg" class="bg-blue-500 h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
                             </div>
                         </div>
                         <div>
@@ -551,152 +526,191 @@ const htmlModales = `
                                 <span id="statPngPct" class="text-yellow-500">0%</span>
                             </div>
                             <div class="w-full bg-slate-200 dark:bg-white/10 rounded-full h-2">
-                                <div id="barPng" class="bg-yellow-500 h-2 rounded-full transition-all duration-1000"
-                                    style="width: 0%"></div>
+                                <div id="barPng" class="bg-yellow-500 h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div
-                class="w-full md:w-[45%] md:p-12 bg-transparent md:bg-gradient-to-br md:from-slate-50 md:to-slate-100 dark:md:from-black/40 dark:md:to-black/80 border-t-0 md:border-l border-slate-200 dark:border-white/10 flex flex-col justify-center relative overflow-hidden">
-
-                <div
-                    class="absolute -top-32 -right-32 w-96 h-96 bg-primary-500/20 blur-[100px] rounded-full pointer-events-none hidden md:block">
-                </div>
-
-                <div class="text-center relative z-10 w-full">
-
-                    <div id="guestStateView" class="transition-opacity duration-300 w-full">
-                        <h3 data-i18n="profile_sync_title"
-                            class="text-lg md:text-3xl font-extrabold text-slate-900 dark:text-white mb-2 md:mb-3">
-                            ☁️ Sincronizar Nube</h3>
-                        <p data-i18n="profile_sync_sub"
-                            class="text-sm md:text-sm text-slate-500 dark:text-gray-400 font-medium mb-5 px-2">
-                            Crea tu cuenta gratis para guardar tu impacto y configuraciones.
-                        </p>
-
-                        <button onclick="loginConGoogle(event)"
-                            class="w-full bg-white dark:bg-[#18181b] hover:bg-gray-50 dark:hover:bg-black text-slate-700 dark:text-white border border-slate-200 dark:border-white/10 px-5 py-3.5 rounded-xl text-sm font-bold transition-all shadow-sm flex items-center justify-center gap-3 active:scale-95 mb-4">
-                            <svg class="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                                    fill="#4285F4" />
-                                <path
-                                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                                    fill="#34A853" />
-                                <path
-                                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                                    fill="#FBBC05" />
-                                <path
-                                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                                    fill="#EA4335" />
-                            </svg>
-                            <span data-i18n="profile_btn_google">Continuar con Google</span>
-                        </button>
-
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="h-[1px] flex-1 bg-slate-200 dark:bg-white/10"></div>
-                            <span data-i18n="profile_divider"
-                                class="text-[10px] font-bold text-slate-400 tracking-widest">O CON CORREO</span>
-                            <div class="h-[1px] flex-1 bg-slate-200 dark:bg-white/10"></div>
+            <!-- Columna de Marca (Guest) -->
+            <div id="profileBrandColumn" class="hidden max-md:hidden md:flex md:w-[55%] flex-col justify-center items-center relative border-r border-slate-200 dark:border-white/10 transition-all duration-300 p-12 bg-white dark:bg-[#09090b] overflow-hidden">
+                <div class="absolute -top-32 -left-32 w-96 h-96 bg-primary-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+                <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+                
+                <div class="relative z-10 flex flex-col items-center text-center">
+                    <img src="./imagenes/compressly_logo.png" alt="Compressly" class="w-24 h-24 mb-6 drop-shadow-xl hover:scale-105 transition-transform duration-300">
+                    <h2 class="text-3xl font-black text-slate-900 dark:text-white mb-4 leading-tight">Optimiza como un<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-indigo-500">Profesional</span></h2>
+                    <p class="text-slate-500 dark:text-gray-400 font-medium max-w-sm mb-8 text-sm md:text-base">Únete a Compressly y sincroniza tus configuraciones, optimiza por lotes, asegura tus archivos en el búnker y lleva tu impacto al siguiente nivel en todos tus dispositivos.</p>
+                    
+                    <div class="grid grid-cols-2 gap-4 w-full max-w-sm">
+                        
+                        <div class="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center group hover:border-primary-500/30 transition-all cursor-default">
+                            <i data-lucide="zap" class="w-6 h-6 text-primary-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-[11px] font-black text-slate-700 dark:text-gray-300 uppercase tracking-wide">Compresión Pro</span>
+                        </div>
+                        
+                        <div class="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center group hover:border-emerald-500/30 transition-all cursor-default">
+                            <i data-lucide="database" class="w-6 h-6 text-emerald-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-[11px] font-black text-slate-700 dark:text-gray-300 uppercase tracking-wide">Base de Datos</span>
                         </div>
 
-                        <form id="authForm" class="flex flex-col gap-3 text-left" onsubmit="procesarAuth(event)">
-                            <div>
-                                <input type="email" id="authEmail" required data-i18n="profile_email_ph"
-                                    placeholder="Tu correo electrónico"
-                                    class="w-full bg-slate-100 md:bg-white dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:border-primary-500 transition-colors placeholder-gray-500 font-bold text-sm">
-                            </div>
+                        <div class="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center group hover:border-blue-500/30 transition-all cursor-default">
+                            <i data-lucide="lock" class="w-6 h-6 text-blue-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-[11px] font-black text-slate-700 dark:text-gray-300 uppercase tracking-wide">Hosting Seguro</span>
+                        </div>
 
-                            <div class="relative">
-                                <input type="password" id="authPassword" required data-i18n="profile_pass_ph"
-                                    placeholder="Crea una contraseña" minlength="6" autocomplete="current-password"
-                                    class="w-full bg-slate-100 md:bg-white dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:border-primary-500 transition-colors placeholder-gray-500 font-bold text-sm">
-                                <button type="button" id="togglePasswordBtn"
-                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-500 transition-colors p-1">
-                                    <i id="togglePasswordIcon" data-lucide="eye-off" class="w-4 h-4"></i>
-                                </button>
-                            </div>
+                        <div class="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center group hover:border-violet-500/30 transition-all cursor-default">
+                            <i data-lucide="terminal" class="w-6 h-6 text-violet-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-[11px] font-black text-slate-700 dark:text-gray-300 uppercase tracking-wide">Acceso API</span>
+                        </div>
 
-                            <button type="submit"
-                                class="w-full bg-primary-500 hover:bg-primary-600 active:scale-95 text-white font-extrabold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(139,92,246,0.3)] flex items-center justify-center gap-2 text-sm mt-1">
-                                <i data-lucide="log-in" class="w-4 h-4"></i> <span data-i18n="profile_btn_submit">Crear
-                                    Cuenta / Entrar</span>
-                            </button>
-                        </form>
                     </div>
+                </div>
+            </div>
 
-                    <div id="loggedInStateView"
-                        class="hidden transition-opacity duration-300 w-full flex-col items-center">
+<div id="profileAuthColumn" class="w-full h-auto md:w-full py-8 md:p-12 bg-transparent md:bg-gradient-to-br md:from-slate-50 md:to-slate-100 dark:md:from-black/40 dark:md:to-black/80 flex flex-col justify-center items-center relative overflow-hidden transition-all duration-300">
+                <button onclick="closeProfileModal()" class="absolute top-4 right-4 text-gray-400 hover:text-slate-900 dark:hover:text-white p-2 rounded-lg transition-colors z-50 md:hidden">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
 
-                        <div
-                            class="w-16 h-16 md:w-20 md:h-20 mx-auto bg-green-500/10 border border-green-500/20 rounded-full flex items-center justify-center mb-4 shadow-sm">
+                <button onclick="closeProfileModal()" class="hidden md:block absolute top-4 right-4 text-gray-400 hover:text-slate-900 dark:hover:text-white p-2 rounded-lg transition-colors z-50">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+
+                <div class="absolute -top-32 -right-32 w-96 h-96 bg-primary-500/20 blur-[100px] rounded-full pointer-events-none hidden md:block"></div>
+
+                <div class="text-center relative z-10 w-full max-w-sm mx-auto">
+
+<div id="guestStateView" class="transition-opacity duration-300 w-full flex flex-col justify-center min-h-[85vh] md:min-h-0">
+    <div class="md:hidden flex flex-col items-center mb-6">
+        <img src="./imagenes/compressly_logo.png" alt="Compressly" class="w-20 h-20 mb-4 drop-shadow-xl">
+        <h2 class="text-2xl font-black text-slate-900 dark:text-white leading-tight text-center">Optimiza como un<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-indigo-500">Profesional</span></h2>
+    </div>
+
+    <h3 id="authTitle" class="hidden md:block text-lg md:text-3xl font-extrabold text-slate-900 dark:text-white mb-2 md:mb-3">Inicia Sesión</h3>
+    <p id="authSubtitle" class="hidden md:block text-sm text-slate-500 dark:text-gray-400 font-medium mb-5 px-2 md:whitespace-nowrap">
+        Accede a tu cuenta para continuar optimizando.
+    </p>
+    
+    <p id="authSubtitleMobile" class="md:hidden text-sm text-slate-500 dark:text-gray-400 font-medium mb-5 px-2 text-center">
+        Accede a tu cuenta para continuar optimizando.
+    </p>
+
+    <div id="googleAuthContainer">
+        <button onclick="loginConGoogle(event)" class="w-full bg-white dark:bg-[#18181b] hover:bg-gray-50 dark:hover:bg-black text-slate-700 dark:text-white border border-slate-200 dark:border-white/10 px-5 py-3.5 rounded-xl text-sm font-bold transition-all shadow-sm flex items-center justify-center gap-3 active:scale-95 mb-4">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+            </svg>
+            <span>Continuar con Google</span>
+        </button>
+
+        <div class="flex items-center gap-3 mb-4">
+            <div class="h-[1px] flex-1 bg-slate-200 dark:bg-white/10"></div>
+            <span class="text-[10px] font-bold text-slate-400 tracking-widest">O CON CORREO</span>
+            <div class="h-[1px] flex-1 bg-slate-200 dark:bg-white/10"></div>
+        </div>
+    </div>
+
+    <form id="authForm" class="flex flex-col gap-3 text-left" onsubmit="procesarAuth(event)">
+        <div id="authEmailContainer">
+            <input type="email" id="authEmail" required placeholder="Tu correo electrónico" class="w-full bg-slate-100 md:bg-white dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:border-primary-500 transition-colors placeholder-gray-500 font-bold text-sm">
+        </div>
+
+        <div id="authPasswordContainer" class="relative">
+<input type="password" id="authPassword" required placeholder="Contraseña" class="w-full bg-slate-100 md:bg-white dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:border-primary-500 transition-colors placeholder-gray-500 font-bold text-sm">
+
+            <button type="button" id="togglePasswordBtn" onclick="togglePasswordVisibility()" class="absolute right-3 top-[14px] text-gray-400 hover:text-primary-500 transition-colors p-1 z-10">
+                <i id="togglePasswordIcon" data-lucide="eye-off" class="w-4 h-4"></i>
+            </button>
+            
+            <div id="passwordStrengthContainer" class="hidden flex-col gap-1.5 mt-3 transition-all duration-300">
+                <div class="flex gap-1 h-1.5 w-full">
+                    <div id="strBar1" class="h-full flex-1 bg-slate-200 dark:bg-white/10 rounded-full transition-colors duration-300"></div>
+                    <div id="strBar2" class="h-full flex-1 bg-slate-200 dark:bg-white/10 rounded-full transition-colors duration-300"></div>
+                    <div id="strBar3" class="h-full flex-1 bg-slate-200 dark:bg-white/10 rounded-full transition-colors duration-300"></div>
+                    <div id="strBar4" class="h-full flex-1 bg-slate-200 dark:bg-white/10 rounded-full transition-colors duration-300"></div>
+                </div>
+<p id="passwordStrengthText" class="text-[9px] font-bold text-gray-400 uppercase tracking-widest text-right translate-y-[6px]">Seguridad: Ninguna</p>
+            </div>
+        </div>
+
+        <div id="termsContainer" class="hidden mt-2 mb-2">
+            <label class="flex items-start gap-2 cursor-pointer group">
+                <input type="checkbox" id="authTerms" class="mt-0.5 rounded border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-primary-500 focus:ring-primary-500 cursor-pointer">
+                <span class="text-xs text-slate-500 dark:text-gray-400 font-medium leading-tight">
+                    Acepto los <a href="#" onclick="openModal('legal_terms', 'legal_terms_content'); return false;" class="text-primary-500 hover:underline font-bold transition-colors">Términos</a> y la <a href="#" onclick="openModal('legal_privacy', 'legal_privacy_content'); return false;" class="text-primary-500 hover:underline font-bold transition-colors">Privacidad</a>
+                </span>
+            </label>
+        </div>
+        
+        <div id="authOptionsContainer" class="flex items-center justify-end mt-4">
+            <button onclick="setAuthMode('recovery')" type="button" class="text-xs text-primary-400 hover:text-primary-300 font-bold transition-colors">
+                ¿Olvidaste tu contraseña?
+            </button>
+        </div>
+
+        <button type="submit" id="authSubmitBtn" class="w-full bg-primary-500 hover:bg-primary-600 active:scale-95 text-white font-extrabold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(139,92,246,0.3)] flex items-center justify-center gap-2 text-sm mt-1">
+            <i id="authSubmitIcon" data-lucide="log-in" class="w-4 h-4"></i> <span id="authSubmitText">Entrar a mi Cuenta</span>
+        </button>
+        
+        <p class="text-center text-xs text-slate-500 dark:text-gray-400 pt-3">
+            <span id="authToggleText">¿No tienes cuenta?</span> 
+            <button type="button" id="authToggleBtn" onclick="toggleAuthMode()" class="text-primary-500 font-black hover:underline ml-1">Regístrate gratis</button>
+        </p>
+    </form>
+</div>
+
+<div id="loggedInStateView" class="hidden transition-opacity duration-300 w-full flex flex-col items-center pt-8 pb-0 md:py-0">                        <div class="w-16 h-16 md:w-20 md:h-20 mx-auto bg-green-500/10 border border-green-500/20 rounded-full flex items-center justify-center mb-4 shadow-sm">
                             <i data-lucide="cloud-check" class="w-8 h-8 md:w-10 md:h-10 text-green-500"></i>
                         </div>
 
-                        <h3 class="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white mb-1">Cuenta
-                            Sincronizada</h3>
+                        <h3 class="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white mb-1">Cuenta Sincronizada</h3>
 
-                        <div class="flex flex-col items-center gap-3 mb-6 md:mb-8 w-full max-w-sm mx-auto">
-                            <p id="userEmailDisplay"
-                                class="text-sm text-slate-500 dark:text-gray-400 font-medium truncate px-2 leading-none mb-1 w-full text-center">
-                                usuario@ejemplo.com
-                            </p>
+                        <div class="flex flex-col items-center gap-3 mb-6 w-full max-w-sm mx-auto">
+                            <p id="userEmailDisplay" class="text-sm text-slate-500 dark:text-gray-400 font-medium truncate px-2 leading-none mb-1 w-full text-center">usuario@ejemplo.com</p>
 
-                            <div class="flex items-center justify-between w-full bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 px-3 py-2.5 rounded-xl group cursor-pointer hover:bg-slate-100 dark:hover:bg-white/5 transition-all active:scale-95 overflow-hidden"
-                                onclick="navigator.clipboard.writeText(document.getElementById('userInternalIdDisplay').innerText); if(typeof Notify !== 'undefined') Notify.show('ID Copiado', 'ID de soporte copiado con éxito', 'success');"
-                                title="Copiar ID de Soporte">
+                            <div class="flex items-center justify-between w-full bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 px-3 py-2.5 rounded-xl group cursor-pointer hover:bg-slate-100 dark:hover:bg-white/5 transition-all active:scale-95 overflow-hidden" onclick="navigator.clipboard.writeText(document.getElementById('userInternalIdDisplay').innerText); if(typeof Notify !== 'undefined') Notify.show('ID Copiado', 'ID de soporte copiado con éxito', 'success');">
                                 <div class="flex flex-col items-start w-full pr-3 min-w-0">
-                                    <span
-                                        class="text-[8px] font-black text-slate-400 dark:text-gray-500 uppercase tracking-[0.2em] leading-none mb-1">ID
-                                        Soporte</span>
-                                    <span id="userInternalIdDisplay"
-                                        class="text-[10px] font-medium text-slate-500 dark:text-gray-400 font-mono break-all w-full leading-tight select-all">Cargando...</span>
+                                <span class="text-[8px] font-black text-slate-400 dark:text-gray-500 uppercase tracking-[0.2em] leading-none mb-1">ID Usuario</span>
+                                    <span id="userInternalIdDisplay" class="text-[10px] font-medium text-slate-500 dark:text-gray-400 font-mono break-all w-full leading-tight select-all">Cargando...</span>
                                 </div>
-                                <i data-lucide="copy"
-                                    class="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors shrink-0"></i>
+                                <i data-lucide="copy" class="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors shrink-0"></i>
                             </div>
-
-                            <div id="apiAccessContainer" class="w-full transition-all duration-300">
-                            </div>
-                        </div>
-
-                        <div
-                            class="w-full bg-slate-100 md:bg-white dark:bg-black/50 md:dark:bg-[#09090b] border border-slate-200 dark:border-white/10 rounded-xl p-4 md:p-5 mb-6 md:mb-8 text-left shadow-sm">
-                            <p class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest mb-2">
-                                Estado de Suscripción</p>
-                            <div class="flex justify-between items-center mb-3">
-                                <span id="accountPlanName"
-                                    class="text-sm md:text-base font-extrabold text-slate-800 dark:text-white">Plan
-                                    Esencial</span>
-                                <span id="accountPlanStatus"
-                                    class="text-[10px] font-black bg-green-500/20 text-green-600 dark:text-green-400 px-2 py-1 rounded-md uppercase tracking-wider border border-green-500/20">Activo</span>
-                            </div>
-                            <div id="apiBonusLine"
-                                class="pt-3 border-t border-slate-200 dark:border-white/5 flex justify-between items-center">
-                                <span class="text-xs font-bold text-slate-600 dark:text-gray-400">
-                                    <i id="apiBonusIcon" data-lucide="zap" class="w-3 h-3 inline-block text-primary-500 mb-0.5"></i> 
-                                    <span id="apiBonusLabel">Créditos de Compresión:</span>
-                                </span>
-                                <span id="apiCreditsDisplay" class="text-sm font-black text-primary-500">0</span>
-                            </div>
+                            <div id="apiAccessContainer" class="w-full transition-all duration-300"></div>
                         </div>
 
                         <div class="w-full flex flex-col gap-3 md:gap-4">
-                            <button onclick="openSettingsModal()"
-                                class="w-full bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-700 dark:text-white border border-slate-200 dark:border-white/10 px-5 py-3.5 md:py-4 rounded-xl text-sm font-bold transition-all shadow-sm flex items-center justify-center gap-2 active:scale-95">
+                            <button onclick="openSettingsModal()" class="w-full bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-700 dark:text-white border border-slate-200 dark:border-white/10 px-5 py-3.5 md:py-4 rounded-xl text-sm font-bold transition-all shadow-sm flex items-center justify-center gap-2 active:scale-95">
                                 <i data-lucide="settings" class="w-4 h-4"></i> Ajustes de Cuenta
                             </button>
-
-                            <button onclick="openLogoutModal()"
-                                class="w-full bg-red-500/5 hover:bg-red-500/10 text-red-600 dark:text-red-500 border border-red-500/20 px-5 py-3.5 md:py-4 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 active:scale-95">
+                            <button onclick="openLogoutModal()" class="w-full bg-red-500/5 hover:bg-red-500/10 text-red-600 dark:text-red-500 border border-red-500/20 px-5 py-3.5 md:py-4 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 active:scale-95">
                                 <i data-lucide="log-out" class="w-4 h-4"></i> Cerrar Sesión
                             </button>
                         </div>
-                    </div>
 
+                        <div class="mt-6 pt-4 border-t border-slate-100 dark:border-white/5 text-center flex flex-col gap-1 w-full opacity-50 hover:opacity-100 transition-opacity cursor-default">
+                            <div class="flex items-center justify-center gap-2">
+                                <span class="text-[10px] font-black text-slate-500 dark:text-slate-400 tracking-[0.2em] uppercase">Compressly</span>
+                                <span class="w-1 h-1 rounded-full bg-slate-300 dark:bg-white/20"></span>
+                                <span class="text-[8px] font-bold text-slate-400 dark:text-gray-500 uppercase tracking-widest flex items-center gap-1">
+                                    <i data-lucide="lock" class="w-2.5 h-2.5 text-green-500"></i> Conexión Segura SSL
+                                </span>
+                            </div>
+                            <div class="flex flex-col gap-0.5">
+                                <span class="text-[7px] font-bold text-slate-400 dark:text-gray-600 uppercase tracking-[0.15em]">
+                                    Infraestructura Cloud Certificada
+                                </span>
+                                <span class="text-[7px] font-medium text-slate-400/80 dark:text-gray-600/80 uppercase tracking-widest">
+                                    Protección de Datos & Privacidad Activa
+                                </span>
+                            </div>
+                        </div>
+                        
+                    </div>
                 </div>
             </div>
         </div>
@@ -983,6 +997,32 @@ const htmlModales = `
             </form>
         </div>
     </div>
+
+    <div id="activityModal" class="fixed inset-0 z-[150] hidden items-center justify-center px-0 md:px-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md cursor-pointer" onclick="closeActivityModal()"></div>
+        <div class="bento-card relative z-10 w-full max-w-md h-[100dvh] max-h-[100dvh] md:h-auto md:max-h-[85vh] overflow-hidden flex flex-col shadow-2xl border-none md:border md:border-primary-500/30 transform transition-all scale-95 opacity-0 rounded-none md:rounded-3xl bg-white dark:bg-[#09090B]" id="activityContent">
+            
+            <div class="p-6 border-b border-slate-200 dark:border-white/10 flex justify-between items-center shrink-0">
+                <h2 class="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
+                    <div class="bg-primary-500/10 p-2 rounded-xl text-primary-500">
+                        <i data-lucide="history" class="w-5 h-5"></i>
+                    </div>
+                    Historial de Actividad
+                </h2>
+                <button onclick="closeActivityModal()" class="text-gray-400 hover:text-slate-900 dark:hover:text-white p-2 rounded-lg transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div id="activityFullList" class="flex-grow overflow-y-auto p-6 space-y-3 custom-scrollbar">
+                </div>
+
+            <div class="p-6 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black/20 text-center">
+                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Sincronizado con Supabase Cloud</p>
+            </div>
+        </div>
+    </div>
+
 `;
 
 // ⚡ CÓDIGO CORREGIDO PARA EL FINAL DEL ARCHIVO:

@@ -139,20 +139,32 @@ const profileContent = document.getElementById('profileContent');
 const closeProfileBtn = document.getElementById('closeProfileBtn');
 
 window.openProfileModal = function () {
-    profileModal.classList.remove('hidden');
-    profileModal.classList.add('flex');
-    document.body.style.overflow = 'hidden'; // 🚀 Bloquear Scroll del Fondo
+    const modal = document.getElementById('profileModal');
+    const content = document.getElementById('profileContent');
 
-    // 🚀 Ocultar bot en TODAS las pantallas (PC y Móvil)
-    const botBtn = document.getElementById('aiToggler');
-    if (botBtn) botBtn.style.display = 'none';
+    if (modal && content) {
+        // 🔄 RESETEO CRÍTICO
+        content.style.opacity = '1';
+        content.style.transform = 'scale(1)';
 
-    setTimeout(() => {
-        profileContent.classList.remove('scale-95', 'opacity-0');
-        profileContent.classList.add('scale-100', 'opacity-100');
-    }, 10);
-    lucide.createIcons();
-    if (navigator.vibrate) navigator.vibrate([50, 50]);
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+
+        // 🚀 BLOQUEO MANUAL RESTAURADO (Corrección de error)
+        document.body.style.overflow = 'hidden';
+
+        // 🤖 OCULTAR CHATBOT
+        const botBtn = document.getElementById('aiToggler');
+        if (botBtn) botBtn.style.display = 'none';
+
+        // 🚀 LLAMADA MAESTRA: Cargamos el historial y estadísticas desde Supabase
+        if (typeof cargarHistorialPerfil === 'function') {
+            cargarHistorialPerfil();
+        }
+
+        lucide.createIcons();
+        if (navigator.vibrate) navigator.vibrate([50, 50]);
+    }
 };
 
 window.closeProfileModal = function () {
@@ -224,7 +236,6 @@ window.updateGlobalImpact = function (newSavedBytes = 0) {
     const mobileBadge = document.getElementById('globalImpactMobile');
     const desktopText = document.getElementById('totalSavedDesktop');
     const mobileText = document.getElementById('totalSavedMobile');
-    const profileTotalText = document.getElementById('profileTotalSaved');
 
     if (totalSavedBytes > 0) {
         if (desktopBadge) { desktopBadge.classList.remove('hidden'); desktopBadge.classList.add('flex'); }
@@ -232,7 +243,6 @@ window.updateGlobalImpact = function (newSavedBytes = 0) {
 
         if (desktopText) desktopText.innerText = formatted;
         if (mobileText) mobileText.innerText = formatted;
-        if (profileTotalText) profileTotalText.innerText = formatted;
 
         // 🚀 MEJORA: Animación para AMBOS (PC y Móvil)
         if (newSavedBytes > 0) {
@@ -641,3 +651,96 @@ window.closeLogoutModal = function () {
     }
 };
 
+// 🕒 ==========================================
+// LÓGICA DEL MODAL DE ACTIVIDAD COMPLETA
+// ==========================================
+window.openActivityModal = async function () {
+    const modal = document.getElementById('activityModal');
+    const content = document.getElementById('activityContent');
+    const list = document.getElementById('activityFullList');
+    const userIdDisplay = document.getElementById('userInternalIdDisplay');
+    const userId = userIdDisplay ? userIdDisplay.getAttribute('data-uuid') : null;
+
+    if (!modal || !content || !list || !userId) return;
+
+    // Mostrar modal con efecto
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+
+    // Opcional: Opacar perfil de fondo para enfocar historial
+    const profileModal = document.getElementById('profileModal');
+    if (profileModal) profileModal.classList.add('opacity-0');
+
+    // Estado de carga
+    list.innerHTML = `<div class="flex flex-col items-center justify-center py-12 gap-3 text-primary-500 animate-pulse">
+        <i data-lucide="loader-2" class="w-8 h-8 animate-spin"></i>
+        <span class="text-xs font-black uppercase tracking-widest">Sincronizando...</span>
+    </div>`;
+    lucide.createIcons();
+
+    setTimeout(() => {
+        content.classList.remove('scale-95', 'opacity-0');
+        content.classList.add('scale-100', 'opacity-100');
+    }, 10);
+
+    try {
+        // Consultar historial completo
+        const { data: historial, error } = await supabaseClient.from('historial_uso')
+            .select('*').eq('usuario_id', userId).order('fecha', { ascending: false });
+
+        if (error) throw error;
+
+        if (!historial || historial.length === 0) {
+            list.innerHTML = `<div class="text-center py-12 text-gray-400 font-bold text-sm italic">No hay actividad registrada.</div>`;
+        } else {
+            list.innerHTML = historial.map(item => {
+                const isIA = item.tipo_accion === 'IA SEO';
+                const iconColor = isIA ? 'text-purple-500 bg-purple-500/10 border-purple-500/20' : 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20';
+                const iconName = isIA ? 'sparkles' : 'zap';
+                const fecha = new Date(item.fecha);
+                const fechaStr = fecha.toLocaleDateString() + ' ' + fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                return `
+                    <div class="flex items-center gap-4 p-4 bg-slate-50 dark:bg-white/[0.02] rounded-2xl border border-slate-100 dark:border-white/5 transition-all hover:border-primary-500/30">
+                        <div class="w-10 h-10 rounded-xl ${iconColor} border flex items-center justify-center shrink-0 shadow-sm">
+                            <i data-lucide="${iconName}" class="w-5 h-5"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-start mb-1 gap-2">
+                                <span class="text-sm font-bold text-slate-900 dark:text-white truncate">${item.detalle}</span>
+                                <span class="text-[9px] font-black text-primary-500 bg-primary-500/10 px-2 py-0.5 rounded-md shrink-0 uppercase tracking-tighter">${item.tipo_accion}</span>
+                            </div>
+                            <span class="text-[11px] text-gray-500 font-medium flex items-center gap-1.5 leading-none">
+                                <i data-lucide="calendar" class="w-3 h-3"></i> ${fechaStr}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        lucide.createIcons();
+    } catch (e) {
+        list.innerHTML = `<div class="text-red-500 text-center py-8 font-black">Error de conexión.</div>`;
+    }
+
+    if (navigator.vibrate) navigator.vibrate(30);
+};
+
+window.closeActivityModal = function () {
+    const modal = document.getElementById('activityModal');
+    const content = document.getElementById('activityContent');
+
+    if (modal && content) {
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+
+            // Restaurar perfil de fondo
+            const profileModal = document.getElementById('profileModal');
+            if (profileModal) profileModal.classList.remove('opacity-0');
+        }, 200);
+    }
+};

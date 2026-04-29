@@ -22,10 +22,11 @@ window.logoutUsuario = async function () {
     const status = document.getElementById('vipSplashStatus');
     const iconContainer = document.getElementById('vipSplashIconContainer');
 
-    // 1. Estética de Salida (Rose/Violet)
+    // 1. Estética de Salida con Logo Compressly (Efecto Rose)
     greeting.innerText = "Cerrando Sesión...";
     status.innerText = "Finalizando procesos de seguridad";
-    iconContainer.innerHTML = '<i data-lucide="log-out" class="w-14 h-14 text-rose-400 drop-shadow-[0_0_20px_rgba(251,113,133,0.6)]"></i>';
+    // Usamos el logo pero con un filtro de sombra roja/rosada para indicar salida
+    iconContainer.innerHTML = '<img src="imagenes/compressly_logo.png" class="w-16 h-16 object-contain grayscale drop-shadow-[0_0_20px_rgba(251,113,133,0.8)] opacity-80" alt="Compressly Logo">';
     lucide.createIcons();
 
     // 2. Transición de salida suave
@@ -54,11 +55,151 @@ window.logoutUsuario = async function () {
     }
 };
 
-// 2. FUNCIÓN MAESTRA DE LOGIN / REGISTRO
+// 2. LÓGICA DE MODO (LOGIN VS REGISTRO VS RECUPERACIÓN) Y FUNCIÓN MAESTRA
+let currentAuthMode = 'login'; // 'login', 'register', 'recovery'
+
+window.setAuthMode = function (mode) {
+    currentAuthMode = mode;
+
+    const elements = {
+        title: document.getElementById('authTitle'),
+        sub: document.getElementById('authSubtitle'),
+        subMob: document.getElementById('authSubtitleMobile'),
+        passCont: document.getElementById('authPasswordContainer'),
+        passInput: document.getElementById('authPassword'),
+        optCont: document.getElementById('authOptionsContainer'),
+        googleCont: document.getElementById('googleAuthContainer'),
+        submitBtn: document.getElementById('authSubmitBtn'),
+        submitText: document.getElementById('authSubmitText'),
+        submitIcon: document.getElementById('authSubmitIcon'),
+        toggleText: document.getElementById('authToggleText'),
+        toggleBtn: document.getElementById('authToggleBtn'),
+        // 🚀 NUEVOS CONTENEDORES PARA REGISTRO
+        termsCont: document.getElementById('termsContainer'),
+        passStrCont: document.getElementById('passwordStrengthContainer')
+    };
+
+    if (mode === 'login') {
+        elements.title.innerText = 'Inicia Sesión';
+        elements.sub.innerText = 'Accede a tu cuenta para continuar optimizando.';
+        elements.subMob.innerText = 'Accede a tu cuenta para continuar optimizando.';
+        elements.passCont.classList.remove('hidden');
+        elements.passInput.required = true;
+        // 🔒 Placeholder limpio para Login
+        elements.passInput.placeholder = 'Contraseña';
+        elements.optCont.classList.remove('hidden');
+        elements.googleCont.classList.remove('hidden');
+        elements.submitText.innerText = 'Entrar a mi Cuenta';
+        elements.submitIcon.setAttribute('data-lucide', 'log-in');
+        elements.toggleText.innerText = '¿No tienes cuenta?';
+        elements.toggleBtn.innerText = 'Regístrate gratis';
+        elements.toggleBtn.onclick = () => setAuthMode('register');
+
+        if (elements.termsCont) elements.termsCont.classList.add('hidden');
+        if (elements.passStrCont) elements.passStrCont.classList.add('hidden');
+    }
+    else if (mode === 'register') {
+        elements.title.innerText = 'Crea tu Cuenta';
+        elements.sub.innerText = 'Únete gratis y sincroniza tus configuraciones en la nube.';
+        elements.subMob.innerText = 'Únete gratis y sincroniza tus configuraciones en la nube.';
+        elements.passCont.classList.remove('hidden');
+        elements.passInput.required = true;
+        // 📝 Placeholder descriptivo para Registro
+        elements.passInput.placeholder = 'Contraseña (Min. 8 caracteres)';
+        elements.optCont.classList.add('hidden');
+        elements.googleCont.classList.remove('hidden');
+        elements.submitText.innerText = 'Comenzar Ahora';
+        elements.submitIcon.setAttribute('data-lucide', 'user-plus');
+        elements.toggleText.innerText = '¿Ya tienes cuenta?';
+        elements.toggleBtn.innerText = 'Inicia Sesión';
+        elements.toggleBtn.onclick = () => setAuthMode('login');
+
+        if (elements.termsCont) elements.termsCont.classList.remove('hidden');
+        if (elements.passStrCont) elements.passStrCont.classList.remove('hidden', 'flex');
+    }
+    else if (mode === 'recovery') {
+        elements.title.innerText = 'Recuperar Acceso';
+        elements.sub.innerText = 'Enviaremos un enlace mágico a tu bandeja de entrada.';
+        elements.subMob.innerText = 'Enviaremos un enlace mágico a tu bandeja de entrada.';
+        elements.passCont.classList.add('hidden');
+        elements.passInput.required = false;
+        elements.optCont.classList.add('hidden');
+        elements.googleCont.classList.add('hidden');
+        elements.submitText.innerText = 'Enviar Enlace Mágico';
+        elements.submitIcon.setAttribute('data-lucide', 'send');
+        elements.toggleText.innerText = '¿Recordaste tu clave?';
+        elements.toggleBtn.innerText = 'Volver al Login';
+        elements.toggleBtn.onclick = () => setAuthMode('login');
+
+        // Ocultamos barrras y términos en Recuperación
+        if (elements.termsCont) elements.termsCont.classList.add('hidden');
+        if (elements.passStrCont) elements.passStrCont.classList.add('hidden');
+    }
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    if (typeof triggerVibration === 'function') triggerVibration(20);
+};
+
+// Mantenemos esta función para que el botón de abajo siga funcionando
+window.toggleAuthMode = function (event) {
+    if (event) event.preventDefault();
+    if (currentAuthMode === 'login') {
+        setAuthMode('register');
+    } else {
+        setAuthMode('login');
+    }
+};
+
+// FUNCIÓN MAESTRA DE LOGIN / REGISTRO
 async function procesarAuth(event) {
     event.preventDefault();
+
+    // 💡 Si estamos en modo recuperación, derivamos a esa función inmediatamente
+    if (currentAuthMode === 'recovery') {
+        if (typeof enviarRecuperacion === 'function') enviarRecuperacion(event);
+        return;
+    }
+
     const email = document.getElementById('authEmail').value.trim();
     const password = document.getElementById('authPassword').value.trim();
+
+    // 🛡️ ESCUDO DE PROTECCIÓN PARA NUEVOS REGISTROS 🛡️
+    if (currentAuthMode === 'register') {
+
+        // 1. Validar Reglas de Contraseña (NIVEL DIOS 🧠🔐)
+        let faltantes = [];
+
+        if (password.length < 8) faltantes.push("8 caracteres mínimo");
+        if (!/[A-Z]/.test(password)) faltantes.push("una mayúscula");
+        if (!/[a-z]/.test(password)) faltantes.push("una minúscula");
+        if (!/[0-9]/.test(password) && !/[^A-Za-z0-9]/.test(password)) faltantes.push("un número o símbolo");
+
+        // 🔥 REGLA IMPLACABLE: Si falta AUNQUE SEA UNA cosa, bloqueamos.
+        // Esto obliga a que la barra siempre tenga que llegar a VERDE (Fuerte).
+        if (faltantes.length > 0) {
+            let mensajeError = "Te falta incluir: ";
+
+            // 📝 Gramática perfecta en español
+            if (faltantes.length === 1) {
+                mensajeError += faltantes[0] + ".";
+            } else if (faltantes.length === 2) {
+                mensajeError += faltantes.join(" y ") + ".";
+            } else {
+                const ultimo = faltantes.pop();
+                mensajeError += faltantes.join(", ") + " y " + ultimo + ".";
+            }
+
+            if (typeof Notify !== 'undefined') Notify.show('Contraseña Débil 🛡️', mensajeError, 'error');
+            return; // 🛑 Detiene el proceso
+        }
+
+        // 2. Validar Términos DESPUÉS 📜
+        const terms = document.getElementById('authTerms');
+        if (terms && !terms.checked) {
+            if (typeof Notify !== 'undefined') Notify.show('Acción Requerida ⚠️', 'Por favor, marca la casilla aceptando los Términos y la Privacidad.', 'warning');
+            return; // 🛑 Detiene el proceso
+        }
+    }
 
     const btn = document.querySelector('#authForm button[type="submit"]');
     const btnOriginal = btn.innerHTML;
@@ -66,19 +207,34 @@ async function procesarAuth(event) {
     btn.disabled = true;
 
     try {
-        let esNuevoRegistro = false;
-        let { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        let data, error, esNuevoRegistro = false;
 
-        if (error && error.message.includes('Invalid login')) {
-            const { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({ email, password });
-            if (signUpError) throw signUpError;
-            data = signUpData;
+        if (currentAuthMode === 'login') {
+            // 🔓 MODO LOGIN
+            const response = await supabaseClient.auth.signInWithPassword({ email, password });
+            data = response.data;
+            error = response.error;
+        } else {
+            // 📝 MODO REGISTRO
+            const response = await supabaseClient.auth.signUp({ email, password });
+            data = response.data;
+            error = response.error;
             esNuevoRegistro = true;
-        } else if (error) {
-            throw error;
         }
 
-        if (!data || !data.user) throw new Error("Error en el servidor. Inténtalo de nuevo.");
+        if (error) throw error;
+
+        if (esNuevoRegistro) {
+            if (typeof Notify !== 'undefined') Notify.show('¡Bienvenido!', 'Tu cuenta ha sido creada con éxito.', 'success');
+        }
+
+        if (!data || !data.user) {
+            if (esNuevoRegistro) {
+                if (typeof Notify !== 'undefined') Notify.show('Confirma tu correo', 'Revisa tu bandeja para activar la cuenta.', 'info');
+                return;
+            }
+            throw new Error("Error en el servidor. Inténtalo de nuevo.");
+        }
 
         // 🚀 EFECTO VIP: Personalización dinámica
         const nombreCorto = data.user.email.split('@')[0];
@@ -89,8 +245,8 @@ async function procesarAuth(event) {
         const status = document.getElementById('vipSplashStatus');
         const iconContainer = document.getElementById('vipSplashIconContainer');
 
-        // Ajustamos colores para el inicio (Violet/Indigo)
-        iconContainer.innerHTML = '<i data-lucide="zap" class="w-14 h-14 text-violet-400 drop-shadow-[0_0_20px_rgba(167,139,250,0.8)]"></i>';
+        // Ajustamos colores para el inicio con el Logo Oficial de Compressly
+        iconContainer.innerHTML = '<img src="imagenes/compressly_logo.png" class="w-16 h-16 object-contain drop-shadow-[0_0_20px_rgba(167,139,250,0.6)] animate-pulse" alt="Compressly Logo">';
         greeting.innerText = esNuevoRegistro ? `¡Bienvenido, ${nombreFormateado}!` : `¡Hola de nuevo, ${nombreFormateado}!`;
         status.innerText = "Configurando acceso prioritario";
 
@@ -183,8 +339,17 @@ async function mostrarPanelPrivado(user) {
 
         // 1. Inyectamos llaves e ID
         const userIdDisplay = document.getElementById('userIdDisplay');
+        const internalDisplay = document.getElementById('userInternalIdDisplay');
+
         if (userIdDisplay) userIdDisplay.innerText = clienteInfo.api_key || 'Bloqueado';
-        document.getElementById('userInternalIdDisplay').innerText = user.id;
+
+        if (internalDisplay) {
+            // 💎 MOSTRAMOS el ID profesional de 15 caracteres
+            internalDisplay.innerText = clienteInfo.public_id || 'CPLY-USR-GENERANDO...';
+
+            // 🛡️ GUARDAMOS el ID técnico en un atributo oculto para que el sistema siga funcionando
+            internalDisplay.setAttribute('data-uuid', user.id);
+        }
 
         // 2. LÓGICA DE JERARQUÍA (El Poder del Usuario)
         const niveles = { 'free': 0, 'pro': 1, 'ultra': 2, 'api_fullstack': 3, 'enterprise': 4 };
@@ -194,7 +359,11 @@ async function mostrarPanelPrivado(user) {
         let nombreLimpio = planActual.toUpperCase();
         if (planActual === 'api_fullstack') nombreLimpio = 'API Full-Stack';
         if (planActual === 'enterprise') nombreLimpio = 'Enterprise 💎';
-        document.getElementById('accountPlanName').innerText = `Plan ${nombreLimpio}`;
+
+        const accountPlanName = document.getElementById('accountPlanName');
+        if (accountPlanName) {
+            accountPlanName.innerText = `Plan ${nombreLimpio}`;
+        }
 
         const headerBadge = document.querySelector('.plan-badge-header');
         const planLabel = document.getElementById('planLabel'); // 👤 El texto del perfil
@@ -246,30 +415,39 @@ async function mostrarPanelPrivado(user) {
         }
 
         // 🔌 ACTUALIZACIÓN DE CRÉDITOS DINÁMICA (API vs Energía)
-        const apiCreditsDisplay = document.getElementById('apiCreditsDisplay');
+        const apiCount = document.getElementById('apiCreditsCount');
+        const apiLabel = document.getElementById('apiLabelSub');
         const apiBonusLabel = document.getElementById('apiBonusLabel');
-        const aiCreditsDisplay = document.getElementById('aiCreditsDisplay');
-        const profileAiCredits = document.getElementById('profileAiCredits');
 
-        // 1. Lógica para la API (Sincronía total con el diseño del candado)
-        if (apiCreditsDisplay && apiBonusLabel) {
+        const aiCreditsDisplay = document.getElementById('aiCreditsDisplay'); // UI General (Sidebar/Header)
+        const profileAiCredits = document.getElementById('profileAiCredits'); // Perfil
+
+        // 1. Sincronización de Potencia de API
+        if (apiCount && apiBonusLabel) {
             if (miNivel >= 2) {
-                apiBonusLabel.innerText = "Potencia de API:";
-                apiCreditsDisplay.innerHTML = `<span class="text-emerald-500">${clienteInfo.creditos_restantes}</span> <span class="text-[9px] text-emerald-500 font-black ml-0.5 tracking-widest uppercase">Créditos Disponibles</span>`;
+                apiBonusLabel.innerText = "Potencia de API";
+                if (apiLabel) apiLabel.innerText = "Créditos Disponibles";
+                apiCount.innerText = clienteInfo.creditos_restantes || 0;
+                apiCount.className = "text-sm md:text-lg font-black text-emerald-500 tracking-widest uppercase mt-1";
             } else {
-                // 🔴 Para planes Free/Pro, ocultamos el "0" y mostramos el estatus real
-                apiBonusLabel.innerText = "Acceso a la API:";
-                apiCreditsDisplay.innerHTML = `<span class="text-[11px] text-slate-400 font-black uppercase tracking-widest italic opacity-60">No Habilitado</span>`;
+                apiBonusLabel.innerText = "Acceso API";
+                if (apiLabel) apiLabel.innerText = "No Habilitado";
+                apiCount.innerText = "BLOQUEADO";
+                apiCount.className = "text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1 opacity-60";
             }
         }
 
-        // 2. Inyectar Energía para la IA (Auto-SEO)
+        // 2. Sincronización de IA (Energía IA para UI General / Número solo para Perfil)
         const energiaIA = clienteInfo.ai_creditos || clienteInfo.planes?.creditos_ia || 0;
+
         if (aiCreditsDisplay) {
+            // ⚡ SE MANTIENE "Energía IA" en la interfaz general (Sidebar/Header)
             aiCreditsDisplay.innerHTML = `${energiaIA} <span class="text-[9px] text-purple-500/70 font-black ml-0.5 tracking-widest uppercase">Energía IA</span>`;
         }
+
         if (profileAiCredits) {
-            profileAiCredits.innerHTML = `${energiaIA} <span class="text-[9px] text-purple-500/70 font-black ml-0.5 tracking-widest uppercase">Energía IA</span>`;
+            // ⚡ PERFIL: Inyectamos solo el número porque la etiqueta ya está en el HTML
+            profileAiCredits.innerText = energiaIA;
         }
 
         // 🚀 5. LÓGICA DE CASCADA EN TABLA DE PRECIOS
@@ -339,6 +517,9 @@ async function mostrarPanelPrivado(user) {
         // 6. Lanzar actualización del Modal de Perfil
         if (typeof actualizarEstadoPlanes === 'function') actualizarEstadoPlanes();
 
+        // 🚀 6.5 EXPANSIÓN MÁGICA: Le decimos a la columna izquierda que despierte y cargue los datos
+        if (typeof cargarHistorialPerfil === 'function') cargarHistorialPerfil();
+
         // 🛡️ 7. ESCUDO ENTERPRISE: Forzar la interfaz VIP por si interfaz.js la borró
         if (planActual === 'enterprise') {
             // Restaurar el texto del perfil y forzar el color blanco
@@ -349,7 +530,7 @@ async function mostrarPanelPrivado(user) {
             const btnGoPro = document.getElementById('btnGoPro');
             if (btnGoPro) {
                 btnGoPro.className = "px-4 py-2 rounded-full text-[11px] lg:text-xs font-black border flex items-center gap-2 shrink-0 pointer-events-none uppercase tracking-widest bg-gradient-to-r from-blue-500 to-blue-600 border-white/20 !text-white shadow-lg shadow-blue-500/20";
-                btnGoPro.innerHTML = `<i data-lucide="building-2" class="w-3.5 h-3.5 fill-white/20"></i> <span class="whitespace-nowrap !text-white">Enterprise Activo</span>`;
+                btnGoPro.innerHTML = ` Enterprise Activo`;
             }
 
             // Destruir el botón "MEJORAR MI PLAN" que inyectó el otro archivo
@@ -533,61 +714,70 @@ window.solicitarCambioPassword = async function (boton) {
 window.enviarRecuperacion = async function (event) {
     if (event) event.preventDefault();
 
-    const emailInput = document.getElementById('forgotEmail');
-    if (!emailInput) return;
+    const emailInput = document.getElementById('authEmail');
     const email = emailInput.value.trim();
 
-    const modalContent = document.getElementById('forgotPasswordContent');
-
-    // Atrapamos el botón que disparó el evento para bloquearlo
-    let btn = null;
-    if (event && event.target) {
-        btn = event.target.tagName === 'BUTTON' ? event.target : event.target.querySelector('button[type="submit"]');
+    if (!email) {
+        Notify.show('Correo Requerido', 'Escribe tu correo primero.', 'warning');
+        return;
     }
 
-    let originalBtnText = "Enviar Enlace";
-    if (btn) {
-        originalBtnText = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Enviando...';
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-    }
+    const btn = document.getElementById('authSubmitBtn');
+    const originalBtnText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Verificando...';
+    lucide.createIcons();
 
     try {
-        // 🚀 Mandamos a Supabase la orden con la redirección correcta
-        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+        // 🔍 1. VALIDACIÓN PROFESIONAL: ¿Existe el correo en nuestra tabla pública?
+        const { data: cliente, error: errorBusqueda } = await supabaseClient
+            .from('api_clients')
+            .select('id')
+            .eq('email', email)
+            .single();
+
+        // 🛑 Si no lo encontramos, lanzamos el error profesional de inmediato
+        if (!cliente) {
+            throw new Error("Este correo no está registrado en Compressly. ❌");
+        }
+
+        // 🚀 2. Si existe, disparamos el correo de recuperación real
+        const { error: errorEnvio } = await supabaseClient.auth.resetPasswordForEmail(email, {
             redirectTo: window.location.origin + '/?reset=true',
         });
 
-        if (error) throw error;
+        if (errorEnvio) throw errorEnvio;
 
-        // Transformamos el modal en el mensaje de Éxito Gigante
-        if (modalContent) {
-            modalContent.innerHTML = `
-                <div class="text-center py-8 animate-in fade-in zoom-in duration-300">
-                    <div class="w-20 h-20 bg-green-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6 text-green-500 border border-green-500/20">
-                        <i data-lucide="mail-check" class="w-10 h-10"></i>
+        // 🎨 VISTA DE ÉXITO GIGANTE (La que ya teníamos)
+        const authForm = document.getElementById('authForm');
+        if (authForm) {
+            authForm.innerHTML = `
+                <div class="flex flex-col items-center text-center py-6 animate-in fade-in zoom-in duration-500">
+                    <div class="w-20 h-20 bg-green-500/10 rounded-3xl flex items-center justify-center mb-6 border border-green-500/20 shadow-[0_0_30px_rgba(34,197,94,0.2)]">
+                        <i data-lucide="mail-check" class="w-10 h-10 text-green-500"></i>
                     </div>
-                    <h2 class="text-2xl font-black text-white mb-3 text-center">¡Revisa tu correo!</h2>
-                    <p class="text-gray-400 text-sm leading-relaxed text-center">
-                        Hemos enviado un enlace mágico a:<br>
-                        <b class="text-primary-400 mt-2 inline-block">${email}</b>
+                    <h4 class="text-slate-900 dark:text-white font-black text-2xl mb-3">¡Enlace Enviado!</h4>
+                    <p class="text-slate-500 dark:text-gray-400 text-sm px-2 leading-relaxed font-medium mb-8">
+                        Hemos enviado las instrucciones a:<br>
+                        <b class="text-primary-500 text-base mt-1 inline-block">${email}</b>
                     </p>
-                    <button onclick="if(typeof closeForgotPasswordModal === 'function') closeForgotPasswordModal()" class="mt-8 w-full py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl font-bold transition-all border border-white/10">Entendido</button>
+                    <p class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest font-bold animate-pulse">
+                        Cerrando sesión de seguridad...
+                    </p>
                 </div>
             `;
-            if (typeof lucide !== 'undefined') lucide.createIcons();
+            lucide.createIcons();
+            setTimeout(() => window.location.reload(), 5000);
         }
 
     } catch (error) {
+        // ✨ Aquí es donde aparece tu notificación de "Correo no encontrado"
         if (typeof Notify !== 'undefined') {
-            Notify.show('Error', error.message, 'error');
+            Notify.show('Aviso de Seguridad', error.message, 'error');
         }
-        if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = originalBtnText;
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
+        btn.innerHTML = originalBtnText;
+        btn.disabled = false;
+        lucide.createIcons();
     }
 };
 
@@ -659,3 +849,5 @@ window.actualizarPasswordFinal = async function (e) {
         if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 };
+
+

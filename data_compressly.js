@@ -26,6 +26,29 @@ const DB = {
         return this.user.aiCredits > 0;
     },
 
+    // ⚡ DESCONECTAR ENERGÍA IA (Sincronizado con Supabase)
+    consumeCredit: async function () {
+        if (this.user.aiCredits > 0) {
+            // 1. Descontamos en la pantalla al instante
+            this.user.aiCredits -= 1;
+            this.updateUI();
+
+            // 2. Le avisamos a Supabase para evitar el "Hack de F5"
+            const userIdDisplay = document.getElementById('userInternalIdDisplay');
+            const userId = userIdDisplay ? userIdDisplay.getAttribute('data-uuid') : null;
+
+            if (userId && userId !== '---' && typeof supabaseClient !== 'undefined') {
+                try {
+                    await supabaseClient.rpc('descontar_energia_ia', {
+                        usuario_id: userId
+                    });
+                } catch (e) {
+                    console.error("Error al sincronizar consumo de IA:", e);
+                }
+            }
+        }
+    },
+
     // 🎨 MOTOR DE INTERFAZ DINÁMICA
     updateUI: function () {
         // 1. Actualizar Contadores de Energía
@@ -123,4 +146,166 @@ const DB = {
 window.setPlan = function (nuevoPlan) {
     DB.user.plan = nuevoPlan;
     DB.updateUI();
+};
+
+// 📊 MÓDULO MAESTRO: CARGAR ESTADÍSTICAS E HISTORIAL DESDE LA NUBE
+window.cargarHistorialPerfil = async function () {
+    const userIdDisplay = document.getElementById('userInternalIdDisplay');
+    const userId = userIdDisplay ? userIdDisplay.getAttribute('data-uuid') : null;
+
+    const statsCol = document.getElementById('profileStatsColumn');
+    const authCol = document.getElementById('profileAuthColumn');
+    const brandCol = document.getElementById('profileBrandColumn');
+
+    // 🚀 MODO INVITADO: Ocultar estadísticas y mostrar el panel de la marca
+    if (!userId || userId === '---' || userId === 'Cargando...' || typeof supabaseClient === 'undefined') {
+        if (statsCol) {
+            statsCol.classList.add('hidden');
+            statsCol.classList.remove('md:flex', 'flex');
+        }
+        if (brandCol) {
+            // Aseguramos que se oculte en móvil (hidden) pero se muestre en PC (md:flex)
+            brandCol.classList.add('hidden');
+            brandCol.classList.add('md:flex');
+        }
+        if (authCol) {
+            authCol.classList.remove('md:w-full');
+            authCol.classList.add('md:w-[45%]');
+        }
+        return; // Terminamos aquí, no hay nada que buscar en la base de datos
+    }
+
+    try {
+        // 🔓 MODO USUARIO: Expande el modal a dos columnas para mostrar estadísticas
+        if (statsCol) {
+            statsCol.classList.remove('hidden');
+            statsCol.classList.add('md:flex');
+        }
+        if (brandCol) {
+            brandCol.classList.add('hidden');
+            brandCol.classList.remove('md:flex');
+        }
+        if (authCol) {
+            authCol.classList.remove('md:w-full');
+            authCol.classList.add('md:w-[45%]');
+        }
+
+        let statsDiv = document.getElementById('compresslyStatsContainer');
+        if (!statsDiv) return;
+
+        // 1. TRAEMOS SOLO LAS ESTADÍSTICAS (La actividad ahora vive en el Modal)
+        const { data: stats, error } = await supabaseClient.from('api_clients')
+            .select('total_imagenes_procesadas, total_ahorro_bytes, stat_webp, stat_jpg, stat_png')
+            .eq('id', userId).single();
+
+        if (error) throw new Error("Error en sincronía");
+
+        // 🚀 SINCRONIZACIÓN GLOBAL: Actualizamos el cintillo superior automáticamente
+        localStorage.setItem('compressly_total_saved', stats.total_ahorro_bytes || 0);
+        if (typeof updateGlobalImpact === 'function') {
+            updateGlobalImpact(0);
+        }
+
+        // 2. RENDERIZAMOS EL DISEÑO COMPACTO (Bento Grid Style)
+        let htmlContent = `
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <div class="bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 rounded-2xl p-4 flex flex-col justify-between shadow-sm relative overflow-hidden group hover:border-primary-500/30 transition-all">
+                        <div class="flex items-center gap-2 mb-2 relative z-10">
+                            <i data-lucide="image" class="w-4 h-4 text-primary-500"></i>
+                            <h3 class="text-slate-500 dark:text-gray-400 font-black text-[10px] uppercase tracking-widest">Procesadas</h3>
+                        </div>
+                        <span class="text-2xl font-black text-slate-900 dark:text-white relative z-10">${stats.total_imagenes_procesadas || 0}</span>
+                    </div>
+                    
+                    <div class="bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 rounded-2xl p-4 flex flex-col justify-between shadow-sm relative overflow-hidden group hover:border-emerald-500/30 transition-all">
+                        <div class="flex items-center gap-2 mb-2 relative z-10">
+                            <i data-lucide="leaf" class="w-4 h-4 text-emerald-500"></i>
+                            <h3 class="text-slate-500 dark:text-gray-400 font-black text-[10px] uppercase tracking-widest">Ahorro</h3>
+                        </div>
+                        <div class="relative z-10 flex items-baseline gap-1">
+                            <span class="text-2xl font-black text-slate-900 dark:text-white">${(stats.total_ahorro_bytes / 1024 / 1024).toFixed(1)}</span>
+                            <span class="text-[10px] font-bold text-emerald-500">MB</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="openActivityModal()" class="w-full bg-transparent hover:bg-slate-100 dark:hover:bg-white/[0.05] border border-transparent rounded-xl px-2 py-2.5 mb-5 flex items-center justify-between transition-all active:scale-[0.98] group">
+                    <div class="flex items-center gap-2 text-slate-500 dark:text-gray-400 group-hover:text-primary-500 transition-colors">
+                        <i data-lucide="history" class="w-4 h-4"></i>
+                        <span class="text-[11px] font-bold uppercase tracking-widest">Ver Historial de Actividad</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 group-hover:translate-x-1 group-hover:text-primary-500 transition-all"></i>
+                </button>
+            `;
+
+        statsDiv.innerHTML = htmlContent;
+
+        // 📊 4. MATEMÁTICA Y ACTUALIZACIÓN DE BARRAS DE FORMATO
+        const sWebp = stats.stat_webp || 0;
+        const sJpg = stats.stat_jpg || 0;
+        const sPng = stats.stat_png || 0;
+        const totalFormatos = sWebp + sJpg + sPng;
+
+        const pctWebp = totalFormatos > 0 ? Math.round((sWebp / totalFormatos) * 100) : 0;
+        const pctJpg = totalFormatos > 0 ? Math.round((sJpg / totalFormatos) * 100) : 0;
+        const pctPng = totalFormatos > 0 ? Math.round((sPng / totalFormatos) * 100) : 0;
+
+        const statTotal = document.getElementById('statTotalImages');
+        if (statTotal) statTotal.innerText = stats.total_imagenes_procesadas || 0;
+
+        const barWebp = document.getElementById('barWebp');
+        const txtWebp = document.getElementById('statWebpPct');
+        if (barWebp && txtWebp) { barWebp.style.width = pctWebp + '%'; txtWebp.innerText = pctWebp + '%'; }
+
+        const barJpg = document.getElementById('barJpg');
+        const txtJpg = document.getElementById('statJpgPct');
+        if (barJpg && txtJpg) { barJpg.style.width = pctJpg + '%'; txtJpg.innerText = pctJpg + '%'; }
+
+        const barPng = document.getElementById('barPng');
+        const txtPng = document.getElementById('statPngPct');
+        if (barPng && txtPng) { barPng.style.width = pctPng + '%'; txtPng.innerText = pctPng + '%'; }
+
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    } catch (e) { console.error("Error cargando historial:", e); }
+};
+
+// ☁️ ==========================================
+// SINCRONIZACIÓN DE COMPRESIÓN CON SUPABASE 🚀
+// ==========================================
+window.registrarCompresionEnNube = async function (formato, bytesAhorrados, nombreArchivo) {
+    // 1. Verificamos si hay sesión activa 🕵️‍♂️ (Evita errores si un invitado comprime)
+    if (typeof supabaseClient === 'undefined') return;
+    const { data: sessionData } = await supabaseClient.auth.getSession();
+    if (!sessionData || !sessionData.session) return;
+
+    const userId = sessionData.session.user.id;
+
+    // 2. Preparamos los datos matemáticos para tus columnas 🧮
+    let cant_webp = formato.toLowerCase() === 'webp' ? 1 : 0;
+    let cant_jpg = (formato.toLowerCase() === 'jpg' || formato.toLowerCase() === 'jpeg') ? 1 : 0;
+    let cant_png = formato.toLowerCase() === 'png' ? 1 : 0;
+
+    try {
+        // ⚡ LLAMAMOS A TU FUNCIÓN SQL
+        const { error } = await supabaseClient.rpc('registrar_compresion_exitosa', {
+            u_id: userId,
+            tipo_proceso: 'Compresión Web',
+            info_archivo: `Archivo: ${nombreArchivo || 'Imagen'}`,
+            bytes_ahorrados: bytesAhorrados,
+            cant_webp: cant_webp,
+            cant_jpg: cant_jpg,
+            cant_png: cant_png
+        });
+
+        if (error) {
+            console.error("❌ Error guardando en Supabase:", error.message);
+        } else {
+            console.log("☁️✅ ¡Estadísticas guardadas en la Nube con éxito!");
+            // 🔄 Refrescamos el perfil de fondo silenciosamente para que los números suban al instante
+            if (typeof cargarHistorialPerfil === 'function') cargarHistorialPerfil();
+        }
+    } catch (e) {
+        console.error("❌ Fallo crítico de conexión al intentar guardar stats:", e);
+    }
 };

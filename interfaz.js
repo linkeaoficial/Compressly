@@ -543,3 +543,113 @@ window.calcularCalidadOptima = function (event) {
         }
     }, 15);
 };
+
+// =====================================================================
+// 🚥 FUNCIONALIDAD: MEDIDOR DE FUERZA DE CONTRASEÑA EN TIEMPO REAL
+// =====================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    document.body.addEventListener('input', (e) => {
+        if (e.target && e.target.id === 'authPassword') {
+
+            // Solo activamos la barra si estamos en el modo de registro
+            if (typeof currentAuthMode !== 'undefined' && currentAuthMode !== 'register') return;
+
+            const val = e.target.value;
+            let strength = 0;
+
+            if (val.length >= 8) strength++;
+            if (/[A-Z]/.test(val)) strength++;
+            if (/[a-z]/.test(val)) strength++;
+            if (/[0-9]/.test(val) || /[^A-Za-z0-9]/.test(val)) strength++;
+
+            const b1 = document.getElementById('strBar1');
+            const b2 = document.getElementById('strBar2');
+            const b3 = document.getElementById('strBar3');
+            const b4 = document.getElementById('strBar4');
+            const text = document.getElementById('passwordStrengthText');
+
+            if (!b1) return;
+
+            // 🛠️ CLASES BASE: Separamos la base del color para evitar conflictos de Tailwind
+            const baseClass = 'h-full flex-1 rounded-full transition-colors duration-300';
+            const offClass = `${baseClass} bg-slate-200 dark:bg-white/10`; // Color apagado
+
+            // 🧹 Limpiamos todas las barras al estado apagado
+            [b1, b2, b3, b4].forEach(b => b.className = offClass);
+
+            // 🎨 Pintamos reemplazando la clase completa
+            if (val.length === 0) {
+                text.innerText = 'Seguridad: Ninguna';
+                text.className = 'text-[9px] font-bold text-gray-400 uppercase tracking-widest text-right translate-y-[6px]';
+            } else if (strength === 1) {
+                b1.className = `${baseClass} bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]`; // 🔴 Rojo + Brillo
+                text.innerText = 'Seguridad: Débil';
+                text.className = 'text-[9px] font-bold text-red-500 uppercase tracking-widest text-right translate-y-[6px]';
+            } else if (strength === 2) {
+                b1.className = `${baseClass} bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.5)]`; // 🟠 Naranja
+                b2.className = `${baseClass} bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.5)]`;
+                text.innerText = 'Seguridad: Regular';
+                text.className = 'text-[9px] font-bold text-orange-500 uppercase tracking-widest text-right translate-y-[6px]';
+            } else if (strength === 3) {
+                b1.className = `${baseClass} bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.5)]`; // 🟡 Amarillo
+                b2.className = `${baseClass} bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.5)]`;
+                b3.className = `${baseClass} bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.5)]`;
+                text.innerText = 'Seguridad: Buena';
+                text.className = 'text-[9px] font-bold text-yellow-500 uppercase tracking-widest text-right translate-y-[6px]';
+            } else if (strength >= 4) {
+                b1.className = `${baseClass} bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]`; // 🟢 Verde
+                b2.className = `${baseClass} bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]`;
+                b3.className = `${baseClass} bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]`;
+                b4.className = `${baseClass} bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)]`;
+                text.innerText = 'Seguridad: Fuerte 🛡️';
+                text.className = 'text-[9px] font-bold text-green-500 uppercase tracking-widest text-right translate-y-[6px]';
+            }
+        }
+    });
+});
+
+// =====================================================================
+// 👤 INTERFAZ INTELIGENTE: BOTÓN DE PERFIL / INICIAR SESIÓN
+// =====================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Esperamos un instante para asegurar que auth.js y Supabase ya estén listos
+    setTimeout(() => {
+        if (typeof supabaseClient !== 'undefined') {
+            supabaseClient.auth.onAuthStateChange((event, session) => {
+                const isLoggedIn = !!session;
+                const btnDesktop = document.getElementById('btnProfileDesktop');
+                const btnMobile = document.getElementById('btnProfileMobile');
+
+                if (isLoggedIn) {
+                    // 🟢 MODO CONECTADO: Muestra "Mi Perfil" e indicador en línea
+                    if (btnDesktop) {
+                        btnDesktop.title = "Mi Perfil";
+                        btnDesktop.classList.add('relative');
+                        btnDesktop.innerHTML = `
+                            <i data-lucide="user" class="w-4 h-4 lg:w-5 lg:h-5"></i>
+                            <span class="absolute top-[2px] right-[2px] w-2.5 h-2.5 bg-green-500 border-2 border-slate-100 dark:border-[#18181b] rounded-full shadow-sm"></span>
+                        `;
+                    }
+                    if (btnMobile) {
+                        btnMobile.innerHTML = '<i data-lucide="user" class="w-5 h-5 text-primary-500"></i> Mi Perfil';
+                    }
+                } else {
+                    // 🔴 MODO DESCONECTADO: Mantiene icono "user" pero cambia título/texto
+                    if (btnDesktop) {
+                        btnDesktop.title = "Iniciar Sesión";
+                        btnDesktop.classList.remove('relative');
+                        // Mantenemos el icono de usuario original
+                        btnDesktop.innerHTML = '<i data-lucide="user" class="w-4 h-4 lg:w-5 lg:h-5 text-primary-500"></i>';
+                    }
+                    if (btnMobile) {
+                        // Mantenemos el icono de usuario original
+                        btnMobile.innerHTML = '<i data-lucide="user" class="w-5 h-5 text-primary-500"></i> Iniciar Sesión';
+                    }
+                }
+
+                // Refrescar los iconos para que aparezcan correctamente
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            });
+        }
+    }, 500);
+});
