@@ -9,6 +9,23 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Barra de scroll esmeralda exclusiva para la Documentación */
+        ::-webkit-scrollbar-thumb {
+            background: rgba(16, 185, 129, 0.5) !important;
+            border: 4px solid #050508 !important;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(16, 185, 129, 0.9) !important;
+        }
+
+        /* Forzar bordes e iluminación esmeralda en los contenedores (bento-cards) */
+        .bento-card:hover {
+            border-color: rgba(16, 185, 129, 0.4) !important;
+            box-shadow: 0 8px 32px rgba(16, 185, 129, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+        }
+    </style>
 </head>
 
 <body class="bg-[#050508] text-slate-300 antialiased selection:bg-emerald-500/30 selection:text-emerald-200">
@@ -78,23 +95,22 @@
             <div class="bg-[#0D0D12] border border-white/10 rounded-2xl overflow-hidden mb-6 shadow-2xl">
                 <div class="flex items-center justify-between px-4 py-2 bg-white/5 border-b border-white/10">
                     <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Ejemplo de Petición
-                        (Node.js)</span>
+                        (Binario Crudo)</span>
                     <span class="px-2 py-1 text-[10px] font-bold bg-emerald-500 text-black rounded uppercase">POST
-                        /v1/optimize</span>
+                        /</span>
                 </div>
                 <div class="p-6 overflow-x-auto text-sm font-mono leading-relaxed text-slate-300">
-                    <pre><code><span class="text-purple-400">const</span> response = <span class="text-blue-400">await</span> fetch(<span class="text-green-300">'https://api.compressly.com/v1/optimize'</span>, {
+                    <pre><code><span class="text-slate-500">// Leemos la imagen directamente como un Buffer (Cero Base64)</span>
+<span class="text-purple-400">const</span> fs = <span class="text-blue-400">require</span>(<span class="text-green-300">'fs'</span>);
+<span class="text-purple-400">const</span> rawImageBuffer = fs.<span class="text-blue-400">readFileSync</span>(<span class="text-green-300">'./producto.jpg'</span>);
+
+<span class="text-purple-400">const</span> response = <span class="text-blue-400">await</span> fetch(<span class="text-green-300">'https://api.compressly.com'</span>, {
   <span class="text-blue-300">method</span>: <span class="text-green-300">'POST'</span>,
   <span class="text-blue-300">headers</span>: {
     <span class="text-green-300">'Authorization'</span>: <span class="text-green-300">'Bearer CPLY-XXXXX'</span>,
-    <span class="text-green-300">'Content-Type'</span>: <span class="text-green-300">'application/json'</span>
+    <span class="text-green-300">'Content-Type'</span>: <span class="text-green-300">'image/jpeg'</span> <span class="text-slate-500">// Obligatorio enviar tipo imagen</span>
   },
-  <span class="text-blue-300">body</span>: JSON.stringify({
-    <span class="text-blue-300">image_base64</span>: <span class="text-green-300">"data:image/jpeg;base64,/9j/4AAQSkZJR..."</span>,
-    <span class="text-blue-300">target_format</span>: <span class="text-green-300">"webp"</span>,
-    <span class="text-blue-300">max_width</span>: <span class="text-orange-400">1200</span>,
-    <span class="text-blue-300">project_tag</span>: <span class="text-green-300">"whashopping-catalog"</span> <span class="text-slate-500">// Etiqueta de organización</span>
-  })
+  <span class="text-blue-300">body</span>: rawImageBuffer <span class="text-slate-500">// Se envía el binario directamente al Edge Worker</span>
 });</code></pre>
                 </div>
             </div>
@@ -109,13 +125,14 @@
                 </div>
                 <div class="p-6 overflow-x-auto text-sm font-mono leading-relaxed text-slate-300">
                     <pre><code>{
-  <span class="text-blue-300">"status"</span>: <span class="text-green-300">"success"</span>,
-  <span class="text-blue-300">"data"</span>: {
-    <span class="text-blue-300">"hosted_url"</span>: <span class="text-green-300">"https://cdn.compressly.com/r2/whashopping-catalog/img_9821.webp"</span>,
-    <span class="text-blue-300">"original_size_kb"</span>: <span class="text-orange-400">4500</span>,
-    <span class="text-blue-300">"compressed_size_kb"</span>: <span class="text-orange-400">125</span>,
-    <span class="text-blue-300">"savings_percent"</span>: <span class="text-orange-400">97.2</span>
-  }
+  <span class="text-blue-300">"status"</span>: <span class="text-green-300">"success ✅"</span>,
+  <span class="text-blue-300">"message"</span>: <span class="text-green-300">"¡Imagen procesada, triturada y asegurada en el búnker!"</span>,
+  <span class="text-blue-300">"archivo_guardado"</span>: <span class="text-green-300">"compressed-1715423-abc.webp"</span>,
+  <span class="text-blue-300">"link_descarga"</span>: <span class="text-green-300">"https://api.compressly.com/compressed-1715423-abc.webp"</span>,
+  <span class="text-blue-300">"peso_original"</span>: <span class="text-green-300">"4500.00 KB"</span>,
+  <span class="text-blue-300">"peso_final"</span>: <span class="text-green-300">"125.00 KB"</span>,
+  <span class="text-blue-300">"ahorro_porcentaje"</span>: <span class="text-green-300">"97%"</span>,
+  <span class="text-blue-300">"propietario"</span>: <span class="text-green-300">"Nombre de tu App"</span>
 }</code></pre>
                 </div>
             </div>
@@ -126,9 +143,9 @@
                 <i data-lucide="users" class="text-emerald-400"></i> Implementación en Portafolios (Linkea)
             </h2>
             <p class="text-sm text-slate-400 leading-relaxed mb-4">Si administras perfiles de usuarios (como en el
-                ecosistema <strong>Linkea</strong>), puedes usar el parámetro <code>quality: 80</code> y
-                <code>max_width: 400</code> para avatares. Tu servidor solo recibirá la <code>hosted_url</code>,
-                manteniendo tu base de datos extremadamente limpia y tus páginas cargando en milisegundos.
+                ecosistema <strong>Linkea</strong>), puedes enviar las fotos de perfil directamente a la API en formato
+                binario. Tu servidor solo recibirá el <code>link_descarga</code> con la imagen optimizada mediante
+                WebAssembly, manteniendo tu base de datos extremadamente limpia y tus páginas cargando en milisegundos.
             </p>
         </section>
 

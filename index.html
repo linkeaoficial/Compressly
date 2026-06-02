@@ -234,13 +234,18 @@
                     Funciona</a>
 
                 <a href="blog-compressly/blog.html"
-                    class="mobile-link block px-4 py-3 text-base font-bold text-primary-500 hover:text-white hover:bg-white/5 rounded-xl transition-colors">Blog</a>
+                    class="mobile-link block px-4 py-3 text-base font-bold text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-colors">Blog</a>
+
+                <a href="api.html"
+                    class="mobile-link flex items-center gap-2 px-4 py-3 text-base font-black text-emerald-500 hover:text-emerald-400 transition-colors">
+                    <i data-lucide="cloud-lightning" class="w-5 h-5"></i> API Cloud
+                </a>
 
                 <a href="#privacidad"
                     class="mobile-link block px-4 py-3 text-base font-bold text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-colors">Privacidad</a>
 
                 <div id="globalImpactMobile"
-                    class="hidden items-center justify-center gap-2 px-4 py-3 mt-2 mb-2 bg-green-500/10 border border-green-500/20 rounded-xl transition-all duration-300">
+                    class="flex items-center justify-center gap-2 px-4 py-3 mt-2 mb-2 bg-green-500/10 border border-green-500/20 rounded-xl transition-all duration-300">
                     <i data-lucide="leaf" class="w-5 h-5 text-green-500"></i>
                     <span class="text-sm font-bold text-green-600 dark:text-green-400">
                         <span data-i18n="nav_impact_total">Impacto total:</span>
@@ -271,6 +276,7 @@
         <a href="#caracteristicas" class="scroll-dot" data-i18n="dot_features" data-tooltip="Características"></a>
         <a href="#como-funciona" class="scroll-dot" data-i18n="dot_how" data-tooltip="Cómo Funciona"></a>
         <a href="#testimonios" class="scroll-dot" data-i18n="dot_test" data-tooltip="Testimonios"></a>
+        <a href="#api-cloud" class="scroll-dot" data-i18n="dot_api" data-tooltip="API Cloud"></a>
         <a href="#precios" class="scroll-dot" data-i18n="dot_price" data-tooltip="Planes PRO"></a>
         <a href="#faq" class="scroll-dot" data-i18n="dot_faq" data-tooltip="Preguntas"></a>
     </div>
@@ -278,6 +284,13 @@
     <main class="flex-grow relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12 md:py-16">
 
         <div class="text-center mb-16 relative z-20 px-4">
+
+            <a href="api.html"
+                class="hidden md:flex items-center justify-center gap-1.5 fixed top-24 right-3 md:right-4 px-3.5 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500/20 hover:scale-105 transition-all z-[100] shadow-[0_0_20px_rgba(16,185,129,0.15)] whitespace-nowrap backdrop-blur-md">
+                <i data-lucide="webhook" class="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 animate-pulse"></i>
+                API Devs
+            </a>
+
             <div class="mb-2 flex justify-center md:hidden">
                 <span data-i18n="beta_access"
                     class="px-3 py-1 text-[9px] font-black bg-primary-500/10 text-primary-500 dark:text-primary-400 rounded-full border border-primary-500/20 uppercase tracking-widest">
@@ -286,7 +299,7 @@
             </div>
 
             <h1
-                class="text-5xl md:text-7xl font-extrabold text-black dark:text-white mb-6 tracking-tighter leading-tight drop-shadow-lg transition-colors duration-300">
+                class="relative inline-block text-center text-5xl md:text-7xl font-extrabold text-black dark:text-white mb-6 tracking-tighter leading-tight drop-shadow-lg transition-colors duration-300">
 
                 <span data-i18n="hero_title_1">Compresión inteligente.</span><br class="block">
 
@@ -1068,6 +1081,114 @@
                 </div>
             </div>
 
+            <section id="api-cloud"
+                class="mt-32 py-24 relative z-20 border-t border-b border-white/5 bg-[#06060A]/60 backdrop-blur-3xl overflow-hidden scroll-mt-24">
+                <div
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none">
+                </div>
+
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div class="grid lg:grid-cols-2 gap-12 items-center">
+
+                        <div>
+                            <div
+                                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest mb-6">
+                                <i data-lucide="server" class="w-3.5 h-3.5 animate-pulse"></i> Para Desarrolladores y
+                                Startups
+                            </div>
+                            <h2
+                                class="text-4xl md:text-5xl font-black text-black dark:text-white tracking-tight mb-6 leading-tight">
+                                ¿Necesitas automatizar? <br>
+                                <span
+                                    class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500">Conecta
+                                    nuestra API Cloud.</span>
+                            </h2>
+                            <p class="text-gray-500 dark:text-slate-400 text-lg mb-8 leading-relaxed font-medium">
+                                Lleva el poder de optimización de Compressly directo a tu software, aplicación móvil o
+                                e-commerce. Envía imágenes crudas vía código y recibe URLs globales listas para
+                                almacenar en tu base de datos.
+                            </p>
+
+                            <div class="grid sm:grid-cols-2 gap-4 mb-10">
+                                <div
+                                    class="flex items-center gap-3 text-sm font-bold text-slate-800 dark:text-slate-200">
+                                    <div
+                                        class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                                        <i data-lucide="zap" class="w-4 h-4"></i>
+                                    </div>
+                                    Procesamiento Invisible en el Edge
+                                </div>
+                                <div
+                                    class="flex items-center gap-3 text-sm font-bold text-slate-800 dark:text-slate-200">
+                                    <div
+                                        class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                                        <i data-lucide="hard-drive" class="w-4 h-4"></i>
+                                    </div>
+                                    Hosting Permanente R2 Incluido
+                                </div>
+                            </div>
+
+                            <a href="api.html"
+                                class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-emerald-500 text-black font-black text-xs uppercase tracking-widest hover:bg-emerald-400 transition-all shadow-[0_10px_30px_rgba(16,185,129,0.25)] hover:shadow-[0_10px_40px_rgba(16,185,129,0.4)] hover:scale-[1.02] active:scale-95 group">
+                                Explorar API Cloud
+                                <i data-lucide="arrow-right"
+                                    class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+                            </a>
+                        </div>
+
+                        <div
+                            class="rounded-2xl bg-[#0D0D12] border border-white/10 shadow-2xl overflow-hidden font-mono text-xs text-slate-300 relative group">
+                            <div
+                                class="flex items-center justify-between px-4 py-3 bg-white/5 border-b border-white/10">
+                                <div class="flex gap-2">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-red-500/60"></div>
+                                    <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/60"></div>
+                                    <div class="w-2.5 h-2.5 rounded-full bg-green-500/60"></div>
+                                </div>
+                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Petición
+                                    HTTP Binaria</span>
+                                <div class="w-6"></div>
+                            </div>
+                            <div class="p-6 space-y-4">
+                                <div class="bg-black/30 p-4 rounded-xl border border-white/5">
+                                    <span class="text-purple-400">POST</span> <span
+                                        class="text-emerald-400">https://api.compressly.com</span>
+                                    <div class="text-slate-500 mt-1">// Body: rawImageBuffer (Cero Base64)</div>
+                                </div>
+                                <div class="flex items-center justify-center gap-2 my-4 relative">
+                                    <div class="absolute left-0 right-0 h-[1px] bg-white/5"></div>
+                                    <div
+                                        class="relative flex items-center gap-1.5 px-3 py-1 bg-[#13131A] border border-white/10 rounded-full shadow-md">
+                                        <span class="flex h-1.5 w-1.5 relative">
+                                            <span
+                                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                            <span
+                                                class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                                        </span>
+                                        <span
+                                            class="text-[9px] font-black tracking-widest uppercase text-slate-400">Processing
+                                            Stream</span>
+                                        <i data-lucide="chevron-down" class="w-3 h-3 text-emerald-400"></i>
+                                    </div>
+                                </div>
+                                <div class="bg-emerald-500/5 p-4 rounded-xl border border-emerald-500/20">
+                                    <div class="text-slate-400">{</div>
+                                    <div class="pl-4"><span class="text-purple-300">"status"</span>: <span
+                                            class="text-emerald-300">"success ✅"</span>,</div>
+                                    <div class="pl-4"><span class="text-purple-300">"link_descarga"</span>: <span
+                                            class="text-emerald-400">"https://api.compressly.com/img_opt.webp"</span>,
+                                    </div>
+                                    <div class="pl-4"><span class="text-purple-300">"ahorro_porcentaje"</span>: <span
+                                            class="text-orange-400">"79%"</span></div>
+                                    <div class="text-slate-400">}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
             <div id="precios" class="mt-32 pt-16 border-t border-white/5 scroll-mt-24">
                 <div class="text-center mb-16">
                     <h2 class="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-4"><span
@@ -1211,27 +1332,45 @@
 
                         <ul class="space-y-4 mb-8 flex-grow relative z-10">
                             <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
-                                <i data-lucide="server" class="w-5 h-5 text-purple-500 shrink-0"></i>
-                                <span data-i18n="plan_ultra_f1_new">100 imágenes API</b> /mes</span>
+                                <i data-lucide="zap" class="w-5 h-5 text-purple-500 shrink-0"></i>
+                                <span><b class="text-slate-900 dark:text-white">1,000 Créditos IA</b> incluidos</span>
                             </li>
+
                             <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
                                 <i data-lucide="ban" class="w-5 h-5 text-purple-500 shrink-0"></i>
                                 <span data-i18n="plan_ultra_f2_new">Experiencia 100% sin publicidad</span>
                             </li>
+
                             <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
                                 <i data-lucide="download-cloud" class="w-5 h-5 text-purple-500 shrink-0"></i>
                                 <span data-i18n="plan_ultra_f3_new">Descargas en Lote ultrarrápidas</span>
                             </li>
-                            <li
-                                class="ia-feature-oculta flex items-start gap-3 text-sm font-bold text-purple-700 dark:text-purple-300 bg-purple-500/10 p-3 rounded-xl border border-purple-500/20 shadow-sm opacity-80">
-                                <i data-lucide="sparkles" class="w-5 h-5 text-purple-500 shrink-0"></i>
-                                <span data-i18n="plan_ultra_feat5">(Próximamente: Auto-SEO IA)</span>
+
+                            <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                                <i data-lucide="image" class="w-5 h-5 text-purple-500 shrink-0 mt-0.5"></i>
+                                <div class="flex flex-col">
+                                    <span>Auto-SEO: Etiquetas ALT</span>
+                                    <span
+                                        class="text-[11px] font-medium text-gray-500 dark:text-gray-400 mt-0.5 leading-tight">Visión
+                                        IA para Google Images (BETA)</span>
+                                </div>
                             </li>
+
+                            <li class="flex items-start gap-3 text-sm font-bold text-slate-700 dark:text-gray-300">
+                                <i data-lucide="tags" class="w-5 h-5 text-purple-500 shrink-0 mt-0.5"></i>
+                                <div class="flex flex-col">
+                                    <span>Auto-SEO: Nombres de Archivo</span>
+                                    <span
+                                        class="text-[11px] font-medium text-gray-500 dark:text-gray-400 mt-0.5 leading-tight">Renombrado
+                                        con Keywords (BETA)</span>
+                                </div>
+                            </li>
+
                             <li
                                 class="flex items-start gap-3 text-sm font-bold text-white bg-primary-500/20 p-3 rounded-xl border border-primary-500/40 shadow-sm">
-                                <i data-lucide="gift"
-                                    class="w-5 h-5 text-white shrink-0 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]"></i>
-                                <span>Bono: <b class="text-white">100 Créditos API</b></span>
+                                <i data-lucide="webhook"
+                                    class="w-5 h-5 text-white shrink-0 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] mt-0.5"></i>
+                                <span><b class="text-white">100 Créditos API</b> / mes</span>
                             </li>
                         </ul>
 
@@ -1260,7 +1399,7 @@
                             <div class="flex items-baseline gap-1">
                                 <span data-i18n="plan_api_from" class="text-xl font-bold text-gray-500">Desde</span>
                                 <span data-i18n="plan_api_price"
-                                    class="text-4xl font-black text-slate-900 dark:text-white">$14.99</span>
+                                    class="text-4xl font-black text-slate-900 dark:text-white">$24.99</span>
                             </div>
                             <span data-i18n="plan_api_time" class="text-gray-500 font-bold text-sm">/ al mes</span>
                         </div>
@@ -1372,6 +1511,27 @@
                             fecha. El Escudo Anti-Rastreo (Función PRO) borra todos esos datos para que puedas subir tu
                             imagen a internet sin revelar tu ubicación.</p>
                     </details>
+
+                    <details
+                        class="group bg-slate-100 dark:bg-black/30 border border-slate-200 dark:border-white/5 rounded-2xl p-6 transition-all hover:border-primary-500/30 cursor-pointer">
+                        <summary
+                            class="flex justify-between items-center font-bold text-slate-800 dark:text-white outline-none">
+                            <span data-i18n="faq_api_q">¿Ofrecen una API para integrar en mis propios proyectos?</span>
+                            <i data-lucide="chevron-down"
+                                class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform"></i>
+                        </summary>
+                        <p data-i18n="faq_api_a"
+                            class="text-slate-500 dark:text-gray-400 text-sm font-medium mt-4 leading-relaxed">
+                            ¡Sí! Contamos con la <b class="text-slate-900 dark:text-white">Compressly Cloud API</b>, un
+                            motor universal diseñado para desarrolladores y agencias.
+                            A través del <b class="text-emerald-500">Plan API Full-Stack</b>, puedes <b
+                                class="text-slate-900 dark:text-white">automatizar la optimización de imágenes a gran
+                                escala sin intervención manual</b>
+                            y también <b class="text-slate-900 dark:text-white">alojar las imágenes en nuestra base de
+                                datos</b>. Es la herramienta perfecta para integrar potencia y almacenamiento
+                            directamente en tus propios servidores o aplicaciones.
+                        </p>
+                    </details>
                 </div>
             </div>
 
@@ -1450,6 +1610,7 @@
     <script src="chatbot-Compressly.js"></script>
     <script src="data_compressly.js"></script>
     <script src="auth.js"></script>
+    <script src="cuenta.js"></script>
     <script src="script.js"></script>
 
     <script>

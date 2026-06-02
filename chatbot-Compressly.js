@@ -324,13 +324,19 @@ html:not(.dark) .ai-input-area { background: rgba(255,255,255,0.5); }
 @media (max-width: 480px) {
     .ai-chat-window {
         width: 100vw; 
-        height: 100%; height: 100dvh; /* 🚀 FIX: Alto dinámico. Se adapta perfectamente al teclado */
+        height: 100%; height: 100dvh;
         top: 0; left: 0; right: 0; bottom: 0;
         border-radius: 0; border: none; 
         max-height: 100%; max-height: 100dvh; 
         z-index: 100000;
     }
-    .ai-header { padding-top: 15px; }
+    
+    /* 🚀 FIX: Damos espacio a la derecha para que no choque con la X */
+    .ai-header { padding-top: 15px; padding-right: 55px; } 
+
+    /* 🚀 FIX: Ocultamos el texto y dejamos solo el ícono del humano */
+    #aiHumanSupportBtn .txt-humano { display: none; }
+    #aiHumanSupportBtn { padding: 6px 8px !important; margin-right: 5px; }
 
     /* 🚀 Botón flotante normal cuando está cerrado */
     .ai-toggler { bottom: 20px; right: 20px; z-index: 100001; }
@@ -377,10 +383,14 @@ body.chat-active.mobile-no-scroll {
                 <path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/>
             </svg>
         </div>
-        <div class="header-info">
+        <div class="header-info" style="flex: 1;">
             <h2 data-i18n="bot_title">Asistente Virtual</h2>
             <p><span class="status-pulse"></span> <span data-i18n="bot_status">Sistema en línea</span></p>
         </div>
+        <button id="aiHumanSupportBtn" title="Hablar con un Humano" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #EF4444; border-radius: 8px; padding: 6px 10px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 4px; z-index: 10;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> 
+            <span class="txt-humano">Humano</span>
+        </button>
     </header>
         <div class="ai-chatbox custom-scrollbar pr-2" id="aiChatbox"></div>
         
@@ -478,88 +488,194 @@ body.chat-active.mobile-no-scroll {
     window.addEventListener('scroll', handleScrollAI);
     handleScrollAI();
 
-    // 🚀 Función para añadir mensajes al chat
-    function appendMessage(text, isUser = false) {
-        // 🚀 MAGIA: Convierte los **asteriscos** en negritas con color morado brillante
+    // 🧠 Memoria global y estado de soporte
+    window.botChatHistory = window.botChatHistory || [];
+    let isWaitingForEmail = false;
+    window.isWaitingForHumanContext = false; // 🚀 Nivel Pro: Esperamos a que escriban
+
+    // 🚀 Función para añadir mensajes al chat (Versión Pro)
+    function appendMessage(text, isUser = false, isHtmlCard = false) {
+        if (!isHtmlCard) {
+            window.botChatHistory.push({ role: isUser ? 'Usuario' : 'Asistente', content: text });
+        }
+
         const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<b class="font-extrabold text-primary-400">$1</b>');
 
         const msgDiv = document.createElement('div');
         if (isUser) {
             msgDiv.className = 'msg-outgoing';
-            msgDiv.innerHTML = `<div class="msg-bubble">${text}</div>`; // El texto del usuario queda igual
+            msgDiv.innerHTML = `<div class="msg-bubble">${text}</div>`;
         } else {
             msgDiv.className = 'msg-incoming';
             msgDiv.innerHTML = `
                 <div class="msg-avatar"></div>
-                <div class="msg-bubble">${formattedText}</div> 
+                <div class="msg-bubble" ${isHtmlCard ? 'style="background: transparent; border: none; padding: 0; max-width: 100%; width: 100%;"' : ''}>
+                    ${isHtmlCard ? text : formattedText}
+                </div> 
             `;
         }
         aiChatbox.appendChild(msgDiv);
-        aiChatbox.scrollTop = aiChatbox.scrollHeight; // Bajar el scroll automáticamente
+        aiChatbox.scrollTop = aiChatbox.scrollHeight;
     }
 
-    // 🚀 Lógica de Enviar Mensaje a Llama 3.1
+    // 🎫 FUNCIÓN ENTERPRISE: GENERADOR DE TICKETS VISUALES
+    async function crearTicketSoporteAI(userId, userEmail, prioridad) {
+        try {
+            if (typeof supabaseClient === 'undefined') return;
+            const { data, error } = await supabaseClient.from('tickets_soporte').insert([
+                {
+                    usuario_id: userId,
+                    correo_contacto: userEmail,
+                    historial_chat: JSON.stringify(window.botChatHistory),
+                    prioridad: prioridad
+                }
+            ]).select();
+
+            if (error) throw error;
+            const shortId = data[0].id.split('-')[0].toUpperCase();
+
+            // ⏳ MAGIA UX: Pausa psicológica de 1.5 segundos para que se sienta real
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            const ticketCard = `
+                <div style="background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 20px; padding: 20px; margin: 10px 0; border-left: 4px solid #8B5CF6;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span style="font-weight: 900; color: #8B5CF6; font-size: 11px; letter-spacing: 1px; text-transform: uppercase;">Ticket de Soporte</span>
+                        <span style="background: rgba(139, 92, 246, 0.1); color: #8B5CF6; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800;">#${shortId}</span>
+                    </div>
+                    <p style="font-size: 13px; font-weight: 600; color: var(--text-main); line-height: 1.4; margin-bottom: 15px;">
+                        He escalado esta conversación al **equipo técnico / CTO**. Recibirás respuesta pronto.
+                    </p>
+                    <div style="display: flex; gap: 10px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; font-size: 11px; color: var(--text-muted);">
+                        <span style="display: flex; align-items: center; gap: 4px;"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 2-4h</span>
+                        <span style="display: flex; align-items: center; gap: 4px;"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg> ${userEmail}</span>
+                    </div>
+                </div>
+            `;
+            appendMessage(ticketCard, false, true);
+            if (typeof Notify !== 'undefined') Notify.show('Ticket Enviado', 'El equipo revisará tu caso.', 'success');
+        } catch (e) {
+            console.error("Error Ticket Bot:", e);
+        }
+    }
+
+    // 🚀 Lógica Maestra de Envío y Detección Inteligente
     async function sendMessageToAI() {
         const text = aiInput.value.trim();
+
+        // 🛑 ESCUDO UX: NUNCA avanzamos si la caja de texto está vacía
         if (!text) return;
 
-        // 📡 ESCUDO OFFLINE: Si no hay internet, protegemos la experiencia
         if (!navigator.onLine) {
-            appendMessage("¡Ups! Parece que estás desconectado 📡. Aún puedes comprimir imágenes porque mi motor es 100% local, pero mi cerebro de IA requiere internet para charlar.");
+            appendMessage("¡Ups! Estás desconectado 📡. La IA necesita internet.");
             aiInput.value = '';
             return;
         }
 
-        // 1. Mostrar mensaje del usuario
+        // Siempre mostramos lo que escribió el usuario
         appendMessage(text, true);
+
         aiInput.value = '';
         aiSendBtn.disabled = true;
 
-        // 2. Mostrar "Escribiendo..."
+        // 🎯 1. CAPTURA DE CORREO PARA VISITANTES (Último paso del flujo)
+        if (isWaitingForEmail) {
+            const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+            if (emailRegex.test(text)) {
+                isWaitingForEmail = false;
+                appendMessage("¡Correo verificado! Escalando tu caso de inmediato... ⚙️");
+                await crearTicketSoporteAI(null, text, 'Alta');
+            } else {
+                appendMessage("Por favor, escribe un **correo electrónico válido** para que el equipo pueda contactarte.");
+            }
+            aiSendBtn.disabled = false;
+            return;
+        }
+
+        // 🎯 2. CAPTURA DE CONTEXTO HUMANO (La Solución UX)
+        if (window.isWaitingForHumanContext) {
+            window.isWaitingForHumanContext = false; // Apagamos el modo espera
+
+            const userIdDisplay = document.getElementById('userInternalIdDisplay');
+            const userId = userIdDisplay ? userIdDisplay.getAttribute('data-uuid') : null;
+            const userEmailEl = document.getElementById('userEmailDisplay');
+            const userEmail = (userEmailEl && userEmailEl.innerText !== 'usuario@ejemplo.com') ? userEmailEl.innerText : null;
+
+            if (userId && userId !== '---' && userEmail) {
+                // Logueado: Creamos el ticket directo con su mensaje
+                appendMessage("¡Entendido! Creando tu ticket de soporte con esta información... 🚀");
+                await crearTicketSoporteAI(userId, userEmail, 'Alta');
+            } else {
+                // Visitante: Le pedimos el correo
+                isWaitingForEmail = true;
+                appendMessage("¡Anotado! 📝 Para que el equipo pueda darte una respuesta, por favor **escribe tu correo electrónico**.");
+            }
+            aiSendBtn.disabled = false;
+            return;
+        }
+
+        // 3. Mostrar "Escribiendo..."
         const typing = document.createElement('div');
         typing.className = 'typing-box';
         typing.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
         aiChatbox.appendChild(typing);
         aiChatbox.scrollTop = aiChatbox.scrollHeight;
 
-        // 3. Llamar a Cloudflare
+        // 🧠 LLAMADA A CLOUDFLARE (Cerebro IA)
         try {
+            // 🧠 Extraemos los últimos 4 mensajes del historial para no gastar de más
+            const ultimosMensajes = window.botChatHistory.slice(-4);
+
             const response = await fetch(WORKER_URL, {
                 method: "POST",
                 body: JSON.stringify({
                     prompt: text,
-                    // 🚀 AQUÍ ESTÁ EL SECRETO: Enviamos el estado real y si está leyendo el blog
-                    isPremium: typeof isPremiumUser !== 'undefined' ? isPremiumUser : false,
+                    historial: ultimosMensajes, // 🧠 ¡Aquí inyectamos la memoria!
+                    // 👑 Leemos la variable global de auth.js: Si no es 'free', es Premium
+                    isPremium: typeof window.currentUserPlan !== 'undefined' && window.currentUserPlan !== 'free',
+                    // 🚀 Buscamos si tiene alguno de los 3 planes que incluyen API en tu base de datos
+                    isApiUser: typeof window.currentUserPlan !== 'undefined' && ['api_fullstack', 'enterprise'].includes(window.currentUserPlan),
                     isBlog: !!document.querySelector('article'),
                     articleText: document.querySelector('article') ? document.querySelector('article').innerText.substring(0, 15000) : ""
                 }),
                 headers: { "Content-Type": "application/json" }
             });
             const data = await response.json();
+            typing.remove();
 
-            typing.remove(); // Quitar escribiendo
+            if (data.response) {
+                let respuestaBot = data.response;
 
-            // 🛡️ ESCUDO ANTI-UNDEFINED
-            if (data.error) {
-                appendMessage("¡Ups! Mi sistema experimentó un pequeño fallo técnico 🔌🤖. ¡Intenta en unos segundos!");
-            } else if (data.response) {
-                appendMessage(data.response); // Mostrar respuesta correcta
+                // 🕵️‍♂️ MAGIA ENTERPRISE: Detectamos la etiqueta oculta del Worker
+                if (respuestaBot.includes('[[ESCALAR]]')) {
+                    respuestaBot = respuestaBot.replace('[[ESCALAR]]', '').trim();
+                    if (respuestaBot !== '') appendMessage(respuestaBot);
+
+                    const userIdDisplay = document.getElementById('userInternalIdDisplay');
+                    const userId = userIdDisplay ? userIdDisplay.getAttribute('data-uuid') : null;
+                    const userEmailEl = document.getElementById('userEmailDisplay');
+                    const userEmail = (userEmailEl && userEmailEl.innerText !== 'usuario@ejemplo.com') ? userEmailEl.innerText : null;
+
+                    if (userId && userId !== '---' && userEmail) {
+                        await crearTicketSoporteAI(userId, userEmail, 'Alta');
+                    } else {
+                        isWaitingForEmail = true;
+                        appendMessage("Veo que necesitas ayuda especializada. 👨‍💻 Por favor, **escribe tu correo electrónico** para que un humano del equipo te contacte.");
+                    }
+                } else {
+                    appendMessage(respuestaBot);
+                }
             } else {
-                appendMessage("Recibí la señal, pero no pude procesar el texto 😵‍💫. ¿Me lo repites?");
+                appendMessage("Recibí la señal, pero no pude procesar el texto 😵‍💫.");
             }
-
             if (window.triggerVibration) window.triggerVibration([20, 30]);
 
         } catch (error) {
             typing.remove();
-            appendMessage("Lo siento, tuve un problema de conexión con la red principal. 😔📡 Intenta de nuevo.");
+            appendMessage("Problema de conexión con la red principal. 😔📡");
         }
         aiSendBtn.disabled = false;
-
-        // 🚀 MAGIA ANTI-TECLADO EN MÓVIL: Solo enfocamos si es pantalla de PC
-        if (window.innerWidth > 480) {
-            aiInput.focus();
-        }
+        if (window.innerWidth > 480) aiInput.focus();
     }
 
     // Eventos de enviar (Clic y tecla Enter)
@@ -567,6 +683,24 @@ body.chat-active.mobile-no-scroll {
     aiInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessageToAI();
     });
+
+    // 🔘 Evento del Botón Manual de Humano (Estrategia UX Segura)
+    const aiHumanBtn = document.getElementById('aiHumanSupportBtn');
+    if (aiHumanBtn) {
+        aiHumanBtn.addEventListener('click', () => {
+            // Evitar que el usuario pulse el botón si ya está en un proceso de soporte
+            if (isWaitingForEmail || window.isWaitingForHumanContext) return;
+
+            window.isWaitingForHumanContext = true;
+            appendMessage("Has solicitado asistencia humana. 👨‍💻 Por favor, **escribe tu duda o problema aquí abajo** para abrir tu ticket de soporte.");
+
+            // Auto-enfocar el teclado en PC para mayor comodidad
+            if (window.innerWidth > 480) {
+                const inputEl = document.getElementById('aiInput') || aiInput;
+                if (inputEl) inputEl.focus();
+            }
+        });
+    }
 
     aiToggler.addEventListener('click', () => {
         document.body.classList.toggle('chat-active');

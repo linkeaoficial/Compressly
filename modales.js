@@ -275,7 +275,10 @@ const feedbackSelectLabel = document.getElementById('feedbackSelectLabel');
 const feedbackSelectArrow = document.getElementById('feedbackSelectArrow');
 const feedbackTypeHidden = document.getElementById('feedbackType');
 
-window.openFeedbackModal = function () {
+window.openFeedbackModal = function (fromTickets = false) {
+    // 🧠 Guardamos en la memoria global si venimos de la ventana de reportes
+    window.returnToTickets = fromTickets === true;
+
     feedbackModal.classList.remove('hidden');
     feedbackModal.classList.add('flex');
     document.body.style.overflow = 'hidden';
@@ -289,26 +292,50 @@ window.openFeedbackModal = function () {
         feedbackContent.classList.add('scale-100', 'opacity-100');
     }, 10);
 
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
     if (navigator.vibrate) navigator.vibrate([50, 50]);
 };
 
 window.closeFeedbackModal = function () {
     // Cerrar el dropdown si estaba abierto al cerrar el modal
-    feedbackSelectDropdown?.classList.remove('custom-select-dropdown-open');
-    feedbackSelectArrow?.classList.remove('custom-select-arrow-open');
+    const feedbackSelectDropdown = document.getElementById('feedbackSelectDropdown');
+    const feedbackSelectArrow = document.getElementById('feedbackSelectArrow');
 
-    feedbackContent.classList.remove('scale-100', 'opacity-100');
-    feedbackContent.classList.add('scale-95', 'opacity-0');
+    if (feedbackSelectDropdown) feedbackSelectDropdown.classList.remove('custom-select-dropdown-open');
+    if (feedbackSelectArrow) feedbackSelectArrow.classList.remove('custom-select-arrow-open');
 
-    setTimeout(() => {
-        feedbackModal.classList.add('hidden');
-        feedbackModal.classList.remove('flex');
-        document.body.style.overflow = '';
-        const botBtn = document.getElementById('aiToggler');
-        if (botBtn) botBtn.style.display = '';
-    }, 200);
-    if (navigator.vibrate) navigator.vibrate(20);
+    const modal = document.getElementById('feedbackModal');
+    const content = document.getElementById('feedbackContent');
+
+    if (modal && content) {
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+
+            // 🔙 LÓGICA DE RETORNO INTELIGENTE 2.0
+            if (window.returnToTickets) {
+                // 1. Si veníamos de los Reportes, lo volvemos a abrir automáticamente
+                window.returnToTickets = false; // Limpiamos la memoria
+                if (typeof openTicketsModal === 'function') openTicketsModal();
+            } else {
+                const profileModal = document.getElementById('profileModal');
+                if (!profileModal || profileModal.classList.contains('hidden')) {
+                    // 2. Si venimos desde el Footer, liberamos todo
+                    document.body.style.overflow = '';
+                    const botBtn = document.getElementById('aiToggler');
+                    if (botBtn) botBtn.style.display = '';
+                } else {
+                    // 3. Por si acaso el perfil estaba de fondo
+                    profileModal.classList.remove('opacity-0');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+        }, 200);
+        if (navigator.vibrate) navigator.vibrate(20);
+    }
 };
 
 // Manejo del selector personalizado
@@ -355,13 +382,69 @@ document.addEventListener('click', () => {
 
 if (feedbackOverlay) feedbackOverlay.addEventListener('click', closeFeedbackModal);
 
-document.getElementById('feedbackForm')?.addEventListener('submit', (e) => {
+// 🚀 CONEXIÓN ENTERPRISE: ENVÍO REAL DE FEEDBACK A SUPABASE
+document.getElementById('feedbackForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (typeof Notify !== 'undefined') {
-        Notify.show('¡Mensaje Enviado!', 'Gracias por ayudarnos a mejorar Compressly.', 'success');
+
+    // 1. Identificar al usuario y su correo
+    const userIdDisplay = document.getElementById('userInternalIdDisplay');
+    const userId = userIdDisplay ? userIdDisplay.getAttribute('data-uuid') : null;
+
+    // Capturar correo del DOM
+    const userEmailEl = document.getElementById('userEmailDisplay');
+    const userEmail = (userEmailEl && userEmailEl.innerText !== 'usuario@ejemplo.com') ? userEmailEl.innerText : 'Desconocido';
+
+    if (!userId || userId === '---' || typeof supabaseClient === 'undefined') {
+        if (typeof Notify !== 'undefined') Notify.show('Inicia Sesión', 'Debes estar logueado para enviar sugerencias o reportes.', 'error');
+        return;
     }
-    closeFeedbackModal();
-    document.getElementById('feedbackText').value = '';
+
+    // 2. Capturar los datos de TU diseño actual
+    const texto = document.getElementById('feedbackText').value.trim();
+    const tipo = document.getElementById('feedbackType').value || 'sugerencia';
+
+    if (!texto) return;
+
+    // 3. Efecto visual de "Enviando..." en tu botón
+    const btn = e.target.querySelector('button[type="submit"]');
+    const originalBtnHTML = btn.innerHTML; // Guardamos cómo se veía
+    btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> <span>Enviando a la nube...</span>';
+    btn.disabled = true;
+    btn.classList.add('opacity-80', 'cursor-not-allowed');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    try {
+        // ☁️ 4. INSERCIÓN EN BASE DE DATOS (Ahora incluye el correo)
+        const { error } = await supabaseClient.from('feedback_usuarios').insert([
+            {
+                usuario_id: userId,
+                usuario_email: userEmail,
+                tipo_mensaje: tipo,
+                mensaje_texto: texto
+            }
+        ]);
+
+        if (error) throw error;
+
+        // ✅ 5. ÉXITO
+        if (typeof Notify !== 'undefined') {
+            Notify.show('¡Mensaje Recibido!', 'Tu reporte ha sido enviado directamente a nuestro equipo.', 'success');
+        }
+        if (navigator.vibrate) navigator.vibrate([20, 30]);
+
+        closeFeedbackModal();
+        document.getElementById('feedbackText').value = ''; // Limpiar caja
+
+    } catch (error) {
+        console.error("Error enviando feedback:", error);
+        if (typeof Notify !== 'undefined') Notify.show('Error', 'No pudimos enviar el mensaje. Revisa tu conexión.', 'error');
+    } finally {
+        // 🔄 6. RESTAURAR BOTÓN
+        btn.innerHTML = originalBtnHTML;
+        btn.disabled = false;
+        btn.classList.remove('opacity-80', 'cursor-not-allowed');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
 });
 
 // 🚀 FUNCIONES DEL MODAL ULTRA
@@ -694,9 +777,25 @@ window.openActivityModal = async function () {
             list.innerHTML = `<div class="text-center py-12 text-gray-400 font-bold text-sm italic">No hay actividad registrada.</div>`;
         } else {
             list.innerHTML = historial.map(item => {
+                // 🧠 Lógica para detectar el tipo de acción
                 const isIA = item.tipo_accion === 'IA SEO';
-                const iconColor = isIA ? 'text-purple-500 bg-purple-500/10 border-purple-500/20' : 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20';
-                const iconName = isIA ? 'sparkles' : 'zap';
+                const isAPI = item.tipo_accion.toUpperCase().includes('API');
+
+                // 🎨 Colores y Logos Dinámicos
+                let iconColor = 'text-primary-500 bg-primary-500/10 border-primary-500/20'; // Por defecto Web (Tu color principal)
+                let iconName = 'monitor';
+                let badgeColor = 'text-primary-500 bg-primary-500/10';
+
+                if (isIA) {
+                    iconColor = 'text-purple-500 bg-purple-500/10 border-purple-500/20';
+                    iconName = 'sparkles';
+                    badgeColor = 'text-purple-500 bg-purple-500/10';
+                } else if (isAPI) {
+                    iconColor = 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20';
+                    iconName = 'webhook'; // Logo de enchufe/red para la API
+                    badgeColor = 'text-emerald-500 bg-emerald-500/10';
+                }
+
                 const fecha = new Date(item.fecha);
                 const fechaStr = fecha.toLocaleDateString() + ' ' + fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -708,7 +807,7 @@ window.openActivityModal = async function () {
                         <div class="flex-1 min-w-0">
                             <div class="flex justify-between items-start mb-1 gap-2">
                                 <span class="text-sm font-bold text-slate-900 dark:text-white truncate">${item.detalle}</span>
-                                <span class="text-[9px] font-black text-primary-500 bg-primary-500/10 px-2 py-0.5 rounded-md shrink-0 uppercase tracking-tighter">${item.tipo_accion}</span>
+                                <span class="text-[9px] font-black ${badgeColor} px-2 py-0.5 rounded-md shrink-0 uppercase tracking-tighter">${item.tipo_accion}</span>
                             </div>
                             <span class="text-[11px] text-gray-500 font-medium flex items-center gap-1.5 leading-none">
                                 <i data-lucide="calendar" class="w-3 h-3"></i> ${fechaStr}
@@ -724,6 +823,103 @@ window.openActivityModal = async function () {
     }
 
     if (navigator.vibrate) navigator.vibrate(30);
+};
+
+// 🗑️ FUNCIÓN MAESTRA: LIMPIAR HISTORIAL CON MODAL PROFESIONAL (CUSTOM)
+window.limpiarHistorialActividad = function () {
+    const userIdDisplay = document.getElementById('userInternalIdDisplay');
+    const userId = userIdDisplay ? userIdDisplay.getAttribute('data-uuid') : null;
+
+    if (!userId || userId === '---' || typeof supabaseClient === 'undefined') return;
+
+    if (navigator.vibrate) navigator.vibrate(20);
+
+    // 🎨 1. DIBUJAR EL MODAL PROFESIONAL DINÁMICO
+    const overlay = document.createElement('div');
+    overlay.id = 'customConfirmModal';
+    overlay.className = 'fixed inset-0 z-[9999] flex items-center justify-center bg-indigo-950/30 backdrop-blur-sm p-4 opacity-0 transition-opacity duration-300';
+
+    overlay.innerHTML = `
+        <div class="bg-white dark:bg-[#18181b] border border-slate-200 dark:border-white/10 rounded-[2rem] p-6 sm:p-8 w-full max-w-sm shadow-2xl transform scale-95 transition-transform duration-300 relative overflow-hidden">
+            
+            <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-40 h-40 bg-red-500/20 blur-[50px] rounded-full pointer-events-none"></div>
+
+            <div class="flex flex-col items-center text-center relative z-10">
+                <div class="w-16 h-16 bg-red-500/10 border border-red-500/20 text-red-500 rounded-2xl flex items-center justify-center mb-5 shadow-inner">
+                    <i data-lucide="trash-2" class="w-8 h-8"></i>
+                </div>
+                
+                <h3 class="text-xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">¿Limpiar Historial?</h3>
+                
+                <p class="text-[13px] text-slate-500 dark:text-gray-400 mb-8 font-medium leading-relaxed">
+                    Esta acción borrará el registro visual de tus actividades. <br>
+                    <b class="text-slate-700 dark:text-gray-300">Tus estadísticas totales quedarán intactas.</b>
+                </p>
+                
+                <div class="flex gap-3 w-full">
+                    <button id="cancelConfirmBtn" class="flex-1 px-4 py-3.5 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-white rounded-xl font-bold transition-all text-[13px] active:scale-95">
+                        Cancelar
+                    </button>
+                    <button id="acceptConfirmBtn" class="flex-1 px-4 py-3.5 bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/30 rounded-xl font-black transition-all active:scale-95 text-[13px] flex items-center justify-center gap-2">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i> Borrar Todo
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Lo inyectamos en la pantalla
+    document.body.appendChild(overlay);
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    // 🎬 2. ANIMACIÓN DE ENTRADA SUAVE
+    requestAnimationFrame(() => {
+        overlay.classList.remove('opacity-0');
+        overlay.firstElementChild.classList.remove('scale-95');
+    });
+
+    // ❌ 3. LÓGICA DE CANCELACIÓN (Cerrar el modal)
+    const closeOverlay = () => {
+        overlay.classList.add('opacity-0');
+        overlay.firstElementChild.classList.add('scale-95');
+        setTimeout(() => overlay.remove(), 300); // Esperar que termine la animación
+    };
+
+    document.getElementById('cancelConfirmBtn').onclick = closeOverlay;
+    overlay.onclick = (e) => { if (e.target === overlay) closeOverlay(); };
+
+    // 💥 4. LÓGICA DE ELIMINACIÓN (Botón Rojo)
+    document.getElementById('acceptConfirmBtn').onclick = async () => {
+        // Efecto de carga
+        const btn = document.getElementById('acceptConfirmBtn');
+        btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Borrando...';
+        btn.classList.add('opacity-80', 'pointer-events-none');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+
+        try {
+            // Borrar de Supabase ☁️
+            const { error } = await supabaseClient.from('historial_uso').delete().eq('usuario_id', userId);
+            if (error) throw error;
+
+            // Magia Visual: Pantalla en blanco
+            document.getElementById('activityFullList').innerHTML = `
+                <div class="flex flex-col items-center justify-center py-12 text-center">
+                    <i data-lucide="inbox" class="w-16 h-16 text-slate-300 dark:text-white/10 mb-4"></i>
+                    <h3 class="text-sm font-bold text-slate-700 dark:text-white mb-1">Historial Limpio</h3>
+                    <p class="text-xs text-gray-500">Tus próximas acciones aparecerán aquí.</p>
+                </div>
+            `;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            if (typeof Notify !== 'undefined') Notify.show('Historial Borrado', 'Tu registro de actividad está vacío.', 'success');
+            if (navigator.vibrate) navigator.vibrate([20, 30]);
+
+        } catch (e) {
+            console.error("Error borrando historial:", e);
+            if (typeof Notify !== 'undefined') Notify.show('Error', 'No se pudo limpiar el historial.', 'error');
+        }
+
+        closeOverlay();
+    };
 };
 
 window.closeActivityModal = function () {
@@ -743,4 +939,244 @@ window.closeActivityModal = function () {
             if (profileModal) profileModal.classList.remove('opacity-0');
         }, 200);
     }
+};
+
+// 🎫 ==========================================
+// LÓGICA DE "MIS TICKETS" Y REPORTES
+// ==========================================
+window.openTicketsModal = async function () {
+    const modal = document.getElementById('ticketsModal');
+    const content = document.getElementById('ticketsContent');
+    const list = document.getElementById('ticketsFullList');
+
+    const userIdDisplay = document.getElementById('userInternalIdDisplay');
+    const userId = userIdDisplay ? userIdDisplay.getAttribute('data-uuid') : null;
+
+    if (!modal || !content || !list || !userId || typeof supabaseClient === 'undefined') return;
+
+    // Abrir Modal
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+
+    // Ocultar perfil visualmente para que no estorbe
+    const profileModal = document.getElementById('profileModal');
+    if (profileModal) profileModal.classList.add('opacity-0');
+
+    setTimeout(() => {
+        content.classList.remove('scale-95', 'opacity-0');
+        content.classList.add('scale-100', 'opacity-100');
+    }, 10);
+
+    // Ruedita de carga
+    list.innerHTML = `<div class="flex flex-col items-center justify-center py-12 gap-3 text-primary-500 animate-pulse">
+        <i data-lucide="loader-2" class="w-8 h-8 animate-spin"></i>
+        <span class="text-xs font-black uppercase tracking-widest">Sincronizando...</span>
+    </div>`;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    try {
+        // 🚀 LLAMADA A SUPABASE
+        const { data: tickets, error } = await supabaseClient.from('feedback_usuarios')
+            .select('*').eq('usuario_id', userId).order('fecha', { ascending: false });
+
+        if (error) throw error;
+
+        if (!tickets || tickets.length === 0) {
+            list.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-12 text-center">
+                    <i data-lucide="inbox" class="w-16 h-16 text-slate-300 dark:text-white/10 mb-4"></i>
+                    <h3 class="text-sm font-bold text-slate-700 dark:text-white mb-1">Bandeja Vacía</h3>
+                    <p class="text-xs text-gray-500 mb-5">Aún no has enviado sugerencias o reportes.</p>
+                    
+                    <button onclick="closeTicketsModal(true)" class="bg-primary-500 hover:bg-primary-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-[0_5px_15px_rgba(139,92,246,0.3)] active:scale-95 flex items-center gap-2">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Crear mi primer reporte
+                    </button>
+                </div>`;
+        } else {
+            list.innerHTML = tickets.map(ticket => {
+                // 🎨 Lógica de Etiquetas Dinámicas (Badges)
+                let badgeClass = 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20'; // Pendiente
+                let iconName = 'clock';
+                let stateText = ticket.estado || 'Pendiente';
+
+                // Normalizamos a minúsculas para buscar más fácil
+                const estadoLower = stateText.toLowerCase();
+
+                // 🚀 BÚSQUEDA A PRUEBA DE ACENTOS Y FORZADO DE TILDE
+                if (estadoLower.includes('revisi') || estadoLower.includes('desarrollo')) {
+                    badgeClass = 'bg-blue-500/10 text-blue-600 border-blue-500/20'; // Igualamos el azul
+                    iconName = 'eye';
+                    stateText = 'En Revisión'; // ✏️ Forzamos la tilde visualmente en el HTML
+                } else if (estadoLower.includes('solucionado') || estadoLower.includes('implementado')) {
+                    badgeClass = 'bg-green-500/10 text-green-600 border-green-500/20'; // Igualamos el verde
+                    iconName = 'check-circle-2';
+                    stateText = 'Solucionado';
+                } else {
+                    stateText = 'Pendiente'; // Por si acaso, lo ponemos bonito
+                }
+
+                // Icono por tipo de reporte (Bug, Idea, Duda)
+                let typeIcon = 'message-square';
+                let typeColor = 'text-slate-500';
+                if (ticket.tipo_mensaje.toLowerCase().includes('bug') || ticket.tipo_mensaje.toLowerCase().includes('error')) { typeIcon = 'bug'; typeColor = 'text-red-500'; }
+                if (ticket.tipo_mensaje.toLowerCase().includes('idea') || ticket.tipo_mensaje.toLowerCase().includes('sugerencia')) { typeIcon = 'lightbulb'; typeColor = 'text-primary-500'; }
+
+                const fecha = new Date(ticket.fecha);
+                const fechaStr = fecha.toLocaleDateString() + ' ' + fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                let respuestaHTML = '';
+                if (ticket.respuesta_admin && ticket.respuesta_admin.trim() !== '') {
+                    respuestaHTML = `
+                        <div class="mt-3 bg-primary-500/10 border border-primary-500/20 rounded-xl p-3 relative shadow-inner">
+                            <div class="flex items-center gap-2 mb-1.5">
+                                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-primary-500"></i>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-primary-500">Respuesta de Compressly</span>
+                            </div>
+                            <p class="text-[13px] font-medium text-slate-700 dark:text-gray-300 leading-relaxed">${ticket.respuesta_admin}</p>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="flex flex-col gap-2 p-4 bg-white dark:bg-[#18181b] rounded-2xl border border-slate-200 dark:border-white/5 transition-all hover:border-primary-500/30 shadow-sm">
+                        <div class="flex justify-between items-start gap-2">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="${typeIcon}" class="w-4 h-4 ${typeColor}"></i>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">${ticket.tipo_mensaje}</span>
+                            </div>
+                            <span class="flex items-center gap-1.5 text-[9px] font-black ${badgeClass} px-2 py-1 rounded-lg border uppercase tracking-widest shrink-0">
+                                <i data-lucide="${iconName}" class="w-3 h-3"></i> ${stateText}
+                            </span>
+                        </div>
+                        <p class="text-sm font-medium text-slate-800 dark:text-gray-300 mt-1 line-clamp-4">${ticket.mensaje_texto}</p>
+                        
+                        ${respuestaHTML} <span class="text-[10px] text-gray-400 font-bold mt-2 flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i> ${fechaStr}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    } catch (e) {
+        list.innerHTML = `<div class="text-red-500 text-center py-8 font-black">Error cargando tus reportes.</div>`;
+    }
+};
+
+window.closeTicketsModal = function (openFeedback = false) {
+    const modal = document.getElementById('ticketsModal');
+    const content = document.getElementById('ticketsContent');
+
+    if (modal && content) {
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+
+            if (openFeedback) {
+                // 🚀 TRUCO ENTERPRISE: Saltamos al Centro de Ideas y le decimos que venimos de aquí (true)
+                openFeedbackModal(true);
+            } else {
+                // 🔄 Si cerramos normal con la "X", devolvemos la opacidad al perfil
+                const profileModal = document.getElementById('profileModal');
+                if (profileModal) profileModal.classList.remove('opacity-0');
+            }
+        }, 200);
+    }
+};
+
+// 🗑️ FUNCIÓN PARA BORRAR REPORTES CON MODAL DINÁMICO
+window.limpiarTicketsUsuario = function () {
+    const userIdDisplay = document.getElementById('userInternalIdDisplay');
+    const userId = userIdDisplay ? userIdDisplay.getAttribute('data-uuid') : null;
+
+    if (!userId || userId === '---' || typeof supabaseClient === 'undefined') return;
+    if (navigator.vibrate) navigator.vibrate(20);
+
+    // 🎨 DIBUJAR EL MODAL DE CONFIRMACIÓN
+    const overlay = document.createElement('div');
+    overlay.id = 'customConfirmModalTickets';
+    overlay.className = 'fixed inset-0 z-[9999] flex items-center justify-center bg-indigo-950/30 backdrop-blur-sm p-4 opacity-0 transition-opacity duration-300';
+
+    overlay.innerHTML = `
+        <div class="bg-white dark:bg-[#18181b] border border-slate-200 dark:border-white/10 rounded-[2rem] p-6 sm:p-8 w-full max-w-sm shadow-2xl transform scale-95 transition-transform duration-300 relative overflow-hidden">
+            <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-40 h-40 bg-red-500/20 blur-[50px] rounded-full pointer-events-none"></div>
+
+            <div class="flex flex-col items-center text-center relative z-10">
+                <div class="w-16 h-16 bg-red-500/10 border border-red-500/20 text-red-500 rounded-2xl flex items-center justify-center mb-5 shadow-inner">
+                    <i data-lucide="trash-2" class="w-8 h-8"></i>
+                </div>
+                
+                <h3 class="text-xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">¿Borrar Reportes?</h3>
+                
+                <p class="text-[13px] text-slate-500 dark:text-gray-400 mb-8 font-medium leading-relaxed">
+                    Esta acción eliminará todo tu historial de tickets y respuestas del equipo.<br>
+                    <b class="text-red-500 dark:text-red-400">Esta acción no se puede deshacer.</b>
+                </p>
+                
+                <div class="flex gap-3 w-full">
+                    <button id="cancelTicketBtn" class="flex-1 px-4 py-3.5 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-white rounded-xl font-bold transition-all text-[13px] active:scale-95">
+                        Cancelar
+                    </button>
+                    <button id="acceptTicketBtn" class="flex-1 px-4 py-3.5 bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/30 rounded-xl font-black transition-all active:scale-95 text-[13px] flex items-center justify-center gap-2">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i> Borrar Todo
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    // Animación entrada
+    requestAnimationFrame(() => {
+        overlay.classList.remove('opacity-0');
+        overlay.firstElementChild.classList.remove('scale-95');
+    });
+
+    const closeOverlay = () => {
+        overlay.classList.add('opacity-0');
+        overlay.firstElementChild.classList.add('scale-95');
+        setTimeout(() => overlay.remove(), 300);
+    };
+
+    document.getElementById('cancelTicketBtn').onclick = closeOverlay;
+    overlay.onclick = (e) => { if (e.target === overlay) closeOverlay(); };
+
+    // Lógica al aceptar borrar
+    document.getElementById('acceptTicketBtn').onclick = async () => {
+        const btn = document.getElementById('acceptTicketBtn');
+        btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Borrando...';
+        btn.classList.add('opacity-80', 'pointer-events-none');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+
+        try {
+            // Eliminar desde Supabase
+            const { error } = await supabaseClient.from('feedback_usuarios').delete().eq('usuario_id', userId);
+            if (error) throw error;
+
+            // Mostrar el nuevo "Estado Vacío" mágicamente
+            document.getElementById('ticketsFullList').innerHTML = `
+                <div class="flex flex-col items-center justify-center py-12 text-center animate-fade-in">
+                    <i data-lucide="inbox" class="w-16 h-16 text-slate-300 dark:text-white/10 mb-4"></i>
+                    <h3 class="text-sm font-bold text-slate-700 dark:text-white mb-1">Bandeja Vacía</h3>
+                    <p class="text-xs text-gray-500 mb-5">Aún no has enviado sugerencias o reportes.</p>
+                    
+                    <button onclick="closeTicketsModal(true)" class="bg-primary-500 hover:bg-primary-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-[0_5px_15px_rgba(139,92,246,0.3)] active:scale-95 flex items-center gap-2">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Crear mi primer reporte
+                    </button>
+                </div>
+            `;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            if (typeof Notify !== 'undefined') Notify.show('Reportes Borrados', 'Tu bandeja ahora está vacía.', 'success');
+            if (navigator.vibrate) navigator.vibrate([20, 30]);
+
+        } catch (e) {
+            console.error("Error borrando reportes:", e);
+            if (typeof Notify !== 'undefined') Notify.show('Error', 'No se pudieron borrar los reportes.', 'error');
+        }
+
+        closeOverlay();
+    };
 };

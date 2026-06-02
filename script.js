@@ -198,6 +198,17 @@ if (watermarkInput) {
     });
 }
 
+// 🔄 NUEVO: Sincronización silenciosa del TEXTO
+watermarkInput.addEventListener('change', () => {
+    if (!isPremiumUser) return;
+    const texto = watermarkInput.value.trim();
+    // Le avisamos a la Nube que cambie el texto
+    if (typeof actualizarPresetSilencioso === 'function') {
+        actualizarPresetSilencioso('wm_texto', texto);
+    }
+});
+
+
 // 🎛️ Abrir/Cerrar Panel de Ajustes (Evita deformar el diseño en PC)
 if (wmSettingsBtn) {
     wmSettingsBtn.addEventListener('click', (e) => {
@@ -269,23 +280,35 @@ if (watermarkLogoInput) {
 if (clearWatermarkLogoBtn) {
     clearWatermarkLogoBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        customLogoImage = null; // 🧠 Borramos de la memoria
-        watermarkLogoInput.value = ''; // Limpiamos el archivo subido
 
-        // 🚀 Restauramos el icono a copyright
+        // 🧠 1. BORRAMOS LA MEMORIA RAM PROFUNDAMENTE (Ambas variables)
+        window.customLogoImage = null;
+        customLogoImage = null;
+
+        // 2. Limpiamos el input file del HTML
+        if (watermarkLogoInput) watermarkLogoInput.value = '';
+
+        // 3. Restauramos el icono a copyright
         const wmIconIndicator = document.getElementById('wmIconIndicator');
         if (wmIconIndicator) wmIconIndicator.setAttribute('data-lucide', 'copyright');
 
-        // Restauramos Interfaz
-        watermarkInput.disabled = false;
-        watermarkInput.placeholder = (typeof translations !== 'undefined' && translations[currentLanguage]) ? translations[currentLanguage].watermark_placeholder : '@TuMarca o Texto...';
+        // 4. Restauramos Interfaz de texto
+        if (watermarkInput) {
+            watermarkInput.disabled = false;
+            watermarkInput.placeholder = (typeof translations !== 'undefined' && translations[currentLanguage]) ? translations[currentLanguage].watermark_placeholder : '@TuMarca o Texto...';
+        }
 
         clearWatermarkLogoBtn.classList.add('hidden'); // Ocultar papelera
-        watermarkLogoBtn.classList.remove('hidden'); // Volver a mostrar botón de subir imagen
+        if (watermarkLogoBtn) watermarkLogoBtn.classList.remove('hidden'); // Volver a mostrar botón de subir
 
-        lucide.createIcons();
-        Notify.show('Logo Eliminado', 'Se ha quitado la marca visual.', 'info');
-        triggerVibration(20);
+        // ☁️ 5. NUEVO: Borramos el logo de la base de datos de Supabase en silencio
+        if (typeof actualizarPresetSilencioso === 'function') {
+            actualizarPresetSilencioso('wm_logo_url', null);
+        }
+
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+        if (typeof Notify !== 'undefined') Notify.show('Logo Eliminado', 'Se ha quitado la marca visual.', 'info');
+        if (typeof triggerVibration === 'function') triggerVibration(20);
     });
 }
 
@@ -942,6 +965,15 @@ compressBtn.addEventListener('click', () => {
 
             setupDownload(resUrl, `compressly_${Date.now()}.${extension}`);
 
+            // 🏎️ MAGIA: Auto-Descarga Rápida
+            const isAutoDownload = localStorage.getItem('compressly_autodownload') === 'true';
+            if (isAutoDownload) {
+                setTimeout(() => {
+                    document.getElementById('downloadBtn').click();
+                    if (typeof Notify !== 'undefined') Notify.show('Auto-Descarga', 'Imagen descargada automáticamente.', 'success');
+                }, 500); // Pequeño retraso para dar tiempo a ver el resultado visual
+            }
+
             compressBtn.innerHTML = '<i data-lucide="zap" class="w-5 h-5"></i> Comprimir';
             compressBtn.classList.remove('opacity-75', 'pointer-events-none');
             lucide.createIcons();
@@ -1023,6 +1055,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     exifToggle.checked = false;
                     localStorage.setItem('anti_rastreo_enabled', 'false');
                 }
+            }
+
+            // --- Memoria para Auto-Descarga ---
+            const isAutoDownloadSaved = localStorage.getItem('compressly_autodownload') === 'true';
+            const autoDLToggle = document.getElementById('autoDownloadToggle');
+            if (autoDLToggle) {
+                autoDLToggle.checked = isAutoDownloadSaved;
             }
         }
     }, 150);

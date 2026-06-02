@@ -4,7 +4,10 @@
 
 // 1. UTILIDADES VISUALES GLOBALES (Vibración y Confeti)
 window.triggerVibration = function (pattern = 50) {
-    if (navigator.vibrate) navigator.vibrate(pattern);
+    // Solo intenta vibrar si el usuario ya ha interactuado con la página
+    if (navigator.vibrate && navigator.userActivation && navigator.userActivation.hasBeenActive) {
+        navigator.vibrate(pattern);
+    }
 };
 
 window.triggerConfetti = function () {
@@ -139,32 +142,33 @@ document.addEventListener('click', (e) => {
 // RADAR SCROLL SPY (Navegación de Puntos Lateral MEJORADA)
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Quitamos 'main#inicio' de aquí, el sensor de tope máximo se encargará de él 🚀
-    const sections = document.querySelectorAll('#caracteristicas, #como-funciona, #testimonios, #precios, #faq');
+    const sections = document.querySelectorAll('#caracteristicas, #como-funciona, #testimonios, #api-cloud, #precios, #faq');
     const scrollDots = document.querySelectorAll('.scroll-dot');
 
     if (sections.length > 0 && scrollDots.length > 0) {
-        // 2. Radar más preciso (Detecta cuando la sección cruza el centro de la pantalla)
-        const observerOptions = {
-            root: null,
-            rootMargin: '-20% 0px -40% 0px',
-            threshold: 0
-        };
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    scrollDots.forEach(dot => dot.classList.remove('active'));
-                    const activeDot = document.querySelector(`.scroll-dot[href="#${entry.target.id}"]`);
-                    if (activeDot) activeDot.classList.add('active');
+        // 🚀 NUEVO MOTOR MATEMÁTICO EXACTO: Ignora los espacios en blanco gigantes
+        window.addEventListener('scroll', () => {
+            let current = '';
+
+            // Escaneamos dónde está cada sección respecto a la pantalla en tiempo real
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                // Si la parte superior de la sección cruza la mitad del monitor hacia arriba...
+                if (rect.top <= window.innerHeight * 0.5) {
+                    current = section.getAttribute('id');
                 }
             });
-        }, observerOptions);
 
-        sections.forEach(section => observer.observe(section));
+            // Limpiamos y encendemos el puntito ganador
+            scrollDots.forEach(dot => {
+                dot.classList.remove('active');
+                if (current && dot.getAttribute('href') === `#${current}`) {
+                    dot.classList.add('active');
+                }
+            });
 
-        // 🚀 3. SENSOR DE TOPE MÁXIMO (Asegura que "Inicio" se marque al llegar hasta arriba)
-        window.addEventListener('scroll', () => {
+            // Sensor Supremo de Tope Máximo (Prioridad a Inicio al subir todo)
             if (window.scrollY < 100) {
                 scrollDots.forEach(dot => dot.classList.remove('active'));
                 document.querySelector('.scroll-dot[href="#inicio"]')?.classList.add('active');
@@ -653,3 +657,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 500);
 });
+
+// 🌍 ==========================================
+// IMPACTO GLOBAL (CINTILLO DE AHORRO EN PC Y MÓVIL)
+// ==========================================
+window.updateGlobalImpact = function (newBytes = 0) {
+    // 1. Calculamos el total guardado en la memoria
+    let currentTotal = parseInt(localStorage.getItem('compressly_total_saved')) || 0;
+    currentTotal += newBytes;
+    localStorage.setItem('compressly_total_saved', currentTotal);
+
+    // 2. Formateamos el texto en MB
+    const mbSaved = (currentTotal / 1024 / 1024).toFixed(1);
+
+    // 💻 Pintamos en PC
+    const desktopLabel = document.getElementById('totalSavedDesktop');
+    if (desktopLabel) desktopLabel.innerText = mbSaved + ' MB';
+
+    // 📱 Pintamos y mostramos en Móvil
+    const mobileLabel = document.getElementById('totalSavedMobile');
+    const mobileContainer = document.getElementById('globalImpactMobile');
+
+    if (mobileLabel) mobileLabel.innerText = mbSaved + ' MB';
+
+    // 🟢 ¡MARTILLAZO VISUAL PARA EL MENÚ HAMBURGUESA!
+    if (mobileContainer) {
+        mobileContainer.classList.remove('hidden');
+        mobileContainer.style.setProperty('display', 'flex', 'important');
+        mobileContainer.classList.add('flex');
+    }
+};

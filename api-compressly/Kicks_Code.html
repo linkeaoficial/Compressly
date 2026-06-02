@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kicks & Code — Compressly Cloud Demo Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* ====== RAÍZ Y FONDO ====== */
+        :root {
+            --bg-deep: #000000;
+            --bg-mid: #1e1e2f;
+            --glass-bg: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --emerald: #10b981;
+            --cyan: #06b6d4;
+            --blue: #3b82f6;
+        }
+
+        body {
+            background: radial-gradient(ellipse at 80% 10%, #1e1e2f 0%, #0a0a12 40%, #000000 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+
+        /* ====== GLASSMORPHISM ====== */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+        }
+
+        .glass-dense {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+        }
+
+        /* ====== BARRA LÍQUIDA DE PROGRESO ====== */
+        .progress-track {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            height: 36px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-liquid {
+            height: 100%;
+            border-radius: 14px;
+            background: linear-gradient(90deg, #10b981 0%, #06b6d4 50%, #3b82f6 100%);
+            position: relative;
+            transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            min-width: 0;
+        }
+
+        /* Onda animada sobre el líquido */
+        .progress-liquid::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 0;
+            width: 200%;
+            height: 14px;
+            animation: wave-slide 2s linear infinite;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 14'%3E%3Cpath d='M0,7 C100,2 200,12 300,7 C400,2 500,12 600,7 C700,2 800,12 900,7 C1000,2 1100,12 1200,7 L1200,0 L0,0 Z' fill='rgba(255,255,255,0.12)'/%3E%3C/svg%3E") repeat-x;
+        }
+
+        /* Brillo que se desplaza */
+        .progress-liquid::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -60%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+            animation: liquid-shimmer 2.5s ease-in-out infinite;
+        }
+
+        @keyframes wave-slide {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        @keyframes liquid-shimmer {
+            0% {
+                left: -60%;
+            }
+
+            100% {
+                left: 160%;
+            }
+        }
+
+        /* ====== TERMINAL ====== */
+        .terminal-box {
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11.5px;
+            line-height: 1.7;
+            max-height: 240px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+        }
+
+        .terminal-box::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .terminal-box::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .terminal-box::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 2px;
+        }
+
+        .log-success {
+            color: #34d399;
+        }
+
+        .log-warning {
+            color: #fbbf24;
+        }
+
+        .log-error {
+            color: #f87171;
+        }
+
+        .log-info {
+            color: #60a5fa;
+        }
+
+        .log-system {
+            color: #818cf8;
+        }
+
+        /* ====== DROPZONE ====== */
+        .dropzone {
+            border: 2px dashed rgba(255, 255, 255, 0.12);
+            border-radius: 18px;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dropzone::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(6, 182, 212, 0.06), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.35s;
+        }
+
+        .dropzone:hover::before,
+        .dropzone.active::before {
+            opacity: 1;
+        }
+
+        .dropzone:hover,
+        .dropzone.active {
+            border-color: rgba(6, 182, 212, 0.45);
+            background: rgba(6, 182, 212, 0.04);
+        }
+
+        .dropzone.active {
+            transform: scale(1.015);
+            box-shadow: 0 0 40px rgba(6, 182, 212, 0.08);
+        }
+
+        /* ====== ANIMACIONES DE TARJETAS ====== */
+        @keyframes card-enter {
+            from {
+                opacity: 0;
+                transform: scale(0.82) translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .product-card {
+            animation: card-enter 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(6, 182, 212, 0.08);
+        }
+
+        .product-card:hover .card-img {
+            transform: scale(1.1);
+        }
+
+        .card-img {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ====== BADGE PULSANTE ====== */
+        @keyframes badge-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.35);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+            }
+        }
+
+        .badge-glow {
+            animation: badge-glow 2.2s ease-in-out infinite;
+        }
+
+        /* ====== BOTÓN GRADIENT ====== */
+        .btn-grad {
+            background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.2);
+        }
+
+        .btn-grad::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn-grad:hover::before {
+            opacity: 1;
+        }
+
+        .btn-grad:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(6, 182, 212, 0.3);
+        }
+
+        .btn-grad:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none;
+        }
+
+        .btn-grad:disabled::before {
+            display: none;
+        }
+
+        .btn-grad>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ====== TEXTO GRADIENT ====== */
+        .txt-grad {
+            background: linear-gradient(135deg, #10b981, #06b6d4, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ====== BLOBS AMBIENTALES ====== */
+        .ambient-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes drift {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(30px, -50px) scale(1.08);
+            }
+
+            66% {
+                transform: translate(-25px, 30px) scale(0.92);
+            }
+        }
+
+        /* ====== TOAST ====== */
+        @keyframes toast-in {
+            from {
+                opacity: 0;
+                transform: translateY(16px) scale(0.96);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes toast-out {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-8px) scale(0.96);
+            }
+        }
+
+        .toast-el {
+            animation: toast-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* ====== FILE ITEM SLIDE ====== */
+        @keyframes slide-in {
+            from {
+                opacity: 0;
+                transform: translateX(-12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .file-slide {
+            animation: slide-in 0.3s ease forwards;
+        }
+
+        /* ====== LINEA GRADIENT BAJO HEADER ====== */
+        .header-line {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.3), rgba(16, 185, 129, 0.3), transparent);
+        }
+
+        /* ====== SCROLLBAR GLOBAL ====== */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 3px;
+        }
+
+        /* ====== FOCUS VISIBLE ====== */
+        :focus-visible {
+            outline: 2px solid var(--cyan);
+            outline-offset: 2px;
+        }
+
+        /* ====== REDUCED MOTION ====== */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+
+    <!-- Blobs ambientales -->
+    <div class="ambient-blob w-[500px] h-[500px] bg-emerald-600 opacity-[0.07] -top-40 -right-40"
+        style="animation: drift 22s ease-in-out infinite;"></div>
+    <div class="ambient-blob w-[400px] h-[400px] bg-cyan-500 opacity-[0.06] bottom-0 -left-32"
+        style="animation: drift 28s ease-in-out infinite 6s;"></div>
+    <div class="ambient-blob w-[300px] h-[300px] bg-blue-600 opacity-[0.05] top-1/2 left-1/3"
+        style="animation: drift 25s ease-in-out infinite 12s;"></div>
+
+    <!-- ====== HEADER ====== -->
+    <header class="relative z-20">
+        <div class="max-w-[1440px] mx-auto px-5 sm:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                    <i class="fa-solid fa-shoe-prints text-white text-sm -rotate-12"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold tracking-tight leading-none">Kicks <span class="txt-grad">&
+                            Code</span></h1>
+                    <p class="text-[10px] text-slate-500 font-semibold tracking-[0.2em] uppercase mt-0.5">Compressly
+                        Cloud Demo</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="hidden sm:flex items-center gap-2 glass px-3 py-1.5 rounded-full text-[11px]">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="text-slate-400 font-medium">API Online</span>
+                </div>
+                <button id="apikey-toggle"
+                    class="flex items-center gap-2 glass px-3 py-1.5 rounded-full text-[11px] cursor-pointer hover:bg-white/[0.06] transition-colors"
+                    aria-label="Configurar API Key">
+                    <i class="fa-solid fa-key text-amber-400 text-[10px]" id="key-icon"></i>
+                    <span class="text-slate-400 font-medium" id="key-label">Sin API Key</span>
+                </button>
+            </div>
+        </div>
+        <div class="header-line"></div>
+    </header>
+
+    <!-- ====== MAIN ====== -->
+    <main class="relative z-10 max-w-[1440px] mx-auto px-5 sm:px-8 py-6">
+        <div class="flex flex-col lg:flex-row gap-6">
+
+            <!-- ===== COLUMNA IZQUIERDA: ADMIN ===== -->
+            <section class="lg:w-[40%] xl:w-[38%] flex flex-col gap-5 shrink-0" aria-label="Panel de Administración">
+
+                <!-- Formulario Nuevo Producto -->
+                <div class="glass p-6">
+                    <div class="flex items-center gap-2.5 mb-5">
+                        <div
+                            class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500/15 to-cyan-500/15 border border-emerald-500/10 flex items-center justify-center">
+                            <i class="fa-solid fa-plus text-emerald-400 text-xs"></i>
+                        </div>
+                        <h2 class="text-base font-bold tracking-tight">Nuevo Producto</h2>
+                    </div>
+
+                    <!-- Input nombre -->
+                    <div class="mb-4">
+                        <label for="product-name"
+                            class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Nombre
+                            base</label>
+                        <input type="text" id="product-name" placeholder="Ej: Nike Air Max 90 (opcional)"
+                            class="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:border-cyan-500/40 focus:ring-1 focus:ring-cyan-500/20 transition-all outline-none">
+                        <p class="text-[10px] text-slate-600 mt-1">Se numera automáticamente. Vacío = nombre aleatorio.
+                        </p>
+                    </div>
+
+                    <!-- Dropzone -->
+                    <div id="dropzone" class="dropzone p-7 text-center mb-4" role="button" tabindex="0"
+                        aria-label="Zona para arrastrar y soltar imágenes">
+                        <input type="file" id="file-input" multiple accept="image/*" class="hidden" aria-hidden="true">
+                        <div class="relative z-10">
+                            <div
+                                class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 border border-white/[0.06] flex items-center justify-center">
+                                <i class="fa-solid fa-cloud-arrow-up text-xl text-cyan-400"></i>
+                            </div>
+                            <p class="text-sm font-semibold text-slate-300 mb-0.5">Arrastra tus imágenes aquí</p>
+                            <p class="text-xs text-slate-500">o haz clic para seleccionar</p>
+                            <p class="text-[10px] text-slate-600 mt-2.5">JPG, PNG, WebP — Hasta 20 archivos</p>
+                        </div>
+                    </div>
+
+                    <!-- Lista de archivos seleccionados -->
+                    <div id="file-list" class="hidden mb-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Archivos</span>
+                            <button id="clear-files"
+                                class="text-[10px] text-red-400/70 hover:text-red-300 transition-colors font-semibold">
+                                <i class="fa-solid fa-xmark mr-0.5"></i>Limpiar
+                            </button>
+                        </div>
+                        <div id="file-items" class="space-y-1 max-h-28 overflow-y-auto pr-1"
+                            style="scrollbar-width:thin;scrollbar-color:rgba(255,255,255,0.06) transparent;"></div>
+                    </div>
+
+                    <!-- Botón subir -->
+                    <button id="upload-btn" class="btn-grad w-full py-3 rounded-xl font-bold text-sm text-white"
+                        disabled aria-label="Iniciar compresión por lotes">
+                        <span class="flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-bolt"></i>
+                            Iniciar Compresión
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Barra de progreso -->
+                <div id="progress-section" class="glass p-5 hidden">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-wave-square text-cyan-400 text-xs"></i>
+                            <h3 class="text-sm font-bold">Progreso de Lote</h3>
+                        </div>
+                        <span id="prog-counter" class="text-[11px] text-slate-400 font-mono font-semibold">0 / 0</span>
+                    </div>
+                    <div class="progress-track mb-2.5">
+                        <div id="prog-liquid" class="progress-liquid" style="width:0%"></div>
+                        <span id="prog-pct"
+                            class="absolute inset-0 flex items-center justify-center text-[11px] font-extrabold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]">0%</span>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-slate-500 font-medium">
+                        <span id="prog-detail">Preparando...</span>
+                        <span id="prog-eta"></span>
+                    </div>
+                </div>
+
+                <!-- Terminal -->
+                <div id="terminal-section" class="glass p-5 hidden">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="flex gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-red-500/70"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/70"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-green-500/70"></span>
+                        </div>
+                        <span class="text-[10px] text-slate-600 font-mono ml-1.5 tracking-wide">compressly-engine</span>
+                    </div>
+                    <div id="terminal" class="terminal-box p-4">
+                        <div class="text-slate-600 select-none">$ Esperando archivos para comprimir...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== COLUMNA DERECHA: VITRINA ===== -->
+            <section class="lg:w-[60%] xl:w-[62%]" aria-label="Vitrina de productos en vivo">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="flex items-center gap-2.5">
+                        <div
+                            class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500/15 to-violet-500/15 border border-blue-500/10 flex items-center justify-center">
+                            <i class="fa-solid fa-store text-blue-400 text-xs"></i>
+                        </div>
+                        <h2 class="text-base font-bold tracking-tight">Vitrina en Vivo</h2>
+                    </div>
+                    <div id="product-count"
+                        class="glass px-3 py-1 rounded-full text-[10px] text-slate-400 font-semibold tracking-wide">
+                        0 productos
+                    </div>
+                </div>
+
+                <!-- Estado vacío -->
+                <div id="empty-state" class="glass p-14 text-center">
+                    <div
+                        class="w-20 h-20 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-white/[0.04] flex items-center justify-center">
+                        <i class="fa-solid fa-shoe-prints text-3xl text-slate-700 -rotate-12"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-500 mb-2">La vitrina está vacía</h3>
+                    <p class="text-sm text-slate-600 max-w-xs mx-auto leading-relaxed">Sube imágenes desde el panel de
+                        administración y observa cómo aparecen aquí en tiempo real, comprimidas con Compressly Cloud.
+                    </p>
+                </div>
+
+                <!-- Grid de productos (Bento) -->
+                <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 hidden"></div>
+            </section>
+        </div>
+    </main>
+
+    <!-- ====== MODAL API KEY ====== -->
+    <div id="apikey-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+        style="background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);">
+        <div class="glass-dense p-7 w-full max-w-md" role="dialog" aria-label="Configurar API Key" aria-modal="true">
+            <div class="flex items-center justify-between mb-5">
+                <h3 class="font-bold text-lg tracking-tight">Configurar API Key</h3>
+                <button id="modal-close"
+                    class="text-slate-400 hover:text-white transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/[0.06]"
+                    aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <p class="text-sm text-slate-400 mb-5 leading-relaxed">Ingresa tu clave de Compressly Cloud para habilitar
+                la compresión de imágenes en lote.</p>
+            <input type="text" id="apikey-input" placeholder="cmply_xxxxxxxxxxxxxxxx"
+                class="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600 font-mono focus:border-cyan-500/40 focus:ring-1 focus:ring-cyan-500/20 transition-all outline-none mb-5">
+            <div class="flex gap-3">
+                <button id="modal-cancel"
+                    class="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] transition-all">Cancelar</button>
+                <button id="modal-save" class="flex-1 py-2.5 rounded-xl text-sm font-bold btn-grad text-white">
+                    <span class="flex items-center justify-center gap-2"><i class="fa-solid fa-check"></i>Guardar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== TOASTS ====== -->
+    <div id="toast-box" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- ====== JAVASCRIPT ====== -->
+    <script>
+            (function () {
+                'use strict';
+
+                // ============================================================
+                // CONFIGURACIÓN — Modifica tu API Key aquí o desde el modal
+                // ============================================================
+                const API_URL = 'https://api-compressly.linkeaoficial2025.workers.dev/';
+                let API_KEY = ''; // Ej: 'cmply_tu_clave_aqui'
+
+                const MAX_FILES = 20;
+                const CONCURRENCY = 3;   // Archivos en paralelo
+                const RATE_LIMIT_WAIT = 3000; // ms de espera al recibir 429
+                const MAX_RETRIES = 3;
+
+                // ============================================================
+                // ESTADO
+                // ============================================================
+                let selectedFiles = [];
+                let isProcessing = false;
+                let doneCount = 0;
+                let totalCount = 0;
+                let productIdSeq = 0;
+
+                // ============================================================
+                // GENERADOR DE NOMBRES DE ZAPATILLAS
+                // ============================================================
+                const BRANDS = ['Nike', 'Jordan', 'Adidas', 'New Balance', 'Puma', 'ASICS', 'Reebok', 'Saucony'];
+                const PREFIXES = ['Air', 'Ultra', 'Max', 'Pro', 'Elite', 'Turbo', 'Hyper', 'Neo', 'Apex', 'Flux', 'Shadow', 'Blaze'];
+                const BASES = ['Phantom', 'Vortex', 'Eclipse', 'Titan', 'Pulse', 'Nova', 'Zenith', 'Drift', 'Surge', 'Prism', 'Onyx', 'Spectra'];
+                const TAGS = ['OG', 'SE', 'Ltd', 'V2', 'Prime', 'Zero', 'Alpha', 'Retro', 'Core', 'Sig'];
+
+                function randomFrom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+                function genSneakerName() { return `${randomFrom(BRANDS)} ${randomFrom(PREFIXES)} ${randomFrom(BASES)} ${randomFrom(TAGS)}`; }
+                function genPrice() { return ((Math.floor(Math.random() * 23) + 12) * 10 + 0.99); }
+
+                // ============================================================
+                // REFERENCIAS DOM
+                // ============================================================
+                const $dropzone = document.getElementById('dropzone');
+                const $fileInput = document.getElementById('file-input');
+                const $fileList = document.getElementById('file-list');
+                const $fileItems = document.getElementById('file-items');
+                const $clearFiles = document.getElementById('clear-files');
+                const $uploadBtn = document.getElementById('upload-btn');
+                const $productName = document.getElementById('product-name');
+
+                const $progSection = document.getElementById('progress-section');
+                const $progLiquid = document.getElementById('prog-liquid');
+                const $progPct = document.getElementById('prog-pct');
+                const $progCounter = document.getElementById('prog-counter');
+                const $progDetail = document.getElementById('prog-detail');
+                const $progEta = document.getElementById('prog-eta');
+
+                const $termSection = document.getElementById('terminal-section');
+                const $terminal = document.getElementById('terminal');
+
+                const $grid = document.getElementById('product-grid');
+                const $emptyState = document.getElementById('empty-state');
+                const $productCount = document.getElementById('product-count');
+
+                const $apiModal = document.getElementById('apikey-modal');
+                const $apiInput = document.getElementById('apikey-input');
+                const $keyIcon = document.getElementById('key-icon');
+                const $keyLabel = document.getElementById('key-label');
+
+                // ============================================================
+                // UTILIDADES
+                // ============================================================
+                function fmtSize(bytes) {
+                    if (bytes < 1024) return bytes + ' B';
+                    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+                    return (bytes / 1048576).toFixed(1) + ' MB';
+                }
+
+                function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+                // ============================================================
+                // TOASTS
+                // ============================================================
+                function toast(msg, type) {
+                    type = type || 'info';
+                    var icons = { success: 'fa-circle-check text-emerald-400', warning: 'fa-triangle-exclamation text-amber-400', error: 'fa-circle-xmark text-red-400', info: 'fa-circle-info text-blue-400' };
+                    var box = document.getElementById('toast-box');
+                    var el = document.createElement('div');
+                    el.className = 'toast-el glass px-4 py-3 flex items-center gap-3 min-w-[260px] max-w-sm pointer-events-auto';
+                    el.innerHTML = '<i class="fa-solid ' + (icons[type] || icons.info) + ' text-sm"></i><span class="text-[13px] text-slate-200 flex-1">' + msg + '</span>';
+                    box.appendChild(el);
+                    setTimeout(function () {
+                        el.style.animation = 'toast-out 0.3s ease forwards';
+                        setTimeout(function () { el.remove(); }, 300);
+                    }, 4000);
+                }
+
+                // ============================================================
+                // TERMINAL LOG
+                // ============================================================
+                function log(msg, type) {
+                    type = type || 'info';
+                    var ts = new Date().toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                    var sym = { success: '✅', warning: '⚠️', error: '❌', info: 'ℹ️', system: '🔧' }[type] || '›';
+                    var line = document.createElement('div');
+                    line.className = 'log-' + type;
+                    line.innerHTML = '<span class="text-slate-600">[' + ts + ']</span> ' + sym + ' ' + msg;
+                    $terminal.appendChild(line);
+                    $terminal.scrollTop = $terminal.scrollHeight;
+                }
+
+                // ============================================================
+                // DROPZONE — Drag & Drop + Click
+                // ============================================================
+                $dropzone.addEventListener('click', function () { $fileInput.click(); });
+                $dropzone.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $fileInput.click(); } });
+
+                $dropzone.addEventListener('dragover', function (e) { e.preventDefault(); $dropzone.classList.add('active'); });
+                $dropzone.addEventListener('dragleave', function (e) { e.preventDefault(); $dropzone.classList.remove('active'); });
+                $dropzone.addEventListener('drop', function (e) {
+                    e.preventDefault();
+                    $dropzone.classList.remove('active');
+                    handleFiles(Array.from(e.dataTransfer.files).filter(function (f) { return f.type.startsWith('image/'); }));
+                });
+
+                $fileInput.addEventListener('change', function () {
+                    handleFiles(Array.from($fileInput.files));
+                    $fileInput.value = '';
+                });
+
+                $clearFiles.addEventListener('click', function () {
+                    selectedFiles = [];
+                    renderFileList();
+                    syncUploadBtn();
+                });
+
+                $uploadBtn.addEventListener('click', startBatch);
+
+                // ============================================================
+                // MANEJO DE ARCHIVOS
+                // ============================================================
+                function handleFiles(files) {
+                    if (isProcessing) { toast('Espera a que termine el lote actual', 'warning'); return; }
+                    var imgs = files.filter(function (f) { return f.type.startsWith('image/'); });
+                    var room = MAX_FILES - selectedFiles.length;
+                    var add = imgs.slice(0, Math.max(0, room));
+                    if (imgs.length > room && room > 0) toast('Solo se agregaron ' + add.length + ' de ' + imgs.length + ' (límite ' + MAX_FILES + ')', 'warning');
+                    if (room <= 0 && imgs.length > 0) { toast('Límite de ' + MAX_FILES + ' archivos alcanzado', 'warning'); return; }
+                    if (add.length === 0) return;
+                    selectedFiles = selectedFiles.concat(add);
+                    renderFileList();
+                    syncUploadBtn();
+                }
+
+                function renderFileList() {
+                    if (selectedFiles.length === 0) { $fileList.classList.add('hidden'); return; }
+                    $fileList.classList.remove('hidden');
+                    $fileItems.innerHTML = selectedFiles.map(function (f, i) {
+                        return '<div class="file-slide flex items-center gap-2 bg-white/[0.03] rounded-lg px-3 py-1.5" style="animation-delay:' + (i * 40) + 'ms">' +
+                            '<i class="fa-solid fa-image text-cyan-400/70 text-[9px]"></i>' +
+                            '<span class="flex-1 truncate text-[11px] text-slate-300">' + f.name + '</span>' +
+                            '<span class="text-[10px] text-slate-600 font-mono shrink-0">' + fmtSize(f.size) + '</span></div>';
+                    }).join('');
+                }
+
+                function syncUploadBtn() {
+                    $uploadBtn.disabled = selectedFiles.length === 0 || isProcessing;
+                }
+
+                // ============================================================
+                // PROGRESO
+                // ============================================================
+                function setProgress(done, total) {
+                    var pct = Math.round((done / total) * 100);
+                    $progLiquid.style.width = pct + '%';
+                    $progPct.textContent = pct + '%';
+                    $progCounter.textContent = done + ' / ' + total;
+                    $progDetail.textContent = done < total ? 'Comprimiendo imagen ' + (done + 1) + '...' : 'Compresión completada';
+                }
+
+                // ============================================================
+                // MOTOR DE LOTES — Compresión con concurrencia y rate-limit
+                // ============================================================
+                async function startBatch() {
+                    if (selectedFiles.length === 0) return;
+                    if (!API_KEY) { toast('Configura tu API Key primero', 'warning'); openModal(); return; }
+
+                    isProcessing = true;
+                    doneCount = 0;
+                    totalCount = selectedFiles.length;
+
+                    // Mostrar paneles
+                    $progSection.classList.remove('hidden');
+                    $termSection.classList.remove('hidden');
+                    setProgress(0, totalCount);
+                    $terminal.innerHTML = '';
+
+                    log('Motor de lotes iniciado', 'system');
+                    log('Procesando ' + totalCount + ' imágenes — Concurrencia: ' + CONCURRENCY, 'info');
+                    log('Endpoint: ' + API_URL, 'system');
+                    log('─'.repeat(44), 'system');
+
+                    syncUploadBtn();
+
+                    var t0 = Date.now();
+                    var fileIdx = 0;
+                    var baseName = $productName.value.trim();
+
+                    // Worker asíncrono que toma archivos de la cola
+                    async function worker() {
+                        while (fileIdx < totalCount) {
+                            var idx = fileIdx++;
+                            var file = selectedFiles[idx];
+                            var name = baseName ? (baseName + ' ' + (idx + 1)) : genSneakerName();
+
+                            try {
+                                var result = await compressOne(file, name);
+                                doneCount++;
+                                setProgress(doneCount, totalCount);
+
+                                // ETA
+                                var elapsed = Date.now() - t0;
+                                var avg = elapsed / doneCount;
+                                var rem = Math.round((avg * (totalCount - doneCount)) / 1000);
+                                $progEta.textContent = rem > 0 ? ('~' + rem + 's restantes') : '';
+
+                                addProductCard(result, name);
+                            } catch (err) {
+                                doneCount++;
+                                setProgress(doneCount, totalCount);
+                                log('Error final con ' + file.name + ': ' + err.message, 'error');
+                            }
+                        }
+                    }
+
+                    // Lanzar N workers en paralelo
+                    var workers = [];
+                    for (var w = 0; w < CONCURRENCY; w++) { workers.push(worker()); }
+                    await Promise.all(workers);
+
+                    // Fin del lote
+                    var totalSec = ((Date.now() - t0) / 1000).toFixed(1);
+                    log('─'.repeat(44), 'system');
+                    log('Lote completado en ' + totalSec + 's — ' + doneCount + ' imágenes procesadas', 'success');
+
+                    $progDetail.textContent = 'Compresión completada';
+                    $progEta.textContent = '';
+
+                    // Reset
+                    selectedFiles = [];
+                    renderFileList();
+                    isProcessing = false;
+                    syncUploadBtn();
+
+                    toast(doneCount + ' imágenes comprimidas con éxito', 'success');
+                }
+
+                // ============================================================
+                // LLAMADA API — Con reintento y manejo de 429
+                // ============================================================
+                async function compressOne(file, name, retries) {
+                    retries = retries !== undefined ? retries : MAX_RETRIES;
+
+                    log('Subiendo: ' + file.name + ' (' + fmtSize(file.size) + ')', 'info');
+
+                    try {
+                        var res = await fetch(API_URL, {
+                            method: 'POST',
+                            headers: {
+                                'x-api-key': API_KEY,
+                                'Content-Type': file.type || 'image/jpeg'
+                            },
+                            body: file
+                        });
+
+                        // Rate limit — pausar y reintentar sin consumir retry
+                        if (res.status === 429) {
+                            log('Rate limit (429). Pausando ' + (RATE_LIMIT_WAIT / 1000) + 's...', 'warning');
+                            await sleep(RATE_LIMIT_WAIT);
+                            log('Reintentando: ' + file.name, 'info');
+                            return compressOne(file, name, retries);
+                        }
+
+                        if (!res.ok) {
+                            var errBody = '';
+                            try { errBody = await res.text(); } catch (e) { }
+                            throw new Error('HTTP ' + res.status + (errBody ? ': ' + errBody.slice(0, 120) : ''));
+                        }
+
+                        var data = await res.json();
+
+                        log(name + ' → Reducido: ' + data.ahorro_porcentaje + '% | Nuevo peso: ' + data.peso_final, 'success');
+
+                        return data;
+
+                    } catch (err) {
+                        if (retries > 1) {
+                            log('Error con ' + file.name + '. Reintentando (' + (MAX_RETRIES - retries + 1) + '/' + MAX_RETRIES + ')...', 'warning');
+                            await sleep(2000);
+                            return compressOne(file, name, retries - 1);
+                        }
+                        throw err;
+                    }
+                }
+
+                // ============================================================
+                // VITRINA — Agregar tarjeta de producto
+                // ============================================================
+                function addProductCard(apiData, name) {
+                    productIdSeq++;
+
+                    $emptyState.classList.add('hidden');
+                    $grid.classList.remove('hidden');
+
+                    var imgSrc = API_URL + apiData.archivo_guardado;
+                    var savings = apiData.ahorro_porcentaje;
+                    var weight = apiData.peso_final;
+                    var price = genPrice();
+
+                    var card = document.createElement('article');
+                    card.className = 'product-card glass overflow-hidden group cursor-pointer';
+                    card.style.animationDelay = ((productIdSeq % 6) * 80) + 'ms';
+
+                    card.innerHTML =
+                        '<div class="relative overflow-hidden aspect-square bg-slate-900/60">' +
+                        '<img src="' + imgSrc + '" alt="' + name + '" class="card-img w-full h-full object-cover" loading="lazy"' +
+                        ' onerror="this.style.display=\'none\';this.parentElement.querySelector(\'.img-fallback\').style.display=\'flex\'">' +
+                        '<div class="img-fallback hidden items-center justify-center h-full text-slate-600 text-xs"><i class="fa-solid fa-image-slash mr-1"></i>Sin vista previa</div>' +
+                        '<div class="absolute top-2.5 left-2.5 badge-glow">' +
+                        '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-lg shadow-cyan-500/20">' +
+                        '🔥 -' + savings + '% Peso</span>' +
+                        '</div>' +
+                        '<div class="absolute top-2.5 right-2.5">' +
+                        '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-black/40 backdrop-blur-sm text-white/80 border border-white/10">NUEVO</span>' +
+                        '</div>' +
+                        '<div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">' +
+                        '<span class="text-[10px] text-white/70 font-mono">' + weight + '</span>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="p-3.5">' +
+                        '<h3 class="text-[13px] font-bold text-slate-100 truncate mb-1.5">' + name + '</h3>' +
+                        '<div class="flex items-center justify-between">' +
+                        '<span class="text-lg font-black txt-grad">$' + price.toFixed(2) + '</span>' +
+                        '<button class="cart-btn w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/[0.08] transition-all active:scale-90" aria-label="Agregar al carrito">' +
+                        '<i class="fa-solid fa-bag-shopping text-[11px]"></i>' +
+                        '</button>' +
+                        '</div>' +
+                        '</div>';
+
+                    $grid.prepend(card);
+
+                    // Actualizar contador
+                    var n = $grid.children.length;
+                    $productCount.textContent = n + ' producto' + (n !== 1 ? 's' : '');
+                }
+
+                // Delegación de eventos para botones de carrito
+                document.addEventListener('click', function (e) {
+                    var btn = e.target.closest('.cart-btn');
+                    if (!btn) return;
+                    var card = btn.closest('.product-card');
+                    var name = card ? card.querySelector('h3').textContent : '';
+                    var icon = btn.querySelector('i');
+                    icon.className = 'fa-solid fa-check text-[11px] text-emerald-400';
+                    btn.classList.add('bg-emerald-500/10', 'border-emerald-500/20');
+                    setTimeout(function () {
+                        icon.className = 'fa-solid fa-bag-shopping text-[11px]';
+                        btn.classList.remove('bg-emerald-500/10', 'border-emerald-500/20');
+                    }, 1500);
+                    toast(name + ' agregado al carrito', 'success');
+                });
+
+                // ============================================================
+                // MODAL API KEY
+                // ============================================================
+                function openModal() {
+                    $apiModal.classList.remove('hidden');
+                    $apiModal.classList.add('flex');
+                    $apiInput.value = API_KEY;
+                    setTimeout(function () { $apiInput.focus(); }, 100);
+                }
+
+                function closeModal() {
+                    $apiModal.classList.add('hidden');
+                    $apiModal.classList.remove('flex');
+                }
+
+                function saveKey() {
+                    var val = $apiInput.value.trim();
+                    if (!val) { toast('Ingresa una API Key válida', 'warning'); return; }
+                    API_KEY = val;
+                    $keyIcon.className = 'fa-solid fa-circle-check text-emerald-400 text-[10px]';
+                    $keyLabel.textContent = 'API Key lista';
+                    closeModal();
+                    toast('API Key guardada correctamente', 'success');
+                }
+
+                document.getElementById('apikey-toggle').addEventListener('click', openModal);
+                document.getElementById('modal-close').addEventListener('click', closeModal);
+                document.getElementById('modal-cancel').addEventListener('click', closeModal);
+                document.getElementById('modal-save').addEventListener('click', saveKey);
+
+                $apiModal.addEventListener('click', function (e) { if (e.target === $apiModal) closeModal(); });
+
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape' && !$apiModal.classList.contains('hidden')) closeModal();
+                    if (e.key === 'Enter' && !$apiModal.classList.contains('hidden') && document.activeElement === $apiInput) saveKey();
+                });
+
+            })();
+    </script>
+</body>
+
+</html>

@@ -299,7 +299,7 @@ const htmlModales = `
                     <p class="text-sm text-slate-500 dark:text-gray-400 font-medium mb-8">Comienza a automatizar hoy mismo.</p>
 
                     <form class="flex flex-col gap-4 text-left"
-                        onsubmit="event.preventDefault(); window.open('https://wa.me/584161356896?text=¡Hola!%20Quiero%20solicitar%20acceso%20al%20Plan%20API%20Full-Stack%20($14.99)%20en%20Compressly.%20Mi%20correo%20es:%20' + this.querySelector('input[type=email]').value, '_blank'); closeApiModal();">
+                        onsubmit="event.preventDefault(); window.open('https://wa.me/584161356896?text=¡Hola!%20Quiero%20solicitar%20acceso%20al%20Plan%20API%20Full-Stack%20($24.99)%20en%20Compressly.%20Mi%20correo%20es:%20' + this.querySelector('input[type=email]').value, '_blank'); closeApiModal();">
                         
                         <div>
                             <label class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest mb-2 block">Tu correo de cuenta</label>
@@ -309,7 +309,7 @@ const htmlModales = `
 
                         <button type="submit"
                             class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:scale-[1.02] active:scale-95 !text-white font-extrabold py-4 rounded-xl transition-all shadow-[0_15px_30px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 text-sm mt-2">
-                            <i data-lucide="zap" class="w-5 h-5 !text-white"></i> <span data-i18n="api_modal_btn">Activar API ($14.99/mes)</span>
+                            <i data-lucide="zap" class="w-5 h-5 !text-white"></i> <span data-i18n="api_modal_btn">Activar API ($24.99/mes)</span>
                         </button>
                     </form>
                     
@@ -381,7 +381,7 @@ const htmlModales = `
                 </button>
 
                 <button
-                    onclick="window.open('https://wa.me/584161356896?text=¡Hola!%20Quiero%20el%20Pack%20E-commerce%20de%20IA%20(3000%20imágenes)%20por%20$14.99%20🛒', '_blank')"
+                    onclick="window.open('https://wa.me/584161356896?text=¡Hola!%20Quiero%20el%20Pack%20E-commerce%20de%20IA%20(3000%20imágenes)%20por%20$24.99%20🛒', '_blank')"
                     class="p-4 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-purple-500/50 transition-all flex items-center justify-between group active:scale-[0.98]">
                     <div class="text-left">
                         <span data-i18n="recharge_ecom"
@@ -391,7 +391,7 @@ const htmlModales = `
                                 data-i18n="recharge_images">Imágenes</span></span>
                     </div>
                     <span
-                        class="bg-purple-100 text-purple-700 dark:bg-purple-600/20 dark:text-purple-300 border border-purple-200 dark:border-purple-500/30 px-3 py-1 rounded-lg font-black text-sm group-hover:bg-purple-500 group-hover:text-white transition-colors">$14.99</span>
+                        class="bg-purple-100 text-purple-700 dark:bg-purple-600/20 dark:text-purple-300 border border-purple-200 dark:border-purple-500/30 px-3 py-1 rounded-lg font-black text-sm group-hover:bg-purple-500 group-hover:text-white transition-colors">$24.99</span>
                 </button>
 
                 <button
@@ -419,17 +419,20 @@ const htmlModales = `
     <div id="profileModal" class="fixed inset-0 z-[120] hidden items-center justify-center px-0 md:px-8">
         <div id="profileOverlay" class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity cursor-pointer"></div>
 
-        <div class="bento-card relative z-10 w-full h-[100dvh] max-h-[100dvh] md:max-w-6xl md:h-[85vh] md:max-h-[85vh] rounded-none md:rounded-3xl border-none md:border md:border-primary-500/30 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] md:overflow-hidden block md:flex md:flex-row shadow-[0_0_60px_rgba(139,92,246,0.2)] transform transition-all scale-95 opacity-0 p-8 md:p-0" id="profileContent">
+        <div class="bento-card relative z-10 w-full h-[100dvh] max-h-[100dvh] md:max-w-6xl md:h-[85vh] md:max-h-[85vh] rounded-none md:rounded-3xl border-none md:border md:border-primary-500/30 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] md:overflow-hidden block md:flex md:flex-row shadow-[0_0_60px_rgba(139,92,246,0.2)] transform transition-all scale-95 opacity-0 p-8 pt-16 md:p-0" id="profileContent">
 
             <div id="profileStatsColumn" class="w-full md:w-[55%] md:p-12 flex flex-col md:overflow-y-auto custom-scrollbar relative border-b md:border-b-0 md:border-r border-slate-200 dark:border-white/10 transition-all duration-300">
                 
                 <div class="flex justify-between items-start border-b border-slate-200 dark:border-white/10 pb-5 mb-6 md:pb-6 md:mb-8">
                     <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl flex items-center justify-center shadow-lg shrink-0">
-                            <i data-lucide="user" class="w-7 h-7 text-white"></i>
-                        </div>
+                        <div class="relative shrink-0">
+    <div id="profileAvatarLabel" class="block w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden shadow-lg border border-slate-200 dark:border-white/10 relative bg-slate-200 dark:bg-[#18181b] flex items-center justify-center transition-colors duration-300">
+        <img id="profileAvatarImg" src="" class="w-full h-full object-cover hidden" alt="Avatar">
+        <i id="profileAvatarIcon" data-lucide="user" class="w-7 h-7 text-slate-400"></i>
+    </div>
+</div>
                         <div class="flex flex-col justify-center">
-                            <h2 id="profileNameDisplay" data-i18n="profile_greeting" class="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white leading-tight">Hola, Creador</h2>
+<h2 id="profileNameDisplay" data-i18n="profile_greeting" class="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white leading-tight">Cargando perfil...</h2>
                             <p class="text-sm font-medium text-slate-500 dark:text-gray-400 flex items-center gap-2 mt-1">
                                 <span class="relative flex h-3 w-3 md:h-3 md:w-3 items-center justify-center shrink-0">
                                     <span id="profileStatusPing" class="animate-ping absolute h-full w-full rounded-full bg-green-500 opacity-40"></span>
@@ -673,10 +676,12 @@ const htmlModales = `
                         <div class="flex flex-col items-center gap-3 mb-6 w-full max-w-sm mx-auto">
                             <p id="userEmailDisplay" class="text-sm text-slate-500 dark:text-gray-400 font-medium truncate px-2 leading-none mb-1 w-full text-center">usuario@ejemplo.com</p>
 
-                            <div class="flex items-center justify-between w-full bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 px-3 py-2.5 rounded-xl group cursor-pointer hover:bg-slate-100 dark:hover:bg-white/5 transition-all active:scale-95 overflow-hidden" onclick="navigator.clipboard.writeText(document.getElementById('userInternalIdDisplay').innerText); if(typeof Notify !== 'undefined') Notify.show('ID Copiado', 'ID de soporte copiado con éxito', 'success');">
+                            <div class="flex items-center justify-between w-full bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5 px-3 py-2.5 rounded-xl group cursor-pointer hover:bg-slate-100 dark:hover:bg-white/5 transition-all shadow-sm active:scale-95 overflow-hidden" onclick="navigator.clipboard.writeText(document.getElementById('userInternalIdDisplay').innerText); if(typeof Notify !== 'undefined') Notify.show('ID Copiado', 'ID de soporte copiado con éxito', 'success');" title="Copiar ID de Usuario">
                                 <div class="flex flex-col items-start w-full pr-3 min-w-0">
-                                <span class="text-[8px] font-black text-slate-400 dark:text-gray-500 uppercase tracking-[0.2em] leading-none mb-1">ID Usuario</span>
-                                    <span id="userInternalIdDisplay" class="text-[10px] font-medium text-slate-500 dark:text-gray-400 font-mono break-all w-full leading-tight select-all">Cargando...</span>
+                                    <span class="text-[8px] font-black text-slate-500 dark:text-gray-400 uppercase tracking-[0.2em] leading-none mb-1 flex items-center gap-1">
+                                        <i data-lucide="fingerprint" class="w-2.5 h-2.5"></i> ID Usuario
+                                    </span>
+                                    <span id="userInternalIdDisplay" class="text-xs font-bold text-slate-700 dark:text-white font-mono tracking-widest break-all w-full select-all">Cargando...</span>
                                 </div>
                                 <i data-lucide="copy" class="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors shrink-0"></i>
                             </div>
@@ -684,6 +689,9 @@ const htmlModales = `
                         </div>
 
                         <div class="w-full flex flex-col gap-3 md:gap-4">
+                        <button onclick="openTicketsModal()" class="w-full bg-primary-500/10 hover:bg-primary-500/20 text-primary-600 dark:text-primary-400 border border-primary-500/20 px-5 py-3.5 md:py-4 rounded-xl text-sm font-bold transition-all shadow-sm flex items-center justify-center gap-2 active:scale-95">
+                        <i data-lucide="inbox" class="w-4 h-4"></i> Mis Reportes y Sugerencias
+                        </button>
                             <button onclick="openSettingsModal()" class="w-full bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-700 dark:text-white border border-slate-200 dark:border-white/10 px-5 py-3.5 md:py-4 rounded-xl text-sm font-bold transition-all shadow-sm flex items-center justify-center gap-2 active:scale-95">
                                 <i data-lucide="settings" class="w-4 h-4"></i> Ajustes de Cuenta
                             </button>
@@ -748,7 +756,7 @@ const htmlModales = `
         <div id="settingsOverlay" onclick="closeSettingsModal()"
             class="absolute inset-0 bg-black/80 backdrop-blur-md cursor-pointer transition-opacity"></div>
 
-        <div class="bento-card relative z-10 w-full max-w-md h-[100dvh] max-h-[100dvh] md:h-auto md:max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] flex flex-col justify-center md:justify-start shadow-2xl border-none md:border md:border-slate-200 dark:md:border-white/10 transform transition-all scale-95 opacity-0 p-8 rounded-none md:rounded-3xl"
+        <div class="bento-card relative z-10 w-full max-w-md h-[100dvh] max-h-[100dvh] md:h-auto md:max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] flex flex-col justify-start md:justify-start shadow-2xl border-none md:border md:border-slate-200 dark:md:border-white/10 transform transition-all scale-95 opacity-0 p-8 pt-16 md:p-8 rounded-none md:rounded-3xl"
             id="settingsContent">
 
             <button onclick="closeSettingsModal()"
@@ -761,10 +769,83 @@ const htmlModales = `
                     class="bg-slate-100 dark:bg-white/5 p-2 rounded-xl text-slate-600 dark:text-gray-300 shadow-sm border border-slate-200 dark:border-white/5">
                     <i data-lucide="settings" class="w-5 h-5"></i>
                 </div>
-                Ajustes de Seguridad
+                Ajustes de Cuenta
             </h2>
 
             <div class="space-y-6">
+                
+                <!-- 🚀 FOTO DE PERFIL EN AJUSTES -->
+                <div class="flex flex-col items-center justify-center mb-2 mt-2 relative">
+                    <div class="relative group cursor-pointer shrink-0">
+                        <input type="file" id="settingsAvatarUploadInput" accept="image/png, image/jpeg, image/webp" class="hidden" onchange="subirAvatarPerfil(this)">
+                        <label for="settingsAvatarUploadInput" id="settingsAvatarLabel" class="block w-24 h-24 rounded-full overflow-hidden shadow-lg border-4 border-slate-100 dark:border-white/5 relative cursor-pointer bg-slate-200 dark:bg-[#18181b] flex items-center justify-center transition-all hover:scale-105 duration-300">
+                            <img id="settingsAvatarImg" src="" class="w-full h-full object-cover hidden" alt="Avatar Ajustes">
+                            <i id="settingsAvatarIcon" data-lucide="user" class="w-10 h-10 text-slate-400"></i>
+                            
+                            <!-- Hover Efecto Cámara 📸 -->
+                            <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+                                <i data-lucide="camera" class="w-7 h-7 text-white animate-bounce"></i>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <!-- 🗑️ Botón para eliminar el Avatar -->
+                    <button id="clearAvatarBtn" onclick="eliminarAvatarPerfil(event)" class="absolute top-0 right-[35%] bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-full shadow-lg transition-transform hover:scale-110 active:scale-95 hidden" title="Eliminar foto">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest mb-2 block">Nombre o Empresa</label>
+                    <div class="relative">
+                        <input type="text" id="settingsNameInput" placeholder="Ej: Agencia Creativa..."
+                            class="w-full bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3.5 text-slate-800 dark:text-white focus:outline-none focus:border-primary-500 transition-colors font-bold text-sm pr-12">
+                        
+                        <button onclick="guardarNombreUsuario(this)" id="btnSaveName" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors shadow-md shadow-primary-500/20 active:scale-95" title="Guardar Nombre">
+                            <i data-lucide="save" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 🚀 NUEVA SECCIÓN: PRESETS EN LA NUBE -->
+                <div class="bg-primary-500/5 border border-primary-500/20 rounded-2xl p-5 relative overflow-hidden group mt-6 mb-6">
+                    <div class="absolute -right-6 -top-6 text-primary-500/10 group-hover:scale-110 transition-transform duration-500 pointer-events-none">
+                        <i data-lucide="cloud-upload" class="w-32 h-32"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <h3 class="text-sm font-black text-primary-500 dark:text-primary-400 mb-1 flex items-center gap-2">
+                            <i data-lucide="settings-2" class="w-4 h-4"></i> Valores por Defecto
+                        </h3>
+                        <p class="text-[10px] text-slate-500 dark:text-gray-400 mb-4 leading-relaxed font-medium">
+                            Acomoda la calidad, el formato, la marca de agua y el anti-rastreo de la pantalla principal a tu gusto y guárdalos aquí. Estos ajustes, junto con la <b class="text-primary-500">auto-descarga</b> de abajo, se cargarán mágicamente en cada sesión.
+                        </p>
+                        <button onclick="guardarAjustesPorDefecto(this)" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-black py-3 rounded-xl shadow-[0_5px_15px_rgba(139,92,246,0.3)] active:scale-95 transition-all flex items-center justify-center gap-2 text-xs border border-white/10">
+                            <i data-lucide="cloud-upload" class="w-4 h-4"></i> GUARDAR PRESETS
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 🚀 NUEVA SECCIÓN: AUTO-DESCARGA -->
+                <div>
+                    <label class="flex items-center justify-between cursor-pointer group bg-slate-100 dark:bg-black/50 p-4 rounded-xl border border-slate-200 dark:border-white/10 hover:border-primary-500/50 transition-all">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-primary-500/10 p-2 rounded-lg group-hover:bg-primary-500 group-hover:text-white transition-colors text-primary-500">
+                                <i data-lucide="download-cloud" class="w-4 h-4"></i>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-sm font-bold text-slate-700 dark:text-white leading-none">Auto-descarga rápida</span>
+                                <span class="text-[9px] text-gray-500 font-bold mt-1.5 leading-none uppercase tracking-wider">Descarga al terminar la magia</span>
+                            </div>
+                        </div>
+                        <div class="relative inline-flex items-center ml-2">
+                            <input type="checkbox" id="autoDownloadToggle" class="sr-only peer" onchange="localStorage.setItem('compressly_autodownload', this.checked)">
+                            <div class="w-9 h-5 bg-slate-200 dark:bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-500 shadow-inner"></div>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- 🚀 NUEVA SECCIÓN: CUENTA VINCULADA -->
+
                 <div>
                     <label class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest mb-2 block">Cuenta
                         vinculada</label>
@@ -774,6 +855,20 @@ const htmlModales = `
                         <span id="settingsEmailDisplay"
                             class="text-sm font-bold text-slate-700 dark:text-white truncate">usuario@ejemplo.com</span>
                     </div>
+                </div>
+
+                <!-- 🧑‍💻 NUEVA SECCIÓN: DESARROLLADOR -->
+                <div id="developerSettingsZone" class="hidden flex-col gap-2 pt-2 border-t border-slate-200 dark:border-white/5">
+                    <label class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest flex items-center gap-1.5"><i data-lucide="terminal" class="w-3.5 h-3.5 text-emerald-500"></i> Zona de Desarrollador</label>
+                    <button onclick="regenerarApiKey(this)"
+                        class="w-full bg-red-500/5 hover:bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 px-5 py-3.5 rounded-xl text-sm font-bold transition-all shadow-sm flex items-center justify-between group active:scale-95">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="refresh-cw"
+                                class="w-4 h-4 text-red-500 group-hover:rotate-180 transition-transform duration-500"></i>
+                            <span>Regenerar API Key</span>
+                        </div>
+                    </button>
+                    <p class="text-[9px] text-gray-500 leading-tight">Usa esto si tu llave fue comprometida. Tu llave actual dejará de funcionar inmediatamente.</p>
                 </div>
 
                 <button onclick="solicitarCambioPassword(this)"
@@ -786,6 +881,26 @@ const htmlModales = `
                     <i data-lucide="chevron-right"
                         class="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform"></i>
                 </button>
+
+                <div class="bg-gradient-to-br from-primary-500/5 to-transparent border border-primary-500/10 rounded-2xl p-5 mt-6 mb-2 relative overflow-hidden group transition-all hover:border-primary-500/20">
+                    <div class="absolute -right-4 -bottom-4 text-primary-500/5 group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+                        <i data-lucide="help-circle" class="w-24 h-24"></i>
+                    </div>
+                    
+                    <div class="relative z-10">
+                        <h3 class="text-sm font-black text-slate-800 dark:text-white mb-1 flex items-center gap-2">
+                            <i data-lucide="headset" class="w-4 h-4 text-primary-500"></i> ¿Necesitas ayuda?
+                        </h3>
+                        <p class="text-[10px] text-slate-500 dark:text-gray-400 mb-4 leading-relaxed font-medium">
+                            Si tienes problemas con tus pagos, créditos o la API, contacta directamente con nuestro <b class="text-primary-500">Soporte VIP</b>. Atendemos de forma personalizada.
+                        </p>
+                        <button onclick="window.open('https://wa.me/584161356896?text=' + encodeURIComponent('¡Hola! 🎧 Necesito soporte técnico VIP en Compressly. Mi ID de usuario es: ' + (document.getElementById('userInternalIdDisplay')?.innerText || 'No identificado')), '_blank')" 
+                                class="w-full bg-[#25D366] hover:bg-[#20ba56] text-white font-black py-3 rounded-xl shadow-[0_5px_15px_rgba(37,211,102,0.3)] active:scale-95 transition-all flex items-center justify-center gap-2 text-xs border border-white/10">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.353-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.506-.174-.007-.375-.008-.576-.008-.201 0-.527.076-.803.377-.276.301-1.054 1.03-1.054 2.515 0 1.485 1.079 2.918 1.228 3.115.15.198 2.122 3.24 5.14 4.544.717.311 1.277.497 1.713.637.721.23 1.376.197 1.895.12.578-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.87 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                            SOPORTE POR WHATSAPP
+                        </button>
+                    </div>
+                </div>
 
                 <div class="h-[1px] w-full bg-slate-200 dark:bg-white/5 my-2"></div>
 
@@ -1003,15 +1118,20 @@ const htmlModales = `
         <div class="bento-card relative z-10 w-full max-w-md h-[100dvh] max-h-[100dvh] md:h-auto md:max-h-[85vh] overflow-hidden flex flex-col shadow-2xl border-none md:border md:border-primary-500/30 transform transition-all scale-95 opacity-0 rounded-none md:rounded-3xl bg-white dark:bg-[#09090B]" id="activityContent">
             
             <div class="p-6 border-b border-slate-200 dark:border-white/10 flex justify-between items-center shrink-0">
-                <h2 class="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
-                    <div class="bg-primary-500/10 p-2 rounded-xl text-primary-500">
+                <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2 shrink-0 whitespace-nowrap tracking-tight">
+                    <div class="bg-primary-500/10 p-2 rounded-xl text-primary-500 shrink-0">
                         <i data-lucide="history" class="w-5 h-5"></i>
                     </div>
                     Historial de Actividad
                 </h2>
-                <button onclick="closeActivityModal()" class="text-gray-400 hover:text-slate-900 dark:hover:text-white p-2 rounded-lg transition-colors">
-                    <i data-lucide="x" class="w-6 h-6"></i>
-                </button>
+                <div class="flex items-center gap-0 sm:gap-2 shrink-0">
+                    <button onclick="limpiarHistorialActividad()" title="Limpiar todo" class="text-red-400 hover:text-red-600 hover:bg-red-500/10 p-2 rounded-lg transition-colors">
+                        <i data-lucide="trash-2" class="w-5 h-5"></i>
+                    </button>
+                    <button onclick="closeActivityModal()" class="text-gray-400 hover:text-slate-900 dark:hover:text-white p-2 rounded-lg transition-colors">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
             </div>
 
             <div id="activityFullList" class="flex-grow overflow-y-auto p-6 space-y-3 custom-scrollbar">
@@ -1019,6 +1139,46 @@ const htmlModales = `
 
             <div class="p-6 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black/20 text-center">
                 <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Sincronizado con Supabase Cloud</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="ticketsModal" class="fixed inset-0 z-[155] hidden items-center justify-center px-0 md:px-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md cursor-pointer" onclick="closeTicketsModal()"></div>
+        <div class="bento-card relative z-10 w-full max-w-lg h-[100dvh] max-h-[100dvh] md:h-auto md:max-h-[85vh] overflow-hidden flex flex-col shadow-2xl border-none md:border md:border-primary-500/30 transform transition-all scale-95 opacity-0 rounded-none md:rounded-3xl bg-white dark:bg-[#09090B]" id="ticketsContent">
+            
+            <div class="p-6 border-b border-slate-200 dark:border-white/10 flex justify-between items-center shrink-0">
+                <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2 shrink-0">
+                    <div class="bg-primary-500/10 p-2 rounded-xl text-primary-500 shrink-0">
+                        <i data-lucide="inbox" class="w-5 h-5"></i>
+                    </div>
+                    Mis Reportes
+                </h2>
+                
+                <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+                    <button onclick="closeTicketsModal(true)" title="Nuevo Reporte" class="bg-primary-500/10 text-primary-500 hover:bg-primary-500 hover:text-white px-3 py-1.5 rounded-lg transition-all text-xs font-bold flex items-center gap-1.5 active:scale-95 shadow-sm">
+                        <i data-lucide="plus" class="w-4 h-4"></i> <span class="hidden sm:inline">Nuevo</span>
+                    </button>
+                    <button onclick="limpiarTicketsUsuario()" title="Limpiar historial" class="text-red-400 hover:text-red-600 hover:bg-red-500/10 p-2 rounded-lg transition-colors">
+                        <i data-lucide="trash-2" class="w-5 h-5"></i>
+                    </button>
+                    <button onclick="closeTicketsModal()" class="text-gray-400 hover:text-slate-900 dark:hover:text-white p-2 rounded-lg transition-colors">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="ticketsFullList" class="flex-grow overflow-y-auto p-6 space-y-3 custom-scrollbar bg-slate-50/50 dark:bg-black/10">
+                <div class="flex flex-col items-center justify-center py-12 gap-3 text-primary-500 animate-pulse">
+                    <i data-lucide="loader-2" class="w-8 h-8 animate-spin"></i>
+                    <span class="text-xs font-black uppercase tracking-widest">Sincronizando con Servidor...</span>
+                </div>
+            </div>
+            
+            <div class="p-4 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black/20 text-center flex justify-center items-center gap-4">
+                <span class="flex items-center gap-1 text-[9px] font-bold text-yellow-600 uppercase tracking-widest"><div class="w-2 h-2 rounded-full bg-yellow-500"></div> Pendiente</span>
+                <span class="flex items-center gap-1 text-[9px] font-bold text-blue-600 uppercase tracking-widest"><div class="w-2 h-2 rounded-full bg-blue-500"></div> En Revisión</span>
+                <span class="flex items-center gap-1 text-[9px] font-bold text-green-600 uppercase tracking-widest"><div class="w-2 h-2 rounded-full bg-green-500"></div> Solucionado</span>
             </div>
         </div>
     </div>

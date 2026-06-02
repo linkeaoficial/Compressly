@@ -178,8 +178,10 @@ window.cargarHistorialPerfil = async function () {
     try {
         // 🔓 MODO USUARIO: Expande el modal a dos columnas para mostrar estadísticas
         if (statsCol) {
+            // 🟢 Forzamos la visibilidad eliminando cualquier rastro de 'hidden' y asegurando el flex
             statsCol.classList.remove('hidden');
-            statsCol.classList.add('md:flex');
+            statsCol.style.setProperty('display', 'flex', 'important');
+            statsCol.classList.add('flex', 'md:flex');
         }
         if (brandCol) {
             brandCol.classList.add('hidden');
@@ -193,12 +195,23 @@ window.cargarHistorialPerfil = async function () {
         let statsDiv = document.getElementById('compresslyStatsContainer');
         if (!statsDiv) return;
 
-        // 1. TRAEMOS SOLO LAS ESTADÍSTICAS (La actividad ahora vive en el Modal)
-        const { data: stats, error } = await supabaseClient.from('api_clients')
-            .select('total_imagenes_procesadas, total_ahorro_bytes, stat_webp, stat_jpg, stat_png')
-            .eq('id', userId).single();
+        // 1. TRAEMOS LAS ESTADÍSTICAS (Ahora desde la tabla user_stats) 📊
+        let stats = { total_imagenes_procesadas: 0, total_ahorro_bytes: 0, stat_webp: 0, stat_jpg: 0, stat_png: 0 };
 
-        if (error) throw new Error("Error en sincronía");
+        const { data: userStats, error } = await supabaseClient.from('user_stats')
+            .select('total_imagenes_procesadas, total_ahorro_bytes, stat_webp, stat_jpg, stat_png')
+            .eq('usuario_id', userId).maybeSingle();
+
+        // Si hay un error que NO es "fila no encontrada" (PGRST116), lo lanzamos.
+        // Es normal que un usuario nuevo no tenga fila en user_stats todavía.
+        if (error && error.code !== 'PGRST116') {
+            throw new Error("Error en sincronía");
+        }
+
+        // Si encontró datos, los usamos
+        if (userStats) {
+            stats = userStats;
+        }
 
         // 🚀 SINCRONIZACIÓN GLOBAL: Actualizamos el cintillo superior automáticamente
         localStorage.setItem('compressly_total_saved', stats.total_ahorro_bytes || 0);
@@ -290,7 +303,7 @@ window.registrarCompresionEnNube = async function (formato, bytesAhorrados, nomb
         // ⚡ LLAMAMOS A TU FUNCIÓN SQL
         const { error } = await supabaseClient.rpc('registrar_compresion_exitosa', {
             u_id: userId,
-            tipo_proceso: 'Compresión Web',
+            tipo_proceso: `Compresión ${formato.toUpperCase()}`, // Ejemplo: "Compresión WEBP" o "Compresión JPG"
             info_archivo: `Archivo: ${nombreArchivo || 'Imagen'}`,
             bytes_ahorrados: bytesAhorrados,
             cant_webp: cant_webp,

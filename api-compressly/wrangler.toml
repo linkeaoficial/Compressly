@@ -1,0 +1,24 @@
+name = "api-compressly"
+main = "api-compressly.js"
+compatibility_date = "2026-04-21"
+compatibility_flags = [ "nodejs_compat" ]
+preview_urls = false
+
+# 📦 Aquí conectamos tu búnker R2 automáticamente
+[[r2_buckets]]
+binding = "STORAGE"
+bucket_name = "compressly-storage"
+
+# 🚦 NUEVA CAPA: El Semáforo de memoria para *.workers.dev
+[[ratelimits]]
+name = "API_LIMITER"
+namespace_id = "1001" # Un identificador numérico único para tu cuenta
+[ratelimits.simple]
+limit = 5             # Máximo 5 peticiones por cliente
+period = 10           # En una ventana de 10 segundos
+
+# 🧠 Regla para que Cloudflare sepa encender archivos WebAssembly (.wasm)
+[[rules]]
+type = "CompiledWasm"
+globs = ["**/*.wasm"]
+fallthrough = true

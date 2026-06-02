@@ -237,17 +237,24 @@ async function procesarAuth(event) {
         }
 
         // 🚀 EFECTO VIP: Personalización dinámica
-        const nombreCorto = data.user.email.split('@')[0];
-        const nombreFormateado = nombreCorto.charAt(0).toUpperCase() + nombreCorto.slice(1);
+        let nombreParaSaludar = data.user.email.split('@')[0];
+        nombreParaSaludar = nombreParaSaludar.charAt(0).toUpperCase() + nombreParaSaludar.slice(1);
+
+        // Consultamos rápido si hay un nombre guardado
+        const { data: infoCply } = await supabaseClient.from('api_clients').select('name').eq('id', data.user.id).single();
+        if (infoCply && infoCply.name) {
+            nombreParaSaludar = infoCply.name;
+        }
 
         const splash = document.getElementById('vipSplashOverlay');
         const greeting = document.getElementById('vipSplashGreeting');
         const status = document.getElementById('vipSplashStatus');
         const iconContainer = document.getElementById('vipSplashIconContainer');
 
-        // Ajustamos colores para el inicio con el Logo Oficial de Compressly
         iconContainer.innerHTML = '<img src="imagenes/compressly_logo.png" class="w-16 h-16 object-contain drop-shadow-[0_0_20px_rgba(167,139,250,0.6)] animate-pulse" alt="Compressly Logo">';
-        greeting.innerText = esNuevoRegistro ? `¡Bienvenido, ${nombreFormateado}!` : `¡Hola de nuevo, ${nombreFormateado}!`;
+
+        // ✅ Ahora el saludo usa el nombre de la base de datos
+        greeting.innerText = esNuevoRegistro ? `¡Bienvenido, ${nombreParaSaludar}!` : `¡Hola de nuevo, ${nombreParaSaludar}!`;
         status.innerText = "Configurando acceso prioritario";
 
         // Activamos el splash con transición más lenta (1000ms en CSS)
@@ -293,7 +300,7 @@ async function mostrarPanelPrivado(user) {
             .from('api_clients')
             .select('*') // Traemos todo de forma segura
             .eq('id', user.id)
-            .single();
+            .maybeSingle();
 
         // 🛡️ Respaldo por si el ID se guardó en la columna 'user_id'
         let dataSegura = clientData;
@@ -308,7 +315,7 @@ async function mostrarPanelPrivado(user) {
                 .from('planes')
                 .select('features, creditos_ia')
                 .eq('name', dataSegura.plan_type)
-                .single();
+                .maybeSingle();
 
             // 🧬 Fusionamos ambas respuestas para que el sistema funcione perfecto
             clienteInfo = {
@@ -337,18 +344,183 @@ async function mostrarPanelPrivado(user) {
             DB.updateUI();
         }
 
-        // 1. Inyectamos llaves e ID
+        // 1. Inyectamos llaves, ID y NOMBRE 📛
         const userIdDisplay = document.getElementById('userIdDisplay');
         const internalDisplay = document.getElementById('userInternalIdDisplay');
+        const profileNameDisplay = document.getElementById('profileNameDisplay');
+        const settingsNameInput = document.getElementById('settingsNameInput');
 
         if (userIdDisplay) userIdDisplay.innerText = clienteInfo.api_key || 'Bloqueado';
 
         if (internalDisplay) {
-            // 💎 MOSTRAMOS el ID profesional de 15 caracteres
             internalDisplay.innerText = clienteInfo.public_id || 'CPLY-USR-GENERANDO...';
-
-            // 🛡️ GUARDAMOS el ID técnico en un atributo oculto para que el sistema siga funcionando
             internalDisplay.setAttribute('data-uuid', user.id);
+        }
+
+        // 🎨 PERSONALIZACIÓN: Cargar el nombre desde la Base de Datos al entrar
+        if (profileNameDisplay) {
+            if (clienteInfo.name) {
+                profileNameDisplay.innerText = `Hola, ${clienteInfo.name}`; // ✅ Muestra el nombre guardado
+            } else {
+                const nombreCorto = user.email.split('@')[0];
+                const nombreFormateado = nombreCorto.charAt(0).toUpperCase() + nombreCorto.slice(1);
+                profileNameDisplay.innerText = `Hola, ${nombreFormateado}`; // Saludo por defecto
+            }
+        }
+
+        // 📝 Rellenar el campo de Ajustes automáticamente
+        if (settingsNameInput) {
+            settingsNameInput.value = clienteInfo.name || '';
+        }
+
+        // 🖼️ CARGAR AVATAR DEL USUARIO
+        if (clienteInfo.avatar_url) {
+            const avatarImg = document.getElementById('profileAvatarImg');
+            const avatarIcon = document.getElementById('profileAvatarIcon');
+            const settingsImg = document.getElementById('settingsAvatarImg');
+            const settingsIcon = document.getElementById('settingsAvatarIcon');
+
+            // Pintamos en el Perfil Principal
+            if (avatarImg && avatarIcon) {
+                avatarImg.src = clienteInfo.avatar_url;
+                avatarImg.classList.remove('hidden');
+                avatarIcon.classList.add('hidden');
+            }
+            // Pintamos en el Menú de Ajustes
+            if (settingsImg && settingsIcon) {
+                settingsImg.src = clienteInfo.avatar_url;
+                settingsImg.classList.remove('hidden');
+                settingsIcon.classList.add('hidden');
+            }
+            document.getElementById('clearAvatarBtn')?.classList.remove('hidden');
+        }
+
+        // 🧑‍💻 ACTIVAR ZONA DE DESARROLLADOR EN AJUSTES
+        const devZone = document.getElementById('developerSettingsZone');
+        if (devZone) {
+            // Solo mostramos la opción de regenerar llave si el usuario tiene un plan con API
+            const planesConApi = ['ultra', 'api_fullstack', 'enterprise'];
+            if (planesConApi.includes(planActual) || (clienteInfo.planes && clienteInfo.planes.features && clienteInfo.planes.features.api_access === true)) {
+                devZone.classList.remove('hidden');
+                devZone.classList.add('flex');
+            } else {
+                devZone.classList.add('hidden');
+                devZone.classList.remove('flex');
+            }
+        }
+
+        // ⚡ NUEVO: APLICAR LOS PRESETS DEL JSONB A LA INTERFAZ 🎚️
+        if (clienteInfo.ajustes_default) {
+            const ajustes = clienteInfo.ajustes_default;
+
+            if (ajustes.calidad !== undefined) {
+                const slider = document.getElementById('qualityRange');
+                const display = document.getElementById('qualityVal');
+                if (slider && display) {
+                    slider.value = ajustes.calidad;
+                    display.innerText = ajustes.calidad + '%';
+                    slider.dispatchEvent(new Event('input'));
+                }
+            }
+
+            if (ajustes.formato) {
+                let btnTarget = document.getElementById('btnJpg');
+                if (ajustes.formato === 'image/webp') btnTarget = document.getElementById('btnWebp');
+                else if (ajustes.formato === 'image/png') btnTarget = document.getElementById('btnPng');
+                else if (ajustes.formato === 'auto') btnTarget = document.getElementById('btnAuto');
+
+                if (btnTarget) btnTarget.click();
+            }
+
+            if (ajustes.anti_rastreo !== undefined) {
+                const toggleGPS = document.getElementById('exifToggle');
+                if (toggleGPS) {
+                    toggleGPS.checked = ajustes.anti_rastreo;
+                    localStorage.setItem('anti_rastreo_enabled', ajustes.anti_rastreo);
+                }
+            }
+
+            if (ajustes.auto_descarga !== undefined) {
+                const toggleAutoDL = document.getElementById('autoDownloadToggle');
+                if (toggleAutoDL) {
+                    toggleAutoDL.checked = ajustes.auto_descarga;
+                    localStorage.setItem('compressly_autodownload', ajustes.auto_descarga);
+                }
+            }
+
+            // 4️⃣ Menú de Redimensionar (ARREGLO DEL TEXTO INVISIBLE) 🛡️
+            if (ajustes.redimensionar !== undefined) {
+                const resizeSel = document.getElementById('resizeSelect');
+                const customLabel = document.getElementById('customSelectLabel');
+                if (resizeSel && customLabel) {
+                    resizeSel.value = ajustes.redimensionar;
+
+                    // Traducción segura basada en los data-i18n de tu HTML
+                    let transKey = 'resize_0';
+                    if (ajustes.redimensionar == 3840) transKey = 'resize_4k';
+                    else if (ajustes.redimensionar == 1920) transKey = 'resize_fhd';
+                    else if (ajustes.redimensionar == 1080) transKey = 'resize_web';
+                    else if (ajustes.redimensionar == 720) transKey = 'resize_mini';
+                    else if (ajustes.redimensionar == 480) transKey = 'resize_mobile';
+                    else if (ajustes.redimensionar == 360) transKey = 'resize_icon';
+
+                    // Si tienes el objeto de traducciones disponible, lo usamos
+                    if (typeof translations !== 'undefined' && translations[currentLanguage]) {
+                        customLabel.innerText = translations[currentLanguage][transKey];
+                    } else {
+                        // Fallback seguro
+                        customLabel.innerText = ajustes.redimensionar == 0 ? "Mantener Original" : `${ajustes.redimensionar}px`;
+                    }
+
+                    // Marcamos la opción visual en el menú desplegable
+                    const optionTarget = document.querySelector(`#customSelectDropdown .custom-option[data-value="${ajustes.redimensionar}"]`);
+                    if (optionTarget) {
+                        document.querySelectorAll('#customSelectDropdown .custom-option').forEach(opt => opt.classList.remove('selected'));
+                        optionTarget.classList.add('selected');
+                    }
+                }
+            }
+
+            if (ajustes.wm_texto) {
+                const wmInput = document.getElementById('watermarkInput');
+                if (wmInput) wmInput.value = ajustes.wm_texto;
+            }
+
+            if (ajustes.wm_logo_url) {
+                const img = new Image();
+                img.crossOrigin = "anonymous"; // 🛡️ CRUCIAL PARA CORS
+
+                img.onload = () => {
+                    // Inyectamos el logo en la RAM de la app
+                    window.customLogoImage = img;
+
+                    // Actualizamos los botones de la interfaz
+                    const wmLogoBtn = document.getElementById('watermarkLogoBtn');
+                    const clearWmBtn = document.getElementById('clearWatermarkLogoBtn');
+                    const wmInput = document.getElementById('watermarkInput');
+                    const wmIconIndicator = document.getElementById('wmIconIndicator');
+
+                    if (wmLogoBtn) wmLogoBtn.classList.add('hidden');
+                    if (clearWmBtn) clearWmBtn.classList.remove('hidden'); // Aparece la papelera 🗑️
+                    if (wmIconIndicator) wmIconIndicator.setAttribute('data-lucide', 'image');
+
+                    if (wmInput) {
+                        wmInput.value = '';
+                        wmInput.placeholder = (typeof translations !== 'undefined' && translations[currentLanguage]) ? translations[currentLanguage].wm_logo_selected : 'Logo seleccionado ✓';
+                        wmInput.disabled = true;
+                    }
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                };
+
+                img.onerror = () => {
+                    // Si falla la carga (ej. la borraron), limpiamos la memoria para evitar fantasmas
+                    window.customLogoImage = null;
+                };
+
+                // 🚀 EL TRUCO DEL CACHÉ: Le agregamos un número aleatorio a la URL para que no repita la vieja
+                const separator = ajustes.wm_logo_url.includes('?') ? '&' : '?';
+                img.src = `${ajustes.wm_logo_url}${separator}nocache=${new Date().getTime()}`;
+            }
         }
 
         // 2. LÓGICA DE JERARQUÍA (El Poder del Usuario)
@@ -544,170 +716,6 @@ async function mostrarPanelPrivado(user) {
     lucide.createIcons();
 }
 
-// --- FUNCIONES DE ELIMINACIÓN DE CUENTA ---
-
-// 🔒 Lógica del Candado de Seguridad
-window.toggleDeleteLock = function () {
-    const btn = document.getElementById('confirmDeleteBtn');
-    const icon = document.getElementById('lockIcon');
-    const text = document.getElementById('lockText');
-
-    if (btn.disabled) {
-        // 🔓 Desbloquear
-        btn.disabled = false;
-        btn.className = "w-full bg-gradient-to-r from-red-600 to-rose-700 text-white font-black py-4 rounded-2xl shadow-lg shadow-red-900/20 active:scale-95 flex items-center justify-center gap-2 transition-all border border-transparent";
-        icon.setAttribute('data-lucide', 'unlock');
-        icon.classList.add('text-red-500');
-        text.innerText = "Botón Desbloqueado";
-        text.classList.replace('text-gray-500', 'text-red-500');
-        if (typeof triggerVibration !== 'undefined') triggerVibration([20, 30]);
-    } else {
-        // 🔒 Bloquear de nuevo
-        btn.disabled = true;
-        btn.className = "w-full bg-slate-800 text-gray-600 cursor-not-allowed font-black py-4 rounded-2xl transition-all flex items-center justify-center gap-2 border border-white/5";
-        icon.setAttribute('data-lucide', 'lock');
-        icon.classList.remove('text-red-500');
-        text.innerText = "Seguro Activado";
-        text.classList.replace('text-red-500', 'text-gray-500');
-    }
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-};
-
-window.openDeleteAccountModal = function () {
-    closeSettingsModal(); // Cerramos el de ajustes primero
-
-    // 🛡️ Forzar que el candado SIEMPRE esté cerrado al abrir
-    const btn = document.getElementById('confirmDeleteBtn');
-    if (btn && !btn.disabled) {
-        toggleDeleteLock();
-    }
-
-    const modal = document.getElementById('deleteAccountModal');
-    const content = document.getElementById('deleteAccountContent');
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-    setTimeout(() => {
-        content.classList.remove('scale-95', 'opacity-0');
-        content.classList.add('scale-100', 'opacity-100');
-    }, 10);
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-};
-
-window.closeDeleteAccountModal = function () {
-    const modal = document.getElementById('deleteAccountModal');
-    const content = document.getElementById('deleteAccountContent');
-    content.classList.remove('scale-100', 'opacity-100');
-    content.classList.add('scale-95', 'opacity-0');
-    setTimeout(() => {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-    }, 300);
-};
-
-window.ejecutarBorradoTotal = async function () {
-    const btn = document.getElementById('confirmDeleteBtn');
-    const originalHTML = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> PROCESANDO BORRADO...';
-    lucide.createIcons();
-
-    try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-
-        if (session && session.user) {
-            // 1. Borramos sus datos de cliente en la tabla pública
-            const { error: dbError } = await supabaseClient
-                .from('api_clients')
-                .delete()
-                .eq('id', session.user.id);
-
-            if (dbError) throw dbError;
-
-            // Nota: Para borrar el usuario de AUTH (la cuenta de login), 
-            // normalmente necesitas un Edge Function porque un usuario no puede borrarse a sí mismo por SDK.
-            // Pero al borrar su fila en 'api_clients', ya le quitas todos sus privilegios SaaS.
-        }
-
-        // 2. Notificamos y sacamos al usuario
-        Notify.show('Datos Eliminados', 'Tu información ha sido borrada con éxito. Adiós 💔', 'info');
-
-        setTimeout(() => {
-            logoutUsuario(); // Esto hace el signOut final y recarga la página
-        }, 2000);
-
-    } catch (error) {
-        Notify.show('Error', 'No pudimos completar el borrado. Intenta más tarde.', 'error');
-        btn.disabled = false;
-        btn.innerHTML = originalHTML;
-        lucide.createIcons();
-    }
-};
-
-// =====================================================================
-// 🔐 FUNCIÓN PARA CAMBIAR CONTRASEÑA (MODERN MAGIC LINK)
-// =====================================================================
-
-window.solicitarCambioPassword = async function (boton) {
-    // 1. Extraemos el correo que ya está en la pantalla
-    const emailElement = document.getElementById('settingsEmailDisplay');
-    const email = emailElement ? emailElement.innerText : null;
-
-    if (!email || email === 'usuario@ejemplo.com') {
-        if (typeof Notify !== 'undefined') Notify.show('Error', 'No se detectó una cuenta válida.', 'error');
-        return;
-    }
-
-    // 2. Efecto visual de carga en el botón (Bloquea spam)
-    const textoOriginal = boton.innerHTML;
-    boton.innerHTML = '<div class="flex items-center justify-center gap-3"><i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i><span>Enviando enlace...</span></div>';
-    boton.disabled = true;
-
-    try {
-        // 3. 🚀 LA MAGIA DE SUPABASE
-        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin + '/?reset=true',
-        });
-
-        //
-        if (error) throw error;
-
-        // 4. Transformamos el Contenido (Buscamos el contenedor de perfil o bento)
-        const modalContent = boton.closest('.bento-card') || document.getElementById('profileContent') || document.getElementById('settingsContent');
-
-        if (modalContent) {
-            modalContent.innerHTML = `
-                <div class="text-center py-12 animate-in fade-in zoom-in duration-300">
-                    <div class="w-20 h-20 bg-green-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6 text-green-500 border border-green-500/20 shadow-[0_0_30px_rgba(34,197,94,0.2)]">
-                        <i data-lucide="mail-check" class="w-10 h-10"></i>
-                    </div>
-                    <h2 class="text-2xl font-black text-white mb-3">¡Correo Enviado!</h2>
-                    <p class="text-gray-400 text-sm leading-relaxed mb-8">
-                        Hemos enviado las instrucciones a:<br>
-                        <b class="text-primary-400 mt-1 inline-block">${email}</b>
-                    </p>
-                    <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold animate-pulse">Finalizando sesión de seguridad...</p>
-                </div>
-            `;
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
-
-        // 5. Cierre automático y silencioso después de 4 segundos
-        setTimeout(() => {
-            if (typeof closeSettingsModal === 'function') closeSettingsModal();
-            if (typeof closeProfileModal === 'function') closeProfileModal();
-        }, 4000);
-
-    } catch (error) {
-        // Si hay error, regresamos el botón a la normalidad para que intente de nuevo
-        if (typeof Notify !== 'undefined') {
-            Notify.show('Ups...', error.message, 'error');
-        }
-        boton.innerHTML = textoOriginal;
-        boton.disabled = false;
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-    }
-};
-
 // =====================================================================
 // 🔑 FUNCIÓN PARA RECUPERAR CONTRASEÑA (DESDE EL LOGIN / MODO INVITADO)
 // =====================================================================
@@ -810,44 +818,3 @@ window.addEventListener('DOMContentLoaded', async () => {
         console.log("👋 No hay sesión activa, mostrando modo invitado");
     }
 });
-
-// =====================================================================
-// 🔐 FUNCIÓN PARA GUARDAR LA CONTRASEÑA DEFINITIVAMENTE
-// =====================================================================
-window.actualizarPasswordFinal = async function (e) {
-    e.preventDefault();
-    const nuevaPass = document.getElementById('newPasswordInput').value;
-    const btn = document.getElementById('btnUpdatePass');
-
-    btn.disabled = true;
-    btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Guardando...';
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-
-    try {
-        // 🚀 LLAMADA REAL A SUPABASE
-        const { error } = await supabaseClient.auth.updateUser({ password: nuevaPass });
-
-        if (error) throw error;
-
-        if (typeof Notify !== 'undefined') {
-            Notify.show('¡Éxito!', 'Tu contraseña ha sido actualizada. Ya puedes entrar.', 'success');
-        }
-
-        // Cerramos el modal y limpiamos la URL
-        const modal = document.getElementById('resetPasswordModal');
-        if (modal) modal.classList.add('hidden');
-
-        window.history.replaceState({}, document.title, "/");
-
-    } catch (error) {
-        if (typeof Notify !== 'undefined') {
-            Notify.show('Error', error.message, 'error');
-        }
-        btn.disabled = false;
-        btn.innerText = 'Guardar Cambios';
-    } finally {
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-    }
-};
-
-

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compressly | API Playground</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0070f3;
+      --glass: rgba(255, 255, 255, 0.03);
+      --border: rgba(255, 255, 255, 0.1);
+    }
+
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: radial-gradient(circle at top right, #1a1a1a, #000);
+    }
+
+    .container {
+      width: 90%;
+      max-width: 500px;
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    h1 {
+      font-weight: 600;
+      font-size: 24px;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    p {
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 16px;
+      padding: 40px 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    .drop-zone:hover,
+    .drop-zone.active {
+      border-color: var(--primary);
+      background: rgba(0, 112, 243, 0.05);
+    }
+
+    #preview {
+      max-width: 100px;
+      border-radius: 8px;
+      margin-top: 15px;
+      display: none;
+    }
+
+    .btn-upload {
+      background: #fff;
+      color: #000;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 24px;
+      width: 100%;
+      transition: transform 0.2s;
+    }
+
+    .btn-upload:active {
+      transform: scale(0.98);
+    }
+
+    .btn-upload:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    #resultado {
+      margin-top: 32px;
+      background: #0a0a0a;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: left;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: #00ff41;
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #1a1a1a;
+      display: none;
+    }
+
+    .loader {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #000;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>🚀 Compressly Cloud</h1>
+    <p>API Universal de Compresión Serverless</p>
+
+    <div class="drop-zone" id="dropZone">
+      <span id="label">Arrastra tu imagen o haz clic 📸</span>
+      <input type="file" id="foto" accept="image/*" style="display: none" multiple>
+      <br><img id="preview" alt="Preview">
+    </div>
+
+    <button class="btn-upload" id="btn" onclick="subir()">
+      <span id="btnText">¡Subir al Búnker!</span>
+      <div class="loader" id="loader"></div>
+    </button>
+
+    <div id="progress-container"
+      style="display: none; width: 100%; max-width: 420px; margin: 20px auto 0 auto; background: rgba(255,255,255,0.05); backdrop-filter: blur(4px); border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+      <div id="progress-bar"
+        style="width: 0%; height: 8px; background: linear-gradient(90deg, #10B981, #3B82F6); transition: width 0.3s ease;">
+      </div>
+    </div>
+    <p id="progress-text"
+      style="display: none; font-size: 14px; margin-top: 10px; color: #10B981; text-align: center; font-weight: 500;">
+      Procesando: 0 / 0</p>
+    <pre id="resultado"></pre>
+  </div>
+
+  <script>
+    const dropZone = document.getElementById('dropZone');
+    const input = document.getElementById('foto');
+    const preview = document.getElementById('preview');
+    const label = document.getElementById('label');
+    const resBox = document.getElementById('resultado');
+    const btnText = document.getElementById('btnText');
+    const loader = document.getElementById('loader');
+    const btn = document.getElementById('btn');
+
+    dropZone.onclick = () => input.click();
+
+    input.onchange = (e) => {
+      const files = e.target.files;
+      if (files.length === 1) {
+        mostrarPreview(files[0]);
+      } else if (files.length > 1) {
+        label.innerText = `${files.length} imágenes listas para el búnker 📸🔥`;
+        preview.style.display = 'none';
+      }
+    };
+
+    function mostrarPreview(file) {
+      label.innerText = file.name;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        preview.src = e.target.result;
+        preview.style.display = 'inline-block';
+      }
+      reader.readAsDataURL(file);
+    }
+
+    // 2. Reemplaza tu función subir() en prueba.html por este Motor Profesional
+    async function subir() {
+      const files = input.files; // Ahora agarramos TODOS los archivos seleccionados
+      if (files.length === 0) return alert("Selecciona al menos una imagen");
+
+      btn.disabled = true;
+      btnText.style.display = 'none';
+
+      // Mostrar la barra de progreso moderna
+      const progressContainer = document.getElementById('progress-container');
+      const progressBar = document.getElementById('progress-bar');
+      const progressText = document.getElementById('progress-text');
+
+      progressContainer.style.display = 'block';
+      progressText.style.display = 'block';
+
+      let procesados = 0;
+      const total = files.length;
+      let resultadosHTML = "";
+
+      // 🚦 BUCLE DE LOTES (Envía 1 por 1 con pausa inteligente para respetar el Rate Limit)
+      for (let i = 0; i < total; i++) {
+        const file = files[i];
+        let exito = false;
+
+        while (!exito) {
+          try {
+            // Actualizar UI
+            progressText.innerText = `Comprimiendo (${i + 1} de ${total})... 🔥`;
+
+            const res = await fetch('https://api-compressly.linkeaoficial2025.workers.dev/', {
+              method: 'POST',
+              headers: {
+                'Content-Type': file.type,
+                'x-api-key': 'tu-api-key-aqui' // Reemplaza por tu llave real
+              },
+              body: file
+            });
+
+            if (res.status === 429) {
+              // Si el semáforo de Cloudflare nos frena, el código es inteligente:
+              // Se pausa 3 segundos y lo vuelve a intentar automáticamente 🤖
+              progressText.innerText = `Pausa de seguridad (Rate Limit)... ⏳`;
+              await new Promise(r => setTimeout(r, 3000));
+              continue; // Vuelve a intentar el mismo archivo
+            }
+
+            const data = await res.json();
+            resultadosHTML += `✅ ${file.name} -> Reducido: ${data.ahorro_porcentaje || 'OK'}\n`;
+            exito = true; // Logrado, sale del bucle 'while'
+            procesados++;
+
+            // Mover la barrita visualmente 📊
+            const porcentaje = (procesados / total) * 100;
+            progressBar.style.width = `${porcentaje}%`;
+
+            // Pequeña pausa de 2 segundos entre fotos para no activar el semáforo de Cloudflare nunca 🧘‍♂️
+            await new Promise(r => setTimeout(r, 2000));
+
+          } catch (e) {
+            resultadosHTML += `❌ Error con ${file.name}\n`;
+            exito = true; // Saltamos este archivo para no trabar todo
+            procesados++;
+          }
+        }
+      }
+
+      // Terminó todo el lote 🎉
+      progressText.innerText = `¡Proceso Completado! 🚀 (${procesados}/${total})`;
+      progressText.style.color = "#3B82F6"; // Azul Compressly
+      resBox.style.display = 'block';
+      resBox.innerText = resultadosHTML;
+
+      btn.disabled = false;
+      btnText.style.display = 'block';
+    }
+  </script>
+
+</body>
+
+</html>
